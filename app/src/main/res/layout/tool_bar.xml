@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/tool_bar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/colorPrimary"
+    android:elevation="10dp"
+    android:minHeight="?attr/actionBarSize"
+    app:theme="@style/AppTheme">
+
+    <TextView
+        android:id="@+id/toolbar_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DAWebmail"
+        android:textColor="@color/EmailBackground"
+        android:textSize="20sp" />
+
+</android.support.v7.widget.Toolbar>
