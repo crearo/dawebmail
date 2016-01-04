@@ -4,9 +4,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import rish.crearo.dawebmaillite.database.EmailMessage;
+import rish.crearo.dawebmaillite.database.User;
 import rish.crearo.dawebmaillite.scraper.ScrapingMachine;
 import rish.crearo.dawebmaillite.utils.Printer;
-import rish.crearo.dawebmaillite.database.User;
 
 /**
  * Created by rish on 6/10/15.

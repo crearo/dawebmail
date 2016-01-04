@@ -18,7 +18,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon, android:theme">
-
         <meta-data
             android:name="DATABASE"
             android:value="emailsdatabase_sugar_man.db" />
@@ -32,15 +31,9 @@
             android:name="DOMAIN_PACKAGE_NAME"
             android:value="rish.crearo.dawebmaillite" />
 
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".MainActivity" />
         <activity android:name=".ViewEmail" />
-        <activity android:name=".LoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".LoginActivity"></activity>
 
         <receiver
             android:name=".services.NetworkChangeBroadcastReceiver"
@@ -56,6 +49,13 @@
             android:name=".services.BackgroundService"
             android:enabled="true" />
 
+        <activity android:name=".ContributeActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

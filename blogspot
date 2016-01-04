@@ -1,0 +1,102 @@
+Link to Github
+Link to Google Play
+
+First things first! Thank you for trying to contribute! This really will go a long way :D I talked to the guys from Zimbra about the app over the winter, and they were really excited about the app. Though the app has gone for a toss now. Doesn't work anymore, because of the upgradation.  <If you are able to use an API, do try implementing that!>
+Though I could probably sit for a day or two and set it up again, I really want the spirit of open source to hit off at DA. So, this is the project I worked on for months, and really is the reason I know Android dev. And now its as naked as we came.
+
+Setting up the Project:
+This is probably the hardest part of everything we do. Setting up the project. The main app is located at (all the Java, layout, res files).
+
+dawebmail/app/src/main
+
+Please use Android Studio. Eclipse will be a nightmare.
+I've compiled it using compileSdkVersion 22. 
+
+Libraries used :
+
+compile 'com.android.support:appcompat-v7:22.2.1'
+compile 'com.jakewharton:butterknife:7.0.1'
+compile 'com.android.support:design:22.2.1'
+compile 'com.github.satyan:sugar:1.3'
+compile 'com.android.support:cardview-v7:22.+'
+compile 'me.drakeet.materialdialog:library:1.2.2'
+compile files('libs/jaunt1.0_nr.jar') // http://jaunt-api.com/ - the webscraper
+compile files('libs/jsoup-1.8.1.jar')
+compile files('libs/gson-1.1.jar')
+
+The last three are jar files that can be found on the net with ease. Jaunt is the scraper.
+
+Alright. This should be enough to set up everything. Try to run the project. The opening activity is currently the contribute activity. If that opens, you're done :D
+
+File Structure
+Though Ive made sure the class names are self explanatory, here are a couple of pointers to help you get started with understanding the project.
+The four activities :
+ContributeActivity, LoginActivity, MainActivity, ViewEmail
+are the only 4 major activities.
+
+MainActivity contains the drawer for the 4 fragments;
+InboxFragment, SmartBoxFragment, SettingsFragment,FeedbackFragment
+
+LoginActivity is what opens up for the first time only, or every time you logout. The launcher activity is MainActivity; which opens up LoginAcitivity if required.
+
+Packages :
+Adapters - The listview adapter for Inbox emails.
+Analytics - Can be ignored. I was using that to track activity within the application, but have deprecated that for now.
+AsyncTasks - So here's the real deal. The meat of the application. For all algorithmic programmers reading this, here's where the real Java is really happening. Not the everyday psv main() {} :)
+
+The thing with async tasks is you never know when they will complete. And you may want to use the same AsyncTask in two activities, say login. You dont want to write the same asynctask twice, in both activities, right? That's crap. Redundancy increases. The most basic rule that we all learn only from experience is, write code once, use everywhere. Change in one place, effectively changes everywhere, instead of having to go to every class and manually changing everywhere. And this applies to many small parts of code, like Constant Strings as well.
+
+AsyncTask. It is usually used to fetch data from the internet, or perform processes in different threads. You don't know when it will end. Hence, you create an interface which calls a method when the doInBackground process finishes.
+
+So for every AsyncTask, for example, Login, there is an interface, LoginListener. Taking the login interface, (LoginInterface), there is a PreLogin method and a PostLogin method. The postLogin method takes two arguments, the time taken and a boolean for whether login was a success or not.
+Similar for the rest.
+Every time I need to call the asyncTask, I must also pass an instance of its listener (interface). Also, remember that an activity can implement multiple interfaces. Hence, I can call the ViewEmailAsyncTask and the LoginAsyncTask from the same class.
+
+Database
+I was given a 6/10 in my DBMS course. No complaints. The prof sucks. My DBMS doesn't. :)
+I have implemented two sorts of data saving methods.
+SharedPrefs for basic info about the user, and an SQLite ORM for webmail inbox.
+
+NOTE : EmailMessage constructor is called only in the ScrapingMachine class.  This is the only place where a new emailMessage is created, and it is saved after the refresh completes, and not immediately.
+
+User - User contains all shared prefs about the user. His webmail id, his password and when he last refreshed. It also used to contain his favorite theme, which I have now deprecated.
+EmailMessage - EmailMessage is the Sugar ORM, which makes implementing SQLite in Android insanely easy. Yes, that's their moto :P
+The database consists of just one table- probably the easiest of databases you'll ever see.
+The data stored in each row contains basic info about the webmail. Commented, self explanatory.
+
+Fragments 
+These are called by the MainActivity drawer.
+For the future : If we decide to make a deletedbox, a sentbox, etc, this is where that shiz will go.
+Have a look at InboxFragment. The rest are just there to make the drawer look less empty :P
+
+Scraper
+The Magic! This is where the magic happens. And this is what must be changed.
+After much struggle, I settled on using JauntAPI as my web scraper. I couldnt use selenium because it doesnt work on Android, and it was too heavy anyway. BS4 and Mechanize work on Python only, and hence couldnt use those.
+So this is what must be changed.
+The methods are simple.
+logIn() : Logs you in. Remember to save the sharedPref of whether the user is logged in or not.
+scrapeAllMessagesfromInbox(): Scrapes all messages. It internally calls  scrapeMessagesfromPage() to scrape individual inbox pages (1-25, 25-50, and so on). It then checks whether it must go forward, ie, if there is a next page (50-75) containing more webmails. 
+Please note, Webmail is kinda crappy. Since there was no API, I was storing the link to individual emails here. From that link, scrape the email content. This stores basic info that is visible on the Inbox of the webmail website.
+fetchEmailContent(EmailMessage email) : Fetches emails from the link stored above. Adds webmails to an arraylist, allEmailsNew, which are then passed back from the refreshListener, inverted, and stored. The reason they are inverted is to save in order of latest to oldest.
+getNewEmails() : Please use this method to get all the latest scraped messages. This is called in the refresh listener. The database save method is called in those classes that implement refresh listeners.
+ 
+Services :
+Contains broadcastreceiver, NotificationMaker, and BackgroundService to save new webmails. Background Runner initiates the process, and declares an alarm to set off to scrape messages every x minutes. Currently set to 15 * 60 * 1000 seconds (15 minutes).
+ 
+Utils : My favorite. 
+ColorScheme is deprecated. Was a cool class that stored user's favorite theme for webmail, but isnt used anymore.
+ConnectionManager checks whether you are connected to the internet, over wifi, 2G, or 3G.
+Printer just prints, instead of System.out.println(), or Log.d();
+TheFont fetches the font. Again. Change once, changes everywhere.
+
+And that's about it to get you started!
+I have worked very hard on this repo, and would really appreciate nice pull requests :)  Do go through this link. Confused me too!
+
+Tasks and The Future
+If this hits off well, things will get exciting :D Hope it does. DA is known for open source! Let's let that continue.
+
+Todo 1
+A lot of people want the sentbox, and ability to send new webmails. Though I don't understand why, and I'm sure not many people send webmails on a daily basis, and why they'd use their mobile while sending professional emails, that something that's number one on the todo list.
+
+Todo 2
+Talk to Zimbra once again :)

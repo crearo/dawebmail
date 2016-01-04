@@ -49,9 +49,9 @@ public class RefreshInbox extends AsyncTask<Void, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
 
-        if (result)
+        if (result) {
             User.setLastRefreshed(context, "" + System.currentTimeMillis());
-
+        }
         timeFinished = System.currentTimeMillis();
         listener.onPostRefresh(result, refreshedEmails);
     }

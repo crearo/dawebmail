@@ -2,11 +2,11 @@ package rish.crearo.dawebmaillite.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Vibrator;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -15,9 +15,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import rish.crearo.dawebmaillite.R;
-import rish.crearo.dawebmaillite.database.EmailMessage;
 import rish.crearo.dawebmaillite.ViewEmail;
-import rish.crearo.dawebmaillite.utils.ColorScheme;
+import rish.crearo.dawebmaillite.database.EmailMessage;
 import rish.crearo.dawebmaillite.utils.Constants;
 import rish.crearo.dawebmaillite.utils.Printer;
 import rish.crearo.dawebmaillite.utils.TheFont;
@@ -29,11 +28,16 @@ public class MailAdapter extends BaseAdapter {
 
     ArrayList<EmailMessage> emails;
     Context context;
+    private ArrayList<EmailMessage> emailsToDelete;
+    DeleteSelectedListener deleteSelectedListener;
+    boolean clickedForDelete[];
 
-    public MailAdapter(ArrayList<EmailMessage> emails, Context context) {
+    public MailAdapter(ArrayList<EmailMessage> emails, Context context, DeleteSelectedListener deleteSelectedListener) {
         this.context = context;
-
+        emailsToDelete = new ArrayList<>();
         this.emails = emails;
+        this.deleteSelectedListener = deleteSelectedListener;
+        this.clickedForDelete = new boolean[emails.size()];
     }
 
     @Override
@@ -57,23 +61,41 @@ public class MailAdapter extends BaseAdapter {
             convertView = View.inflate(context, R.layout.element_email, null);
             new ViewHolder(convertView);
         }
-        ViewHolder holder = (ViewHolder) convertView.getTag();
-        EmailMessage item = getItem(position);
+        final ViewHolder holder = (ViewHolder) convertView.getTag();
+        final EmailMessage item = getItem(position);
 
         holder.tv_name.setTextSize(15);
 
+        if (clickedForDelete[position]) {
+            System.out.println("" + item.getFromName() + " " + item.getSubject() + " is marked for delete");
+        }
+
         if (item.readunread.equals("Unread Message")) {
-            if (item.attlink1.equals("isempty"))
-                holder.iv_icon.setImageResource(R.drawable.final_unread);
-            else
-                holder.iv_icon.setImageResource(R.drawable.final_unread_a);
+
+            if (!clickedForDelete[position]) {
+                if (item.attlink1.equals("isempty"))
+                    holder.iv_icon.setImageResource(R.drawable.final_unread);
+                else
+                    holder.iv_icon.setImageResource(R.drawable.final_unread_a);
+            } else {
+                System.out.println("set holder icon to delete wala");
+                holder.iv_icon.setAnimation(AnimationUtils.loadAnimation(context, R.anim.abc_grow_fade_in_from_bottom));
+                holder.iv_icon.setImageResource(R.drawable.ic_action_delete_red);
+            }
 
             holder.tv_name.setTypeface(null, Typeface.BOLD);
         } else {
-            if (item.attlink1.equals("isempty"))
-                holder.iv_icon.setImageResource(R.drawable.final_read);
-            else
-                holder.iv_icon.setImageResource(R.drawable.final_read_a);
+
+            if (!clickedForDelete[position]) {
+                if (item.attlink1.equals("isempty"))
+                    holder.iv_icon.setImageResource(R.drawable.final_read);
+                else
+                    holder.iv_icon.setImageResource(R.drawable.final_read_a);
+            } else {
+                System.out.println("set holder icon to delete wala");
+                holder.iv_icon.setImageResource(R.drawable.ic_action_delete_red);
+                holder.iv_icon.setAnimation(AnimationUtils.loadAnimation(context, R.anim.abc_grow_fade_in_from_bottom));
+            }
             holder.tv_name.setTypeface(null, Typeface.NORMAL);
         }
         holder.tv_name.setText(item.fromname);
@@ -84,9 +106,21 @@ public class MailAdapter extends BaseAdapter {
             @Override
             public boolean onLongClick(View arg0) {
                 Printer.println("Long click");
-                Vibrator vibe = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-                vibe.vibrate(50);
+                if (clickedForDelete[position]) {
+                    clickedForDelete[position] = false;
+                    notifyDataSetChanged();
+                    emailsToDelete.remove(item);
+                    System.out.println("clicked for delete is true, returning to normal");
 
+                } else {
+                    clickedForDelete[position] = true;
+                    emailsToDelete.add(item);
+                    notifyDataSetChanged();
+                    Vibrator vibe = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+                    vibe.vibrate(20);
+                    System.out.println("clicked for delete is false, added to emailsToDelete");
+                }
+                deleteSelectedListener.onItemClickedForDelete(emailsToDelete);
                 return true;
             }
         });
@@ -96,39 +130,21 @@ public class MailAdapter extends BaseAdapter {
             @Override
             public void onClick(View arg0) {
 
-                Printer.println("Clicked ! " + position);
+                if (clickedForDelete[position]) {
+                    clickedForDelete[position] = false;
+                    notifyDataSetChanged();
+                    emailsToDelete.remove(item);
+                    System.out.println("clicked for delete is true, returning to normal");
 
-//                if (emails_ischecked.get(position).getIschecked()) {
-//                    emails_ischecked.get(position).setIschecked(false);
-//
-//                    emails_tobedeleted_pub.remove(emails.get(position));
-//                    if (--totalSelected_emails == 0) {
-//                        floatingDelete.bringToFront();
-//                        AnimationSet set = new AnimationSet(true);
-//                        Animation translate = new TranslateAnimation(0, 100, 0, 0);
-//                        translate.setDuration(300);
-//                        set.addAnimation(translate);
-//                        floatingDelete.startAnimation(set);
-//                        floatingDelete.setVisibility(View.INVISIBLE);
-//                    }
-//                } else {
-//                    emails_ischecked.get(position).setIschecked(true);
-//
-//                    if (totalSelected_emails++ == 0) {
-//                        floatingDelete.bringToFront();
-//                        floatingDelete.setVisibility(View.VISIBLE);
-//                        AnimationSet set = new AnimationSet(true);
-//                        Animation translate = new TranslateAnimation(100, 0, 0, 0);
-//                        translate.setDuration(300);
-//                        set.addAnimation(translate);
-//                        floatingDelete.startAnimation(set);
-//                    }
-//                    emails_tobedeleted_pub.add(emails.get(position));
-//                }
-//                Printer.println(emails_ischecked.get(position).ischecked + ", totalselected =  " + totalSelected_emails);
-
-                notifyDataSetChanged();
-
+                } else {
+                    clickedForDelete[position] = true;
+                    emailsToDelete.add(item);
+                    notifyDataSetChanged();
+                    Vibrator vibe = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+                    vibe.vibrate(20);
+                    System.out.println("clicked for delete is false, added to emailsToDelete");
+                }
+                deleteSelectedListener.onItemClickedForDelete(emailsToDelete);
             }
         });
 
@@ -164,5 +180,9 @@ public class MailAdapter extends BaseAdapter {
 
             view.setTag(this);
         }
+    }
+
+    public interface DeleteSelectedListener {
+        void onItemClickedForDelete(ArrayList<EmailMessage> emailsToDelete);
     }
 }

@@ -21,6 +21,7 @@ import rish.crearo.dawebmaillite.database.User;
 public class ScrapingMachine {
 
     static UserAgent userAgent = new UserAgent();
+
     private ArrayList<EmailMessage> allNewEmails = new ArrayList<>();
 
     private String username, pwd;
@@ -28,6 +29,7 @@ public class ScrapingMachine {
     public ScrapingMachine(String username, String password, Context con) {
         this.username = username;
         this.pwd = password;
+        userAgent.settings.connectTimeout = 20 * 1000;
     }
 
     public boolean logIn(String username, String pwd) {
@@ -74,7 +76,6 @@ public class ScrapingMachine {
 
     public boolean scrapeAllMessagesfromInbox() {
         // go to the homepage
-        int totalNewWebmails = 0;
         try {
             if (!User.isLoggedIn()) {
                 Printer.println("Not Logged in Logging in from scrapeallmsgs.");
@@ -95,26 +96,14 @@ public class ScrapingMachine {
             while (goNextPage()) {
                 scrapeMessagesfromPage();
             }
-        // done refreshing
-//        try {
-//            if (!username.equals("none")) {
-//                Calendar calendar = Calendar.getInstance();
-//                String time = calendar.get(Calendar.HOUR) + ":" + calendar.get(Calendar.MINUTE);
-//                String date = calendar.get(Calendar.DAY_OF_MONTH) + " / " + (calendar.get(Calendar.MONTH) + 1);
-//                SavedStatistics lastrefstat = new SavedStatistics(time + " | " + date);
-//                lastrefstat.save();
-//                Printer.println("Saved record - " + time + " | " + date);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return false;
-//        }
+        if (allNewEmails.size() >= 15) {
+            masterRefresh();
+        }
         return true;
     }
 
-    public Boolean scrapeMessagesfromPage() {
+    public boolean scrapeMessagesfromPage() {
         Boolean cont = true;
-        int counter_toexecutemasterrefresh = 0;
         Element anchormsglist = userAgent.doc.findEvery("<tbody>");
 
         Printer.println("Alright. Just before anchrmsglist");
@@ -175,8 +164,7 @@ public class ScrapingMachine {
                         Printer.println("Found same email!");
                         cont = false;
                         break;
-                    } else
-                        counter_toexecutemasterrefresh++;
+                    }
                 }
 
                 allNewEmails.add(new EmailMessage(fromname, "isempty", sub,
@@ -188,11 +176,6 @@ public class ScrapingMachine {
             } catch (Exception e) {
                 Printer.println("Error in scrapeAllMessagesfromPage" + e.getMessage());
             }
-        }
-        if (counter_toexecutemasterrefresh >= 15) {
-            masterRefresh();
-            counter_toexecutemasterrefresh = 0;
-            cont = false;
         }
         return cont;
     }
@@ -244,31 +227,6 @@ public class ScrapingMachine {
         text = text.replaceAll("&gt;", ">");
         text = text.replaceAll("&#034;", "\"");
         return text;
-    }
-
-    public boolean checkIfLoggedInLong() {
-        try {
-            Printer.println("The homepage link is - " + Constants.URL_INBOX);
-            userAgent.visit(Constants.URL_INBOX);
-        } catch (Exception e) {
-            Printer.println("error in checkifloggedin " + e.getMessage());
-            return false;
-        }
-        String title = Constants.LOGIN_PAGE_TITLE;
-        try {
-            if (userAgent.doc.findFirst("<title>").getText().trim() != null) {
-                title = userAgent.doc.findFirst("<title>").getText().trim();
-            }
-            if (title.equals(Constants.LOGIN_PAGE_TITLE)) {
-                return false;
-            } else {
-                return true;
-            }
-
-        } catch (Exception e) {
-            Printer.println("Error in checkifloggedinlong- " + e.getMessage());
-            return false;
-        }
     }
 
     public boolean fetchEmailContent(EmailMessage email) {
@@ -437,15 +395,12 @@ public class ScrapingMachine {
                     }
 
                 }
-                Printer.println("\n\n---\n\nEmailleft = "
-                        + emails_tobedeleted.size());
+                Printer.println("\n\n---\n\nEmailleft = " + emails_tobedeleted.size());
                 for (EmailMessage email : emails_tobedeleted)
                     Printer.println(email.fromname + email.subject);
                 if (emails_tobedeleted.size() != 0) {
                     if (goNextPage() == false) {
-                        System.out
-                                .println(emails_tobedeleted.size()
-                                        + " webmails that are already deleted but exist here");
+                        System.out.println(emails_tobedeleted.size() + " webmails that are already deleted but exist here");
                         for (EmailMessage email : emails_tobedeleted) {
                             Printer.println(email.getId() + " "
                                     + email.fromname + " " + email.subject);
@@ -462,11 +417,11 @@ public class ScrapingMachine {
                 }
             }
             Printer.println("sending values to delete function");
-            String result = deleteMails(values_checkboxes, emails_tobedeleted_clone);
-            if (result.equals("unsuccessful")) {
+            boolean result = deleteMails(values_checkboxes, emails_tobedeleted_clone);
+            if (!result) {
                 return false;
             } else {
-                return false;
+                return true;
             }
         } catch (Exception e) {
             Printer.println(e.getMessage());
@@ -474,8 +429,7 @@ public class ScrapingMachine {
         }
     }
 
-    public String deleteMails(ArrayList<String> values_checkboxes,
-                              ArrayList<EmailMessage> emails_tobedeleted) {
+    public boolean deleteMails(ArrayList<String> values_checkboxes, ArrayList<EmailMessage> emails_tobedeleted) {
         Printer.println("deleting");
         try {
             // for this I will have to refresh the page, get the 'value' tags
@@ -493,30 +447,21 @@ public class ScrapingMachine {
             userAgent.send(request);
             Printer.println("Request done on internet, now on app ");
             for (EmailMessage email : emails_tobedeleted) {
-                Printer.println(email.getId() + " " + email.fromname + " "
-                        + email.subject);
-                EmailMessage.findById(EmailMessage.class, email.getId())
-                        .delete();
+                Printer.println(email.getId() + " " + email.fromname + " " + email.subject);
+                EmailMessage.findById(EmailMessage.class, email.getId()).delete();
                 Printer.println("--Deleted--");
             }
             Printer.println("All Deleted");
-            // Printer.println(userAgent.getLocation());
-            // Form form = userAgent.doc.getForm(1);
-            // HttpRequest request = form.getRequest("Delete");
-            // request.addNameValuePair("id", "" + values_checkboxes.get(0));
-            // form.setCheckBox("id", true);
-            // userAgent.send(request);
-            return "successful";
+            return true;
         } catch (Exception e) {
             Printer.println("Error in deleting- " + e.getMessage());
-            return "unsuccessful";
+            return false;
         }
     }
 
     public void masterRefresh() {
-        Printer.println("is calling master refresh");
         EmailMessage.deleteAll(EmailMessage.class);
-        Printer.println("deleted. now, what is remaining in database -");
+        Printer.println("master refresh, deleted all. now, what is remaining in database -");
         Printer.println(EmailMessage.count(EmailMessage.class, null, null) + "");
     }
 

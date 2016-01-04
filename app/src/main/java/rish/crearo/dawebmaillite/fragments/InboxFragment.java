@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
@@ -37,6 +38,7 @@ import butterknife.ButterKnife;
 import me.drakeet.materialdialog.MaterialDialog;
 import rish.crearo.dawebmaillite.R;
 import rish.crearo.dawebmaillite.adapters.MailAdapter;
+import rish.crearo.dawebmaillite.asyncTasks.DeleteMail;
 import rish.crearo.dawebmaillite.asyncTasks.DeleteMailListener;
 import rish.crearo.dawebmaillite.asyncTasks.Login;
 import rish.crearo.dawebmaillite.asyncTasks.LoginListener;
@@ -54,7 +56,7 @@ import rish.crearo.dawebmaillite.utils.Printer;
  * Created by rish on 6/10/15.
  */
 
-public class InboxFragment extends Fragment implements LoginListener, RefreshInboxListener, DeleteMailListener, MasterRefreshListener {
+public class InboxFragment extends Fragment implements LoginListener, RefreshInboxListener, DeleteMailListener, MasterRefreshListener, MailAdapter.DeleteSelectedListener {
 
 
     @Bind(R.id.inbox_listView)
@@ -66,8 +68,11 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
     @Bind(R.id.searchET)
     EditText searchET;
 
+    @Bind(R.id.inbox_delete_fab)
+    FloatingActionButton fabDelete;
+
     MailAdapter mailAdapter;
-    ProgressDialog progressDialog, progressDialog2, progressDialog3;
+    ProgressDialog progressDialog, progressDialog2;
 
     ArrayList<EmailMessage> allEmails;
 
@@ -86,7 +91,7 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
         allEmails = (ArrayList<EmailMessage>) Select.from(EmailMessage.class).list();
         Collections.reverse(allEmails);
 
-        mailAdapter = new MailAdapter(allEmails, getActivity());
+        mailAdapter = new MailAdapter(allEmails, getActivity(), this);
         listview.setAdapter(mailAdapter);
 
         progressDialog = new ProgressDialog(getActivity());
@@ -102,13 +107,6 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
                 refreshAdapter();
             }
         }, new IntentFilter(Constants.BROADCAST_REFRESH_ADAPTERS));
-
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-
-            }
-        });
 
         searchET.addTextChangedListener(new TextWatcher() {
             @Override
@@ -141,7 +139,7 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
                             i--;
                         }
                     }
-                    mailAdapter = new MailAdapter(allEmails, getActivity());
+                    mailAdapter = new MailAdapter(allEmails, getActivity(), InboxFragment.this);
                     listview.setAdapter(mailAdapter);
                     System.out.println("SEARCHED RESULTS COUNT = " + mailAdapter.getCount());
                 } else {
@@ -155,6 +153,7 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
             }
         });
 
+        fabDelete.setVisibility(View.GONE);
         return rootView;
     }
 
@@ -246,10 +245,6 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
     }
 
     @Override
-    public void onPreDelete() {
-    }
-
-    @Override
     public void onPreRefresh() {
         progressDialog2 = ProgressDialog.show(getActivity(), "", "Please wait while we load your content.", true);
         progressDialog2.setCancelable(false);
@@ -282,9 +277,23 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
         swipeRefreshLayout.setRefreshing(false);
     }
 
+
+    @Override
+    public void onPreDelete() {
+        progressDialog = ProgressDialog.show(getActivity(), "Deleting ... ", "");
+        progressDialog.show();
+    }
+
     @Override
     public void onPostDelete(boolean success) {
-
+        if (!success) {
+            Snackbar.make(swipeRefreshLayout, "Delete Unsuccessful :(", Snackbar.LENGTH_LONG).show();
+        } else {
+            Snackbar.make(swipeRefreshLayout, "Deleted Successfully", Snackbar.LENGTH_LONG).show();
+        }
+        progressDialog.dismiss();
+        refreshAdapter();
+        fabDelete.setVisibility(View.GONE);
     }
 
     @Override
@@ -300,7 +309,7 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
         allEmails = (ArrayList<EmailMessage>) Select.from(EmailMessage.class).list();
         Collections.reverse(allEmails);
 
-        mailAdapter = new MailAdapter(allEmails, getActivity());
+        mailAdapter = new MailAdapter(allEmails, getActivity(), this);
         listview.setAdapter(mailAdapter);
     }
 
@@ -345,5 +354,29 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
             }
         });
         materialDialog.show();
+    }
+
+    @Override
+    public void onItemClickedForDelete(final ArrayList<EmailMessage> emailsToDelete) {
+
+        fabDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(swipeRefreshLayout, "Deleting ...", Snackbar.LENGTH_LONG).show();
+                new DeleteMail(getActivity(), InboxFragment.this, emailsToDelete).execute();
+            }
+        });
+
+        if (emailsToDelete.size() > 0) {
+            if (fabDelete.getVisibility() != View.VISIBLE) {
+                fabDelete.setVisibility(View.VISIBLE);
+                fabDelete.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.abc_slide_in_bottom));
+            }
+        } else {
+            if (fabDelete.getVisibility() != View.GONE) {
+                fabDelete.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.abc_slide_out_bottom));
+                fabDelete.setVisibility(View.GONE);
+            }
+        }
     }
 }

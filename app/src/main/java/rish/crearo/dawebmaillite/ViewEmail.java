@@ -28,10 +28,10 @@ import rish.crearo.dawebmaillite.asyncTasks.LoginListener;
 import rish.crearo.dawebmaillite.asyncTasks.ViewMailListener;
 import rish.crearo.dawebmaillite.asyncTasks.ViewMailManager;
 import rish.crearo.dawebmaillite.database.EmailMessage;
+import rish.crearo.dawebmaillite.database.User;
 import rish.crearo.dawebmaillite.utils.ConnectionManager;
 import rish.crearo.dawebmaillite.utils.Constants;
 import rish.crearo.dawebmaillite.utils.Printer;
-import rish.crearo.dawebmaillite.database.User;
 
 public class ViewEmail extends AppCompatActivity implements LoginListener, ViewMailListener {
 
@@ -224,7 +224,6 @@ public class ViewEmail extends AppCompatActivity implements LoginListener, ViewM
             startActivity(new Intent().setAction(DownloadManager.ACTION_VIEW_DOWNLOADS));
         }
     }
-
 
     public void createDownloadDialog(final int whichattatchment) {
         final MaterialDialog materialDialog = new MaterialDialog(ViewEmail.this);

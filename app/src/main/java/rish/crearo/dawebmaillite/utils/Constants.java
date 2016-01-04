@@ -5,10 +5,9 @@ package rish.crearo.dawebmaillite.utils;
  */
 public class Constants {
 
-
     public static boolean IS_LOGGED_IN;
 
-    public static String URL = "https://webmail.daiict.ac.in/zimbra/";
+    public static String URL = "https://webmail.daiict.ac.in/";
 
     public static String URL_INBOX = "https://webmail.daiict.ac.in/zimbra/h/search?mesg=welcome&initial=true&app=";
 
@@ -29,6 +28,9 @@ public class Constants {
     public static String TOGGLE_WIFI = "toggle_wifi";
     public static String ON_FIRST_RUN = "ON_FIRST_RUN";
     public static String SAVED_FRAGMENT = "SAVED_FRAGMENT";
+
+    public static String ALERT_SHOWN = "ALERT_SHOWN";
+
 
 }
 

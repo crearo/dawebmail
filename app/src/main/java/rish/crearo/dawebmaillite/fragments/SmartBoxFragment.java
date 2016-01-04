@@ -68,7 +68,7 @@ public class SmartBoxFragment extends Fragment {
         ArrayList<EmailMessage> emails = (ArrayList<EmailMessage>) EmailMessage.listAll(EmailMessage.class);
         HashMap<String, Integer> senderCount = new HashMap<>();
 
-        long totalLength = 0;
+        double totalLength = 0;
         int emailsWithAttachment = 0;
         int openedWithApp = 0;
         int readEmails = 0;
@@ -99,7 +99,8 @@ public class SmartBoxFragment extends Fragment {
         }
 
         smart_total_emails.setText("" + emails.size());
-        smart_total_avg_length.setText("" + totalLength / emails.size());
+        double avgLength = Math.round((totalLength / (double) (emails.size())) * 100) / 100.0;
+        smart_total_avg_length.setText("" + avgLength + " words");
         smart_total_per_att.setText("" + (100 * emailsWithAttachment) / emails.size() + " %");
         smart_total_no_of_opened_with_app.setText("" + openedWithApp);
         smart_total_no_of_opened.setText("" + ((100 * readEmails) / emails.size()) + " %");

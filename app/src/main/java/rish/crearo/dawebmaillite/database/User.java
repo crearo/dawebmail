@@ -14,6 +14,7 @@ public class User {
 
     private static boolean loggedIn = false;
     private static String lastRefreshed = "NEVER";
+    private boolean alertShown = false;
 
     public static boolean isLoggedIn() {
         return loggedIn;
@@ -61,6 +62,19 @@ public class User {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(Constants.LAST_REFRESHED, lastRefreshed);
+        editor.apply();
+        editor.commit();
+    }
+
+    public static boolean getAlertShown(Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.getBoolean(Constants.ALERT_SHOWN, false);
+    }
+
+    public static void setAlertShown(Context context, boolean alertShown) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(Constants.ALERT_SHOWN, alertShown);
         editor.apply();
         editor.commit();
     }

@@ -11,6 +11,7 @@ import android.text.Html;
 
 import java.util.ArrayList;
 
+import rish.crearo.dawebmaillite.ContributeActivity;
 import rish.crearo.dawebmaillite.LoginActivity;
 import rish.crearo.dawebmaillite.R;
 import rish.crearo.dawebmaillite.database.EmailMessage;
@@ -81,5 +82,27 @@ public class NotificationMaker {
     public static void cancelNotification(Context context) {
         NotificationManager nMgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         nMgr.cancelAll();
+    }
+
+    public static void makeAlertNotification(Context context, String title, String message) {
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
+        mBuilder.setSmallIcon(R.drawable.icon_final);
+        mBuilder.setContentTitle(title);
+        mBuilder.setTicker(title);
+        mBuilder.setContentText(message);
+        mBuilder.setAutoCancel(true);
+
+        Intent notificationintent = new Intent(context, ContributeActivity.class);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        stackBuilder.addParentStack(ContributeActivity.class);
+
+        stackBuilder.addNextIntent(notificationintent);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(resultPendingIntent);
+
+        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        mNotificationManager.notify(1004, mBuilder.build());
     }
 }
