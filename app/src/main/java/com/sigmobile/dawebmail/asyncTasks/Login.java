@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.sigmobile.dawebmail.database.User;
-import com.sigmobile.dawebmail.scraper.RestAPI;
+import com.sigmobile.dawebmail.network.RestAPI;
 
 /**
  * Created by rish on 6/10/15.

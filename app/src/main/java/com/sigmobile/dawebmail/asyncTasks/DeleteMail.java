@@ -3,11 +3,10 @@ package com.sigmobile.dawebmail.asyncTasks;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import java.util.ArrayList;
-
 import com.sigmobile.dawebmail.database.EmailMessage;
-import com.sigmobile.dawebmail.scraper.ScrapingMachine;
 import com.sigmobile.dawebmail.database.User;
+
+import java.util.ArrayList;
 
 /**
  * Created by rish on 6/10/15.
@@ -36,7 +35,7 @@ public class DeleteMail extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... voids) {
-        result = new ScrapingMachine(username, pwd, context).getValues_forDelete(emailToBeDeleted);
+//        result = new ScrapingMachine(username, pwd, context).getValues_forDelete(emailToBeDeleted);
         System.out.println("Delete result " + result);
         return null;
     }

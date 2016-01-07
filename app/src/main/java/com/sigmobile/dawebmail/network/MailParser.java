@@ -1,4 +1,4 @@
-package com.sigmobile.dawebmail.scraper;
+package com.sigmobile.dawebmail.network;
 
 import android.util.Log;
 

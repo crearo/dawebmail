@@ -1,4 +1,4 @@
-package com.sigmobile.dawebmail.scraper;
+package com.sigmobile.dawebmail.network;
 
 import android.content.Context;
 
@@ -16,6 +16,15 @@ import com.sigmobile.dawebmail.utils.Constants;
 import com.sigmobile.dawebmail.utils.Printer;
 
 import java.util.ArrayList;
+
+/*
+* @author:Rishabh Bhardwaj
+* DEPRECATED CLASS. I USED THIS FOR A GOOD YEAR OR SO
+* I ALSO BOUGHT JAUNT-API. IT WAS A BRILLIANT SCRAPER.
+* ANURAG AGARWAL, 201201198 HELPED ME A LOT WITH THE REST API AN FIGURING
+* OUT A LOT OF ZIMBRA'S UNDOCUMENTED WORK
+* WE ENDED UP USING THEIR REST + SOAP API :)
+ */
 
 public class ScrapingMachine {
 

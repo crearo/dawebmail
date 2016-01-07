@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 
-import com.sigmobile.dawebmail.asyncTasks.Login;
-import com.sigmobile.dawebmail.asyncTasks.LoginListener;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInbox;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInboxListener;
 import com.sigmobile.dawebmail.database.EmailMessage;
@@ -16,9 +14,8 @@ import com.sigmobile.dawebmail.utils.Constants;
 import com.sigmobile.dawebmail.utils.Printer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
-public class BackgroundService extends Service implements RefreshInboxListener, LoginListener {
+public class BackgroundService extends Service implements RefreshInboxListener {
     String username, pwd;
 
     @Override
@@ -55,10 +52,7 @@ public class BackgroundService extends Service implements RefreshInboxListener, 
         boolean dataEnabled = prefs.getBoolean(Constants.TOGGLE_MOBILEDATA, false);
 
         if (((wifiEnabled && ConnectionManager.isConnectedByWifi(this)) || (dataEnabled && ConnectionManager.isConnectedByMobileData(this)))) {
-            if (!User.isLoggedIn())
-                new Login(getApplicationContext(), this).execute();
-            else
-                new RefreshInbox(getApplicationContext(), this).execute();
+            new RefreshInbox(getApplicationContext(), this).execute();
 
         } else if ((ConnectionManager.isConnectedByWifi(this) == false && ConnectionManager.isConnectedByMobileData(this) == false)) {
             Printer.println("No need to check for mail");
@@ -66,27 +60,11 @@ public class BackgroundService extends Service implements RefreshInboxListener, 
     }
 
     @Override
-    public void onPreLogin() {
-    }
-
-    @Override
-    public void onPostLogin(boolean loginSuccess, String timeTaken) {
-        if (loginSuccess)
-            new RefreshInbox(getApplicationContext(), this).execute();
-    }
-
-    @Override
     public void onPreRefresh() {
-
     }
 
     @Override
     public void onPostRefresh(boolean success, ArrayList<EmailMessage> refreshedEmails) {
-        Collections.reverse(refreshedEmails);
-
-        for (EmailMessage m : refreshedEmails)
-            m.save(); // now all e-mails are in the database
-
         if (refreshedEmails.size() == 0)
             Printer.println("No new Webmails");
         else if (refreshedEmails.size() == 1)

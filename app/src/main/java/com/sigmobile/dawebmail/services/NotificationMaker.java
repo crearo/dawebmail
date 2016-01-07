@@ -25,7 +25,7 @@ public class NotificationMaker {
     public static void showNotification(Context context, String msgnumber, String sendername, String subject) {
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
-        mBuilder.setSmallIcon(R.drawable.final_notification);
+        mBuilder.setSmallIcon(R.drawable.icon_final);
         mBuilder.setContentTitle(sendername);
         mBuilder.setContentText(subject);
         mBuilder.setAutoCancel(true);
@@ -51,7 +51,7 @@ public class NotificationMaker {
                     .setContentTitle("DAWebmails")
                     .setContentText("Swipe down to view webmails!")
                     .setAutoCancel(true)
-                    .setSmallIcon(R.drawable.final_notification);
+                    .setSmallIcon(R.drawable.icon_final);
 
             Notification.InboxStyle notification1 = null;
 

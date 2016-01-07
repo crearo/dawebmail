@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
-import com.sigmobile.dawebmail.scraper.RestAPI;
+import com.sigmobile.dawebmail.network.RestAPI;
 import com.sigmobile.dawebmail.utils.Constants;
 
 import java.util.ArrayList;
