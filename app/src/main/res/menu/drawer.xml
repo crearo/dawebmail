@@ -22,5 +22,9 @@
             android:id="@+id/navigation_item_5"
             android:icon="@drawable/ic_action_star"
             android:title="SentBox" />
+        <item
+            android:id="@+id/navigation_item_6"
+            android:icon="@drawable/ic_action_star"
+            android:title="TrashBox" />
     </group>
 </menu>

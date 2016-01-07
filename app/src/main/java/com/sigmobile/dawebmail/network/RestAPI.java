@@ -30,6 +30,7 @@ public class RestAPI {
     public static final String REST_URL_INBOX = "https://webmail.daiict.ac.in/home/~/inbox.json";
     public static final String REST_URL_VIEW_WEBMAIL = "https://webmail.daiict.ac.in/home/~/?id=";
     public static final String REST_URL_SENT = "https://webmail.daiict.ac.in/home/~/sent.json";
+    public static final String REST_URL_TRASH = "https://webmail.daiict.ac.in/home/~/trash.json";
 
     private String username, password;
     private Context context;
@@ -51,6 +52,8 @@ public class RestAPI {
             return makeInboxRefreshRequest();
         } else if (TYPE.equals(Constants.SENT)) {
             return makeSentRefreshRequest();
+        } else if (TYPE.equals(Constants.TRASH)) {
+            return makeTrashRefreshRequest();
         }
         return false;
     }
@@ -202,6 +205,75 @@ public class RestAPI {
 
         try {
             URL url = new URL(REST_URL_SENT);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+
+            String userPassword = username + ":" + password;
+            String encoding = Base64.encodeToString(userPassword.getBytes(), Base64.DEFAULT);
+            conn.setRequestProperty("Authorization", "Basic " + encoding);
+            conn.setReadTimeout(30 * 1000);
+            conn.connect();
+
+            Log.d(LOGTAG, "Response Code: " + conn.getResponseCode());
+            if (conn.getResponseCode() == 200) {
+                Log.d(LOGTAG, "Authenticated User Successfully");
+                InputStream in = new BufferedInputStream(conn.getInputStream());
+                BufferedReader r = new BufferedReader(new InputStreamReader(in));
+                StringBuilder total = new StringBuilder();
+                String line;
+                while ((line = r.readLine()) != null) {
+                    total.append(line);
+                }
+                Log.d(LOGTAG, "" + total.toString());
+                in.close();
+
+                JSONObject responseObject = new JSONObject(total.toString());
+
+                for (int i = 0; i < responseObject.getJSONArray("m").length(); i++) {
+                    JSONObject webmailObject = (JSONObject) responseObject.getJSONArray("m").get(i);
+                    int contentID = Integer.parseInt(webmailObject.getString("id"));
+                    String fromName = "fromName";
+                    String fromAddress = "fromAddress";
+                    String subject = webmailObject.getString("su");
+                    String readUnread = Constants.WEBMAIL_READ;
+                    if (webmailObject.has("f"))
+                        if (webmailObject.getString("f").contains("u"))
+                            readUnread = Constants.WEBMAIL_UNREAD;
+                    String dateInMillis = webmailObject.getString("d");
+
+                    for (int j = 0; j < webmailObject.getJSONArray("e").length(); j++) {
+                        JSONObject fromToObject = (JSONObject) webmailObject.getJSONArray("e").get(j);
+                        if (fromToObject.getString("t").equals("f")) {
+                            fromAddress = fromToObject.getString("a");
+                            if (fromToObject.has("p"))
+                                fromName = fromToObject.getString("p");
+                            else
+                                fromName = fromToObject.getString("d");
+                        }
+                    }
+
+                    Log.d(LOGTAG, "NEW EMAIL | " + contentID + " | " + fromName + " | " + fromAddress + " | " + subject + " | " + dateInMillis + " | " + readUnread);
+
+                    EmailMessage emailMessage = new EmailMessage(contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "");
+                    allNewEmails.add(emailMessage);
+                }
+                return true;
+            } else {
+                Log.d(LOGTAG, "Unable to Authenticate User");
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean makeTrashRefreshRequest() {
+
+        allNewEmails = new ArrayList<>();
+
+        try {
+            URL url = new URL(REST_URL_TRASH);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
 

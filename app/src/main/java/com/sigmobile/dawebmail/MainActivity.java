@@ -21,6 +21,7 @@ import com.sigmobile.dawebmail.fragments.InboxFragment;
 import com.sigmobile.dawebmail.fragments.SentFragment;
 import com.sigmobile.dawebmail.fragments.SettingsFragment;
 import com.sigmobile.dawebmail.fragments.SmartBoxFragment;
+import com.sigmobile.dawebmail.fragments.TrashFragment;
 import com.sigmobile.dawebmail.utils.Constants;
 
 import butterknife.Bind;
@@ -83,6 +84,11 @@ public class MainActivity extends AppCompatActivity {
                         mCurrentSelectedPosition = 4;
                         selectItem(mCurrentSelectedPosition);
                         return true;
+                    case R.id.navigation_item_6:
+                        Snackbar.make(findViewById(R.id.main_rellay), "TrashBox", Snackbar.LENGTH_SHORT).show();
+                        mCurrentSelectedPosition = 5;
+                        selectItem(mCurrentSelectedPosition);
+                        return true;
                     default:
                         return true;
                 }
@@ -126,6 +132,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case 4:
                 fragment = new SentFragment();
+                break;
+            case 5:
+                fragment = new TrashFragment();
                 break;
             default:
                 break;
