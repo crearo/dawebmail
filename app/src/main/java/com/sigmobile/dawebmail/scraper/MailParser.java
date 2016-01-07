@@ -18,6 +18,7 @@ public class MailParser {
     }
 
     public void parseMail(String content) {
+        Log.wtf(LOGTAG, content);
         try {
             System.setProperty("mail.mime.multipart.ignoreexistingboundaryparameter", "true");
             ByteArrayDataSource ds = new ByteArrayDataSource(content, "multipart/mixed");
@@ -30,6 +31,7 @@ public class MailParser {
     }
 
     public void parseMime(MimeMultipart multipart) {
+        System.setProperty("mail.mime.multipart.ignoreexistingboundaryparameter", "true");
         try {
             for (int i = 0; i < multipart.getCount(); i++) {
                 if (multipart.getBodyPart(i).getContent() instanceof MimeMultipart) {
@@ -43,7 +45,7 @@ public class MailParser {
                     } else if (multiPartType.contains("text/plain")) {
                         contentHTML = multiPartContent;
                     } else if (multiPartType.contains("image/jpeg")) {
-                        
+
                     } else if (multiPartType.contains("image/png")) {
 
                     } else {

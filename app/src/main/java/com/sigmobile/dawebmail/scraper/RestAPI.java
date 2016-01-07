@@ -124,8 +124,11 @@ public class RestAPI {
 
 //                SugarRecord latestRecord = Select.from(EmailMessage.class).orderBy(StringUtil.toSQLName("contentID")).first();
                 ArrayList<EmailMessage> emails = (ArrayList<EmailMessage>) Select.from(EmailMessage.class).orderBy(StringUtil.toSQLName("contentID")).list();
-                EmailMessage latestWebmail = emails.get(emails.size() - 1);
-                Log.wtf(LOGTAG, latestWebmail.contentID + " | " + latestWebmail.fromName + " | " + latestWebmail.subject);
+                EmailMessage latestWebmail = null;
+                if (emails.size() > 0) {
+                    latestWebmail = emails.get(emails.size() - 1);
+                    Log.wtf(LOGTAG, latestWebmail.contentID + " | " + latestWebmail.fromName + " | " + latestWebmail.subject);
+                }
 
                 if (latestWebmail != null && total.toString().contains("\"id\":\"" + latestWebmail.contentID + "\"")) {
                     Log.d(LOGTAG, "Phone's latest email is still there on webmail");
@@ -142,7 +145,7 @@ public class RestAPI {
                         if (webmailObject.getString("f").contains("u"))
                             readUnread = Constants.WEBMAIL_UNREAD;
                     String dateInMillis = webmailObject.getString("d");
-                    String content = webmailObject.getString("fr");
+//                    String content = webmailObject.getString("fr");
 
                     for (int j = 0; j < webmailObject.getJSONArray("e").length(); j++) {
                         JSONObject fromToObject = (JSONObject) webmailObject.getJSONArray("e").get(j);
@@ -174,7 +177,7 @@ public class RestAPI {
                             emailMessage.save();
                         } else {
                             Log.d(LOGTAG, "No existing mail found, Creating");
-                            emailMessage = new EmailMessage(contentID, fromName, fromAddress, subject, dateInMillis, readUnread, content);
+                            emailMessage = new EmailMessage(contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "");
                             emailMessage.save();
                             allNewEmails.add(emailMessage);
                         }
@@ -211,7 +214,7 @@ public class RestAPI {
                 StringBuilder total = new StringBuilder();
                 String line;
                 while ((line = r.readLine()) != null) {
-                    total.append(line);
+                    total.append("\n" + line);
                 }
                 in.close();
 
