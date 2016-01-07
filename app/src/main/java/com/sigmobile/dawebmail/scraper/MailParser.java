@@ -18,7 +18,6 @@ public class MailParser {
     }
 
     public void parseMail(String content) {
-        Log.wtf(LOGTAG, content);
         try {
             System.setProperty("mail.mime.multipart.ignoreexistingboundaryparameter", "true");
             ByteArrayDataSource ds = new ByteArrayDataSource(content, "multipart/mixed");

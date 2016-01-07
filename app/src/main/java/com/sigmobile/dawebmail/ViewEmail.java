@@ -76,7 +76,7 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
 
         progdialog = new ProgressDialog(ViewEmail.this);
 
-        if (currentEmail.content.equals("")) {
+        if (currentEmail.content.equals("") || currentEmail.content == null) {
             setWebviewContent("<html><head></head><body>Connect to the Internet to download content</body></html>");
             tvdatebottom.setText(currentEmail.dateInMillis);
             tvsender.setText(currentEmail.fromAddress);
@@ -89,7 +89,7 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
             * I am directly calling viewmailmanager
              */
             new ViewMailManager(getApplicationContext(), ViewEmail.this, currentEmail).execute();
-
+            Log.d("T", "Called ViewMailManager");
         } else {
             setWebviewContent(currentEmail.content);
             tvdatebottom.setText(currentEmail.dateInMillis);
@@ -115,11 +115,18 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
 
     @Override
     public void onPostView(boolean success) {
-        tvsender.setText(currentEmail.fromAddress);
-        setWebviewContent(currentEmail.content);
-        tvsubject.setText(currentEmail.subject);
-        tvsenderbottom.setText(currentEmail.fromName);
-        tvdatebottom.setText(currentEmail.dateInMillis);
+        if (success) {
+            currentEmail = (EmailMessage) (Select.from(EmailMessage.class).where(Condition.prop(StringUtil.toSQLName("contentID")).eq(currentEmailID)).first());
+            tvsender.setText(currentEmail.fromAddress);
+            setWebviewContent(currentEmail.content);
+            tvsubject.setText(currentEmail.subject);
+            tvsenderbottom.setText(currentEmail.fromName);
+            tvdatebottom.setText(currentEmail.dateInMillis);
+            currentEmail.readUnread = Constants.WEBMAIL_READ;
+            currentEmail.save();
+        } else {
+            setWebviewContent("<html><head></head><body>Connect to the Internet to download content</body></html>");
+        }
         progdialog.dismiss();
     }
 
