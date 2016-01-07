@@ -40,12 +40,10 @@ public class RefreshInbox extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... voids) {
-//        ScrapingMachine scrapper = new ScrapingMachine(username, pwd, context);
-//        result = scrapper.scrapeAllMessagesfromInbox();
-//        refreshedEmails = scrapper.getNewEmails();
 
         RestAPI restAPI = new RestAPI(username, pwd, context);
         restAPI.refresh(Constants.INBOX);
+        refreshedEmails = restAPI.getNewEmails();
 
         return null;
     }

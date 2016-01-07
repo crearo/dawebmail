@@ -27,6 +27,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.orm.StringUtil;
 import com.orm.query.Select;
 import com.sigmobile.dawebmail.R;
 import com.sigmobile.dawebmail.adapters.MailAdapter;
@@ -87,7 +88,7 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
 
         setSwipeRefreshLayout();
 
-        allEmails = (ArrayList<EmailMessage>) Select.from(EmailMessage.class).list();
+        allEmails = (ArrayList<EmailMessage>) Select.from(EmailMessage.class).orderBy(StringUtil.toSQLName("contentID")).list();
         Collections.reverse(allEmails);
 
         mailAdapter = new MailAdapter(allEmails, getActivity(), this);
@@ -180,7 +181,6 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_inbox_menu, menu);
     }
 
@@ -218,7 +218,7 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
     @Override
     public void onPreLogin() {
         if (ConnectionManager.isConnectedByMobileData(getActivity()))
-            progressDialog = ProgressDialog.show(getActivity(), "", "Logging in.\nYou are connected via mobile data. This might be slow.", true);
+            progressDialog = ProgressDialog.show(getActivity(), "", "Logging in.\nYou are connected via mobile data.", true);
         else
             progressDialog = ProgressDialog.show(getActivity(), "", "Logging in.", true);
         progressDialog.setCancelable(false);
@@ -253,10 +253,6 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
         new Handler().post(new Runnable() {
             @Override
             public void run() {
-                Collections.reverse(refreshedEmails);
-
-                for (EmailMessage m : refreshedEmails)
-                    m.save(); // now all e-mails are in the database
 
                 refreshAdapter();
 
@@ -270,10 +266,8 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
                 progressDialog2.dismiss();
             }
         });
-
         swipeRefreshLayout.setRefreshing(false);
     }
-
 
     @Override
     public void onPreDelete() {

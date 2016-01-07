@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
-import com.jaunt.UserAgent;
 import com.orm.StringUtil;
 import com.orm.query.Condition;
 import com.orm.query.Select;
@@ -19,6 +18,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 /**
  * Created by rish on 7/1/16.
@@ -26,14 +26,13 @@ import java.net.URL;
 public class RestAPI {
 
     private static final String LOGTAG = "RESTAPI";
-
-
     public static final String REST_URL_LOGIN = "https://webmail.daiict.ac.in/service/home/~/inbox.rss?limit=1";
     public static final String REST_URL_INBOX = "https://webmail.daiict.ac.in/home/~/inbox.json";
 
     private String username, password;
     private Context context;
-    UserAgent userAgent = new UserAgent();
+
+    private ArrayList<EmailMessage> allNewEmails = new ArrayList<>();
 
     public RestAPI(String username, String password, Context context) {
         this.username = username;
@@ -88,6 +87,9 @@ public class RestAPI {
     }
 
     private boolean makeInboxRefreshRequest() {
+
+        allNewEmails = new ArrayList<>();
+
         try {
             URL url = new URL(REST_URL_INBOX);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -114,9 +116,9 @@ public class RestAPI {
 
                 JSONObject responseObject = new JSONObject(total.toString());
 
-                int latestContentID = Select.from(EmailMessage.class).orderBy(StringUtil.toSQLName("contentID")).first().contentID;
+                EmailMessage latestContentID = Select.from(EmailMessage.class).orderBy(StringUtil.toSQLName("contentID")).first();
 
-                if (total.toString().contains("\"id\":\"" + latestContentID + "\"")) {
+                if (total.toString().contains("\"id\":\"" + latestContentID.contentID + "\"")) {
                     Log.d(LOGTAG, "Phone's latest email is still there on webmail");
                 }
 
@@ -146,12 +148,13 @@ public class RestAPI {
 
                     Log.d(LOGTAG, "NEW EMAIL | " + contentID + " | " + fromName + " | " + fromAddress + " | " + subject + " | " + dateInMillis + " | " + readUnread);
 
-                    if (contentID == latestContentID) {
+                    if (contentID == latestContentID.contentID) {
                         Log.d(LOGTAG, "Found same email. ID = " + contentID);
                         break;
                     } else {
                         EmailMessage emailMessage = Select.from(EmailMessage.class).where(Condition.prop(StringUtil.toSQLName("contentID")).eq(contentID)).first();
                         if (emailMessage != null) {
+                            Log.d(LOGTAG, "Found existing mail, updating");
                             emailMessage.contentID = contentID;
                             emailMessage.fromName = fromName;
                             emailMessage.fromAddress = fromAddress;
@@ -160,8 +163,10 @@ public class RestAPI {
                             emailMessage.readUnread = readUnread;
                             emailMessage.save();
                         } else {
+                            Log.d(LOGTAG, "No existing mail found, Creating");
                             emailMessage = new EmailMessage(contentID, fromName, fromAddress, subject, dateInMillis, readUnread, content);
                             emailMessage.save();
+                            allNewEmails.add(emailMessage);
                         }
                     }
                 }
@@ -174,5 +179,9 @@ public class RestAPI {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public ArrayList<EmailMessage> getNewEmails() {
+        return allNewEmails;
     }
 }

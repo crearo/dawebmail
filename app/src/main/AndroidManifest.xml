@@ -31,9 +31,14 @@
             android:name="DOMAIN_PACKAGE_NAME"
             android:value="rish.crearo.dawebmaillite" />
 
-        <activity android:name=".MainActivity" />
+        <activity android:name=".MainActivity"></activity>
         <activity android:name=".ViewEmail" />
-        <activity android:name=".LoginActivity"></activity>
+        <activity android:name=".LoginActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <receiver
             android:name=".services.NetworkChangeBroadcastReceiver"
@@ -50,13 +55,7 @@
             android:enabled="true" />
 
         <activity android:name=".ContributeActivity"></activity>
-        <activity android:name=".TestActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".TestActivity"></activity>
     </application>
 
 </manifest>
