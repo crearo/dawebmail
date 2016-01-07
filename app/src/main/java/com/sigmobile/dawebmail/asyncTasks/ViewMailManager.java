@@ -5,8 +5,7 @@ import android.os.AsyncTask;
 
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
-import com.sigmobile.dawebmail.scraper.ScrapingMachine;
-import com.sigmobile.dawebmail.utils.Printer;
+import com.sigmobile.dawebmail.scraper.RestAPI;
 
 /**
  * Created by rish on 6/10/15.
@@ -35,11 +34,8 @@ public class ViewMailManager extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... voids) {
-        ScrapingMachine scrapper = new ScrapingMachine(username, pwd, context);
-        result = scrapper.fetchEmailContent(emailMessage);
-
-        Printer.println("IS USER LOGGED IN = " + User.isLoggedIn());
-        Printer.println("Saved email now has content = " + emailMessage.content);
+        RestAPI restAPI = new RestAPI(username, pwd, context);
+        result = restAPI.fetchEmailContent(emailMessage.contentID);
 
         return null;
     }

@@ -23,13 +23,13 @@
             android:value="emailsdatabase_sugar_man.db" />
         <meta-data
             android:name="VERSION"
-            android:value="12" />
+            android:value="1" />
         <meta-data
             android:name="QUERY_LOG"
             android:value="true" />
         <meta-data
             android:name="DOMAIN_PACKAGE_NAME"
-            android:value="rish.crearo.dawebmaillite" />
+            android:value="com.sigmobile.dawebmail.database" />
 
         <activity android:name=".MainActivity"></activity>
         <activity android:name=".ViewEmail" />

@@ -28,6 +28,8 @@ public class RestAPI {
     private static final String LOGTAG = "RESTAPI";
     public static final String REST_URL_LOGIN = "https://webmail.daiict.ac.in/service/home/~/inbox.rss?limit=1";
     public static final String REST_URL_INBOX = "https://webmail.daiict.ac.in/home/~/inbox.json";
+    public static final String REST_URL_VIEW_WEBMAIL = "https://webmail.daiict.ac.in/home/~/?id=";
+
 
     private String username, password;
     private Context context;
@@ -51,6 +53,10 @@ public class RestAPI {
         return false;
     }
 
+    public boolean fetchEmailContent(int contentID) {
+        return makeFetchRequest(contentID);
+    }
+
     private boolean makeLoginRequest() {
         try {
             URL url = new URL(REST_URL_LOGIN);
@@ -64,7 +70,7 @@ public class RestAPI {
             conn.connect();
 
             Log.d(LOGTAG, "Response Code: " + conn.getResponseCode());
-            if (conn.getResponseCode() != 401) {
+            if (conn.getResponseCode() == 200) {
                 Log.d(LOGTAG, "Authenticated User Successfully");
                 InputStream in = new BufferedInputStream(conn.getInputStream());
                 BufferedReader r = new BufferedReader(new InputStreamReader(in));
@@ -102,7 +108,7 @@ public class RestAPI {
             conn.connect();
 
             Log.d(LOGTAG, "Response Code: " + conn.getResponseCode());
-            if (conn.getResponseCode() != 401) {
+            if (conn.getResponseCode() == 200) {
                 Log.d(LOGTAG, "Authenticated User Successfully");
                 InputStream in = new BufferedInputStream(conn.getInputStream());
                 BufferedReader r = new BufferedReader(new InputStreamReader(in));
@@ -116,9 +122,12 @@ public class RestAPI {
 
                 JSONObject responseObject = new JSONObject(total.toString());
 
-                EmailMessage latestContentID = Select.from(EmailMessage.class).orderBy(StringUtil.toSQLName("contentID")).first();
+//                SugarRecord latestRecord = Select.from(EmailMessage.class).orderBy(StringUtil.toSQLName("contentID")).first();
+                ArrayList<EmailMessage> emails = (ArrayList<EmailMessage>) Select.from(EmailMessage.class).orderBy(StringUtil.toSQLName("contentID")).list();
+                EmailMessage latestWebmail = emails.get(emails.size() - 1);
+                Log.wtf(LOGTAG, latestWebmail.contentID + " | " + latestWebmail.fromName + " | " + latestWebmail.subject);
 
-                if (total.toString().contains("\"id\":\"" + latestContentID.contentID + "\"")) {
+                if (latestWebmail != null && total.toString().contains("\"id\":\"" + latestWebmail.contentID + "\"")) {
                     Log.d(LOGTAG, "Phone's latest email is still there on webmail");
                 }
 
@@ -148,11 +157,12 @@ public class RestAPI {
 
                     Log.d(LOGTAG, "NEW EMAIL | " + contentID + " | " + fromName + " | " + fromAddress + " | " + subject + " | " + dateInMillis + " | " + readUnread);
 
-                    if (contentID == latestContentID.contentID) {
+                    if (latestWebmail != null && contentID == latestWebmail.contentID) {
                         Log.d(LOGTAG, "Found same email. ID = " + contentID);
                         break;
                     } else {
-                        EmailMessage emailMessage = Select.from(EmailMessage.class).where(Condition.prop(StringUtil.toSQLName("contentID")).eq(contentID)).first();
+
+                        EmailMessage emailMessage = (EmailMessage) (Select.from(EmailMessage.class).where(Condition.prop(StringUtil.toSQLName("contentID")).eq(contentID)).first());
                         if (emailMessage != null) {
                             Log.d(LOGTAG, "Found existing mail, updating");
                             emailMessage.contentID = contentID;
@@ -170,6 +180,49 @@ public class RestAPI {
                         }
                     }
                 }
+                return true;
+            } else {
+                Log.d(LOGTAG, "Unable to Authenticate User");
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean makeFetchRequest(int contentID) {
+        try {
+            URL url = new URL(REST_URL_VIEW_WEBMAIL + contentID);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+
+            String userPassword = username + ":" + password;
+            String encoding = Base64.encodeToString(userPassword.getBytes(), Base64.DEFAULT);
+            conn.setRequestProperty("Authorization", "Basic " + encoding);
+            conn.setReadTimeout(30 * 1000);
+            conn.connect();
+
+            Log.d(LOGTAG, "Response Code: " + conn.getResponseCode());
+            if (conn.getResponseCode() == 200) {
+                Log.d(LOGTAG, "Authenticated User Successfully");
+                InputStream in = new BufferedInputStream(conn.getInputStream());
+                BufferedReader r = new BufferedReader(new InputStreamReader(in));
+                StringBuilder total = new StringBuilder();
+                String line;
+                while ((line = r.readLine()) != null) {
+                    total.append(line);
+                }
+                in.close();
+
+                MailParser mailParser = new MailParser();
+                mailParser.parseMail(total.toString());
+                String htmlContent = mailParser.getContentHTML();
+
+                EmailMessage emailMessage = (EmailMessage) (Select.from(EmailMessage.class).where(Condition.prop(StringUtil.toSQLName("contentID")).eq(contentID)).first());
+                emailMessage.content = htmlContent;
+                emailMessage.save();
+
                 return true;
             } else {
                 Log.d(LOGTAG, "Unable to Authenticate User");

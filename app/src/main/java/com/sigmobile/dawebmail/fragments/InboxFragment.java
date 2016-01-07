@@ -297,7 +297,7 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
     }
 
     public void refreshAdapter() {
-        allEmails = (ArrayList<EmailMessage>) Select.from(EmailMessage.class).list();
+        allEmails = (ArrayList<EmailMessage>) (Select.from(EmailMessage.class).orderBy(StringUtil.toSQLName("contentID")).list());
         Collections.reverse(allEmails);
 
         mailAdapter = new MailAdapter(allEmails, getActivity(), this);
