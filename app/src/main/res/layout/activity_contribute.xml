@@ -12,7 +12,7 @@
         android:orientation="vertical"
         android:paddingBottom="10dp"
         android:paddingTop="10dp"
-        tools:context="rish.crearo.dawebmaillite.ContributeActivity">
+        tools:context="com.sigmobile.dawebmail.ContributeActivity">
 
         <ImageView
             android:layout_width="100dp"
@@ -37,6 +37,15 @@
             android:padding="10dp"
             android:text="@string/contribute"
             android:textStyle="bold" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="To start contributing, go through the github repo, and also read the documentation."
+            android:textStyle="bold" />
+
 
         <TextView
             android:layout_width="wrap_content"
