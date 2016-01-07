@@ -58,8 +58,8 @@ public class RestAPI {
         return false;
     }
 
-    public boolean fetchEmailContent(int contentID) {
-        return makeFetchRequest(contentID);
+    public EmailMessage fetchEmailContent(EmailMessage emailMessage) {
+        return makeFetchRequest(emailMessage);
     }
 
     private boolean makeLoginRequest() {
@@ -338,9 +338,9 @@ public class RestAPI {
     }
 
 
-    private boolean makeFetchRequest(int contentID) {
+    private EmailMessage makeFetchRequest(EmailMessage emailMessage) {
         try {
-            URL url = new URL(REST_URL_VIEW_WEBMAIL + contentID);
+            URL url = new URL(REST_URL_VIEW_WEBMAIL + emailMessage.contentID);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
 
@@ -365,19 +365,16 @@ public class RestAPI {
                 MailParser mailParser = new MailParser();
                 mailParser.parseMail(total.toString());
                 String htmlContent = mailParser.getContentHTML();
-
-                EmailMessage emailMessage = (EmailMessage) (Select.from(EmailMessage.class).where(Condition.prop(StringUtil.toSQLName("contentID")).eq(contentID)).first());
                 emailMessage.content = htmlContent;
-                emailMessage.save();
 
-                return true;
+                return emailMessage;
             } else {
                 Log.d(LOGTAG, "Unable to Authenticate User");
-                return false;
+                return null;
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 

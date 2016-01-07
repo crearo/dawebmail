@@ -19,7 +19,9 @@ public class Constants {
 
     public static String URL_INBOX = "https://webmail.daiict.ac.in/zimbra/h/search?mesg=welcome&initial=true&app=";
 
-    public static String CURRENT_EMAIL_ID = "CURRENT_EMAIL_ID";
+    public static String CURRENT_EMAIL_SERIALIZABLE = "CURRENT_EMAIL_SERIALIZABLE";
+    public static String CURRENT_EMAIL_TYPE = "CURRENT_EMAIL_TYPE";
+
 
     public static String LOGIN_PAGE_TITLE = "DA-IICT Webmail Log In";
     public static String BROADCAST_REFRESH_ADAPTERS = "BROADCAST_REFRESH_ADAPTERS";

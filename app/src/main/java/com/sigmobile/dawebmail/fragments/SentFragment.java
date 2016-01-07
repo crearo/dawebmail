@@ -84,7 +84,7 @@ public class SentFragment extends Fragment implements RefreshInboxListener, Dele
 
         allEmails = new ArrayList<>();
 
-        mailAdapter = new MailAdapter(allEmails, getActivity(), this);
+        mailAdapter = new MailAdapter(allEmails, getActivity(), this, Constants.SENT);
         listview.setAdapter(mailAdapter);
 
         progressDialog = new ProgressDialog(getActivity());
@@ -122,7 +122,7 @@ public class SentFragment extends Fragment implements RefreshInboxListener, Dele
                             i--;
                         }
                     }
-                    mailAdapter = new MailAdapter(allEmails, getActivity(), SentFragment.this);
+                    mailAdapter = new MailAdapter(allEmails, getActivity(), SentFragment.this, Constants.SENT);
                     listview.setAdapter(mailAdapter);
                     System.out.println("SEARCHED RESULTS COUNT = " + mailAdapter.getCount());
                 } else {
@@ -244,7 +244,7 @@ public class SentFragment extends Fragment implements RefreshInboxListener, Dele
     }
 
     public void refreshAdapter() {
-        mailAdapter = new MailAdapter(allEmails, getActivity(), this);
+        mailAdapter = new MailAdapter(allEmails, getActivity(), this, Constants.SENT);
         listview.setAdapter(mailAdapter);
     }
 

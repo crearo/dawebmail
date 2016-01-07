@@ -36,7 +36,6 @@ import com.sigmobile.dawebmail.asyncTasks.DeleteMail;
 import com.sigmobile.dawebmail.asyncTasks.DeleteMailListener;
 import com.sigmobile.dawebmail.asyncTasks.Login;
 import com.sigmobile.dawebmail.asyncTasks.LoginListener;
-import com.sigmobile.dawebmail.asyncTasks.MasterRefreshListener;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInbox;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInboxListener;
 import com.sigmobile.dawebmail.database.EmailMessage;
@@ -57,7 +56,7 @@ import me.drakeet.materialdialog.MaterialDialog;
  * Created by rish on 6/10/15.
  */
 
-public class InboxFragment extends Fragment implements LoginListener, RefreshInboxListener, DeleteMailListener, MasterRefreshListener, MailAdapter.DeleteSelectedListener {
+public class InboxFragment extends Fragment implements LoginListener, RefreshInboxListener, DeleteMailListener, MailAdapter.DeleteSelectedListener {
 
 
     @Bind(R.id.inbox_listView)
@@ -94,7 +93,7 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
         allEmails = (ArrayList<EmailMessage>) Select.from(EmailMessage.class).orderBy(StringUtil.toSQLName("contentID")).list();
         Collections.reverse(allEmails);
 
-        mailAdapter = new MailAdapter(allEmails, getActivity(), this);
+        mailAdapter = new MailAdapter(allEmails, getActivity(), this, Constants.INBOX);
         listview.setAdapter(mailAdapter);
 
         progressDialog = new ProgressDialog(getActivity());
@@ -140,7 +139,7 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
                             i--;
                         }
                     }
-                    mailAdapter = new MailAdapter(allEmails, getActivity(), InboxFragment.this);
+                    mailAdapter = new MailAdapter(allEmails, getActivity(), InboxFragment.this, Constants.INBOX);
                     listview.setAdapter(mailAdapter);
                     System.out.println("SEARCHED RESULTS COUNT = " + mailAdapter.getCount());
                 } else {
@@ -290,20 +289,11 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
         fabDelete.setVisibility(View.GONE);
     }
 
-    @Override
-    public void onPreMasterRefresh() {
-
-    }
-
-    @Override
-    public void onPostMasterRefresh(boolean success) {
-    }
-
     public void refreshAdapter() {
         allEmails = (ArrayList<EmailMessage>) (Select.from(EmailMessage.class).orderBy(StringUtil.toSQLName("contentID")).list());
         Collections.reverse(allEmails);
 
-        mailAdapter = new MailAdapter(allEmails, getActivity(), this);
+        mailAdapter = new MailAdapter(allEmails, getActivity(), this, Constants.INBOX);
         listview.setAdapter(mailAdapter);
     }
 

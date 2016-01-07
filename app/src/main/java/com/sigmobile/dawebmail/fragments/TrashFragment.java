@@ -84,7 +84,7 @@ public class TrashFragment extends Fragment implements RefreshInboxListener, Del
 
         allEmails = new ArrayList<>();
 
-        mailAdapter = new MailAdapter(allEmails, getActivity(), this);
+        mailAdapter = new MailAdapter(allEmails, getActivity(), this, Constants.TRASH);
         listview.setAdapter(mailAdapter);
 
         progressDialog = new ProgressDialog(getActivity());
@@ -122,7 +122,7 @@ public class TrashFragment extends Fragment implements RefreshInboxListener, Del
                             i--;
                         }
                     }
-                    mailAdapter = new MailAdapter(allEmails, getActivity(), TrashFragment.this);
+                    mailAdapter = new MailAdapter(allEmails, getActivity(), TrashFragment.this, Constants.TRASH);
                     listview.setAdapter(mailAdapter);
                     System.out.println("SEARCHED RESULTS COUNT = " + mailAdapter.getCount());
                 } else {
@@ -244,7 +244,7 @@ public class TrashFragment extends Fragment implements RefreshInboxListener, Del
     }
 
     public void refreshAdapter() {
-        mailAdapter = new MailAdapter(allEmails, getActivity(), this);
+        mailAdapter = new MailAdapter(allEmails, getActivity(), this, Constants.TRASH);
         listview.setAdapter(mailAdapter);
     }
 

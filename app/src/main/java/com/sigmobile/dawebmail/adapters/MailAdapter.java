@@ -3,6 +3,7 @@ package com.sigmobile.dawebmail.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,13 +33,15 @@ public class MailAdapter extends BaseAdapter {
     private ArrayList<EmailMessage> emailsToDelete;
     DeleteSelectedListener deleteSelectedListener;
     boolean clickedForDelete[];
+    String EMAIL_TYPE;
 
-    public MailAdapter(ArrayList<EmailMessage> emails, Context context, DeleteSelectedListener deleteSelectedListener) {
+    public MailAdapter(ArrayList<EmailMessage> emails, Context context, DeleteSelectedListener deleteSelectedListener, String EMAIL_TYPE) {
         this.context = context;
         emailsToDelete = new ArrayList<>();
         this.emails = emails;
         this.deleteSelectedListener = deleteSelectedListener;
         this.clickedForDelete = new boolean[emails.size()];
+        this.EMAIL_TYPE = EMAIL_TYPE;
     }
 
     @Override
@@ -146,7 +149,10 @@ public class MailAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, ViewEmail.class);
-                intent.putExtra(Constants.CURRENT_EMAIL_ID, emails.get(position).contentID);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(Constants.CURRENT_EMAIL_SERIALIZABLE, emails.get(position));
+                bundle.putString(Constants.CURRENT_EMAIL_TYPE, EMAIL_TYPE);
+                intent.putExtras(bundle);
                 context.startActivity(intent);
             }
         });

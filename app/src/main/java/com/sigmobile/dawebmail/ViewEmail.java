@@ -12,9 +12,6 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.TextView;
 
-import com.orm.StringUtil;
-import com.orm.query.Condition;
-import com.orm.query.Select;
 import com.sigmobile.dawebmail.asyncTasks.ViewMailListener;
 import com.sigmobile.dawebmail.asyncTasks.ViewMailManager;
 import com.sigmobile.dawebmail.database.EmailMessage;
@@ -29,7 +26,7 @@ import me.drakeet.materialdialog.MaterialDialog;
 public class ViewEmail extends AppCompatActivity implements ViewMailListener {
 
     EmailMessage currentEmail;
-    int currentEmailID;
+    String EMAIL_TYPE;
 
     String username, pwd;
     ProgressDialog progdialog;
@@ -69,11 +66,13 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
             }
         });
 
-        currentEmailID = getIntent().getIntExtra(Constants.CURRENT_EMAIL_ID, -1);
-        currentEmail = (EmailMessage) (Select.from(EmailMessage.class).where(Condition.prop(StringUtil.toSQLName("contentID")).eq(currentEmailID)).first());
+        Bundle bundle = this.getIntent().getExtras();
+        if (bundle != null) {
+            currentEmail = (EmailMessage) bundle.getSerializable(Constants.CURRENT_EMAIL_SERIALIZABLE);
+            EMAIL_TYPE = bundle.getString(Constants.CURRENT_EMAIL_TYPE);
+        }
 
         webView_viewContent.setBackgroundColor(Color.parseColor("#E7E7E7"));
-
         progdialog = new ProgressDialog(ViewEmail.this);
 
         getSupportActionBar().setTitle("@" + currentEmail.fromName);
@@ -108,12 +107,13 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
     }
 
     @Override
-    public void onPostView(boolean success) {
-        if (success) {
-            currentEmail = (EmailMessage) (Select.from(EmailMessage.class).where(Condition.prop(StringUtil.toSQLName("contentID")).eq(currentEmailID)).first());
-            setEmailContent(currentEmail.content);
-            currentEmail.readUnread = Constants.WEBMAIL_READ;
-            currentEmail.save();
+    public void onPostView(EmailMessage emailMessage) {
+        if (emailMessage != null) {
+            setEmailContent(emailMessage.content);
+            emailMessage.readUnread = Constants.WEBMAIL_READ;
+            if (EMAIL_TYPE.equals(Constants.INBOX))
+                emailMessage.save();
+            currentEmail = emailMessage;
         } else {
             setEmailContent("<html><head></head><body>Connect to the Internet to download content</body></html>");
         }

@@ -35,14 +35,13 @@ public class ViewMailManager extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         RestAPI restAPI = new RestAPI(username, pwd, context);
-        result = restAPI.fetchEmailContent(emailMessage.contentID);
-
+        emailMessage = restAPI.fetchEmailContent(emailMessage);
         return null;
     }
 
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        viewMailListener.onPostView(result);
+        viewMailListener.onPostView(emailMessage);
     }
 }

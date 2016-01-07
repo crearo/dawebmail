@@ -159,10 +159,13 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawers();
+        } else if (mCurrentSelectedPosition != 0) {
+            selectItem(0);
         } else {
             super.onBackPressed();
         }
     }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
