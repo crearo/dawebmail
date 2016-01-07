@@ -16,6 +16,7 @@ import com.sigmobile.dawebmail.R;
 import com.sigmobile.dawebmail.ViewEmail;
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.utils.Constants;
+import com.sigmobile.dawebmail.utils.DateUtils;
 import com.sigmobile.dawebmail.utils.Printer;
 import com.sigmobile.dawebmail.utils.TheFont;
 
@@ -93,7 +94,7 @@ public class MailAdapter extends BaseAdapter {
         }
 
         holder.tv_name.setText(item.fromName);
-        holder.tv_date.setText(item.dateInMillis);
+        holder.tv_date.setText(DateUtils.getDate(Long.parseLong(item.dateInMillis)));
         holder.tv_subject.setText(item.subject);
 
         convertView.setOnLongClickListener(new View.OnLongClickListener() {

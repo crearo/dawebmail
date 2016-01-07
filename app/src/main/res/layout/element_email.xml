@@ -31,11 +31,11 @@
 
             <TextView
                 android:id="@+id/tv_date"
-                android:layout_width="50dp"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:gravity="left"
+                android:gravity="right"
                 android:maxLines="1"
                 android:text="Date"
                 android:textColor="@color/TextSecondary"

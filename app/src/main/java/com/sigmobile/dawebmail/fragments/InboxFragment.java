@@ -13,6 +13,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -85,6 +86,8 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
         View rootView = inflater.inflate(R.layout.fragment_inbox, container, false);
 
         ButterKnife.bind(InboxFragment.this, rootView);
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Inbox");
 
         setSwipeRefreshLayout();
 

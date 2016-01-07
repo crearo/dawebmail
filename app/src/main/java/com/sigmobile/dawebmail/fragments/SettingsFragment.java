@@ -3,6 +3,7 @@ package com.sigmobile.dawebmail.fragments;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,8 @@ public class SettingsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
 
         ButterKnife.bind(this, rootView);
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Settings");
 
         SharedPreferences prefs = getActivity().getSharedPreferences(Constants.USER_PREFERENCES, getActivity().MODE_PRIVATE);
         toggleMobileData = prefs.getBoolean(Constants.TOGGLE_MOBILEDATA, true);

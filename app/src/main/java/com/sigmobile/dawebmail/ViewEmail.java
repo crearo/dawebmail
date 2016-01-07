@@ -20,6 +20,7 @@ import com.sigmobile.dawebmail.asyncTasks.ViewMailManager;
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.utils.ConnectionManager;
 import com.sigmobile.dawebmail.utils.Constants;
+import com.sigmobile.dawebmail.utils.DateUtils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -59,7 +60,6 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,13 +76,11 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
 
         progdialog = new ProgressDialog(ViewEmail.this);
 
-        if (currentEmail.content.equals("") || currentEmail.content == null) {
-            setWebviewContent("<html><head></head><body>Connect to the Internet to download content</body></html>");
-            tvdatebottom.setText(currentEmail.dateInMillis);
-            tvsender.setText(currentEmail.fromAddress);
-            tvsenderbottom.setText(currentEmail.fromName);
-            tvsubject.setText(currentEmail.subject);
+        getSupportActionBar().setTitle("@" + currentEmail.fromName);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.TextPrimaryAlternate));
 
+        if (currentEmail.content.equals("") || currentEmail.content == null) {
+            setEmailContent("<html><head></head><body>Connect to the Internet to download content</body></html>");
             /*
             *since we dont have to login in to view the webmail anymore
             * (since basic auth in restapi provides us to be logged in always)
@@ -91,11 +89,7 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
             new ViewMailManager(getApplicationContext(), ViewEmail.this, currentEmail).execute();
             Log.d("T", "Called ViewMailManager");
         } else {
-            setWebviewContent(currentEmail.content);
-            tvdatebottom.setText(currentEmail.dateInMillis);
-            tvsender.setText(currentEmail.fromAddress);
-            tvsenderbottom.setText(currentEmail.fromName);
-            tvsubject.setText(currentEmail.subject);
+            setEmailContent(currentEmail.content);
         }
     }
 
@@ -117,15 +111,11 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
     public void onPostView(boolean success) {
         if (success) {
             currentEmail = (EmailMessage) (Select.from(EmailMessage.class).where(Condition.prop(StringUtil.toSQLName("contentID")).eq(currentEmailID)).first());
-            tvsender.setText(currentEmail.fromAddress);
-            setWebviewContent(currentEmail.content);
-            tvsubject.setText(currentEmail.subject);
-            tvsenderbottom.setText(currentEmail.fromName);
-            tvdatebottom.setText(currentEmail.dateInMillis);
+            setEmailContent(currentEmail.content);
             currentEmail.readUnread = Constants.WEBMAIL_READ;
             currentEmail.save();
         } else {
-            setWebviewContent("<html><head></head><body>Connect to the Internet to download content</body></html>");
+            setEmailContent("<html><head></head><body>Connect to the Internet to download content</body></html>");
         }
         progdialog.dismiss();
     }
@@ -156,12 +146,17 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
 
     }
 
-    public void setWebviewContent(String html) {
+    public void setEmailContent(String html) {
         String mime = "text/html";
         String encoding = "utf-8";
 
         webView_viewContent.getSettings().setJavaScriptEnabled(true);
         webView_viewContent.loadDataWithBaseURL(null, html, mime, encoding, null);
+
+        tvsender.setText(currentEmail.fromAddress);
+        tvsubject.setText(currentEmail.subject);
+        tvsenderbottom.setText(currentEmail.fromName);
+        tvdatebottom.setText(DateUtils.getDate(Long.parseLong(currentEmail.dateInMillis)));
     }
 
     private void sendRefreshBroadcast() {

@@ -2,6 +2,7 @@ package com.sigmobile.dawebmail.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,6 +66,8 @@ public class SmartBoxFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_smartbox, container, false);
 
         ButterKnife.bind(this, rootView);
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("SmartBox");
 
         ArrayList<EmailMessage> emails = (ArrayList<EmailMessage>) EmailMessage.listAll(EmailMessage.class);
         HashMap<String, Integer> senderCount = new HashMap<>();

@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
+        toolbar.setTitleTextColor(getResources().getColor(R.color.TextPrimaryAlternate));
 
         setUpNavDrawer();
 

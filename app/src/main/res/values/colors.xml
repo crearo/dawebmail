@@ -10,5 +10,8 @@
     <color name="TextPrimary">#212121</color>
     <color name="TextSecondary">#424242</color>
 
+    <color name="TextPrimaryAlternate">#FFFFFF</color>
+    <color name="TextSecondaryAlternate">#F5F5F5</color>
+
 
 </resources>

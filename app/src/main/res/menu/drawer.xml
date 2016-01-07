@@ -8,8 +8,16 @@
             android:title="Inbox" />
         <item
             android:id="@+id/navigation_item_2"
-            android:icon="@drawable/ic_action_send"
+            android:icon="@drawable/ic_area_chart"
             android:title="SmartBox" />
+        <item
+            android:id="@+id/navigation_item_5"
+            android:icon="@drawable/ic_action_send"
+            android:title="SentBox" />
+        <item
+            android:id="@+id/navigation_item_6"
+            android:icon="@drawable/ic_action_delete"
+            android:title="TrashBox" />
         <item
             android:id="@+id/navigation_item_3"
             android:icon="@drawable/settings_new"
@@ -18,13 +26,5 @@
             android:id="@+id/navigation_item_4"
             android:icon="@drawable/ic_action_star"
             android:title="Feedback" />
-        <item
-            android:id="@+id/navigation_item_5"
-            android:icon="@drawable/ic_action_star"
-            android:title="SentBox" />
-        <item
-            android:id="@+id/navigation_item_6"
-            android:icon="@drawable/ic_action_star"
-            android:title="TrashBox" />
     </group>
 </menu>

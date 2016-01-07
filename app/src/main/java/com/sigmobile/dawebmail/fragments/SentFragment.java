@@ -13,6 +13,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -76,6 +77,8 @@ public class SentFragment extends Fragment implements RefreshInboxListener, Dele
         View rootView = inflater.inflate(R.layout.fragment_inbox, container, false);
 
         ButterKnife.bind(SentFragment.this, rootView);
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Sent");
 
         setSwipeRefreshLayout();
 
