@@ -18,5 +18,9 @@
             android:id="@+id/navigation_item_4"
             android:icon="@drawable/ic_action_star"
             android:title="Feedback" />
+        <item
+            android:id="@+id/navigation_item_5"
+            android:icon="@drawable/ic_action_star"
+            android:title="SentBox" />
     </group>
 </menu>

@@ -27,26 +27,18 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.orm.StringUtil;
-import com.orm.query.Select;
 import com.sigmobile.dawebmail.R;
 import com.sigmobile.dawebmail.adapters.MailAdapter;
 import com.sigmobile.dawebmail.asyncTasks.DeleteMail;
 import com.sigmobile.dawebmail.asyncTasks.DeleteMailListener;
-import com.sigmobile.dawebmail.asyncTasks.Login;
-import com.sigmobile.dawebmail.asyncTasks.LoginListener;
-import com.sigmobile.dawebmail.asyncTasks.MasterRefreshListener;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInbox;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInboxListener;
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
 import com.sigmobile.dawebmail.services.NotificationMaker;
-import com.sigmobile.dawebmail.utils.ConnectionManager;
 import com.sigmobile.dawebmail.utils.Constants;
-import com.sigmobile.dawebmail.utils.Printer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -56,8 +48,7 @@ import me.drakeet.materialdialog.MaterialDialog;
  * Created by rish on 6/10/15.
  */
 
-public class InboxFragment extends Fragment implements LoginListener, RefreshInboxListener, DeleteMailListener, MasterRefreshListener, MailAdapter.DeleteSelectedListener {
-
+public class SentFragment extends Fragment implements RefreshInboxListener, DeleteMailListener, MailAdapter.DeleteSelectedListener {
 
     @Bind(R.id.inbox_listView)
     ListView listview;
@@ -76,7 +67,7 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
 
     ArrayList<EmailMessage> allEmails;
 
-    public InboxFragment() {
+    public SentFragment() {
 
     }
 
@@ -84,22 +75,16 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_inbox, container, false);
 
-        ButterKnife.bind(InboxFragment.this, rootView);
+        ButterKnife.bind(SentFragment.this, rootView);
 
         setSwipeRefreshLayout();
 
-        allEmails = (ArrayList<EmailMessage>) Select.from(EmailMessage.class).orderBy(StringUtil.toSQLName("contentID")).list();
-        Collections.reverse(allEmails);
+        allEmails = new ArrayList<>();
 
         mailAdapter = new MailAdapter(allEmails, getActivity(), this);
         listview.setAdapter(mailAdapter);
 
         progressDialog = new ProgressDialog(getActivity());
-
-        if (Select.from(EmailMessage.class).count() == 0) {
-            Printer.println("Printing, count is 0, refreshing inbox");
-            new RefreshInbox(getActivity(), InboxFragment.this, Constants.INBOX).execute();
-        }
 
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(new BroadcastReceiver() {
             @Override
@@ -117,9 +102,6 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
             @Override
             public void onTextChanged(CharSequence charSequence, int i0, int i1, int i2) {
                 if (charSequence.length() >= 2) {
-                    allEmails = (ArrayList<EmailMessage>) EmailMessage.listAll(EmailMessage.class);
-                    Collections.reverse(allEmails);
-
                     for (int i = 0; i < allEmails.size(); i++) {
                         EmailMessage email = allEmails.get(i);
                         if (email.fromName.toLowerCase()
@@ -137,7 +119,7 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
                             i--;
                         }
                     }
-                    mailAdapter = new MailAdapter(allEmails, getActivity(), InboxFragment.this);
+                    mailAdapter = new MailAdapter(allEmails, getActivity(), SentFragment.this);
                     listview.setAdapter(mailAdapter);
                     System.out.println("SEARCHED RESULTS COUNT = " + mailAdapter.getCount());
                 } else {
@@ -151,7 +133,8 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
             }
         });
 
-        fabDelete.setVisibility(View.GONE);
+        new RefreshInbox(getActivity(), SentFragment.this, Constants.SENT).execute();
+
         return rootView;
     }
 
@@ -159,11 +142,7 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (!User.isLoggedIn()) {
-                    new Login(getActivity(), InboxFragment.this).execute();
-                } else {
-                    new RefreshInbox(getActivity(), InboxFragment.this, Constants.INBOX).execute();
-                }
+                new RefreshInbox(getActivity(), SentFragment.this, Constants.SENT).execute();
             }
         });
 
@@ -214,33 +193,6 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
         return super.onOptionsItemSelected(item);
     }
 
-
-    @Override
-    public void onPreLogin() {
-        if (ConnectionManager.isConnectedByMobileData(getActivity()))
-            progressDialog = ProgressDialog.show(getActivity(), "", "Logging in.\nYou are connected via mobile data.", true);
-        else
-            progressDialog = ProgressDialog.show(getActivity(), "", "Logging in.", true);
-        progressDialog.setCancelable(false);
-    }
-
-    @Override
-    public void onPostLogin(boolean loginSuccess, String timeTaken) {
-        swipeRefreshLayout.setRefreshing(false);
-        if (loginSuccess) {
-            Snackbar.make(swipeRefreshLayout, "Logged in!", Snackbar.LENGTH_LONG).show();
-            getActivity().invalidateOptionsMenu();
-            swipeRefreshLayout.setRefreshing(false);
-            progressDialog.dismiss();
-            new RefreshInbox(getActivity(), InboxFragment.this, Constants.INBOX).execute();
-        } else {
-            Snackbar.make(swipeRefreshLayout, "Login Unsuccessful", Snackbar.LENGTH_LONG).show();
-        }
-
-        getActivity().invalidateOptionsMenu();
-        progressDialog.dismiss();
-    }
-
     @Override
     public void onPreRefresh() {
         progressDialog2 = ProgressDialog.show(getActivity(), "", "Please wait while we load your content.", true);
@@ -254,6 +206,7 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
             @Override
             public void run() {
 
+                allEmails = new ArrayList<EmailMessage>(refreshedEmails);
                 refreshAdapter();
 
                 if (refreshedEmails.size() == 0)
@@ -287,19 +240,7 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
         fabDelete.setVisibility(View.GONE);
     }
 
-    @Override
-    public void onPreMasterRefresh() {
-
-    }
-
-    @Override
-    public void onPostMasterRefresh(boolean success) {
-    }
-
     public void refreshAdapter() {
-        allEmails = (ArrayList<EmailMessage>) (Select.from(EmailMessage.class).orderBy(StringUtil.toSQLName("contentID")).list());
-        Collections.reverse(allEmails);
-
         mailAdapter = new MailAdapter(allEmails, getActivity(), this);
         listview.setAdapter(mailAdapter);
     }
@@ -354,7 +295,7 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
             @Override
             public void onClick(View view) {
                 Snackbar.make(swipeRefreshLayout, "Deleting ...", Snackbar.LENGTH_LONG).show();
-                new DeleteMail(getActivity(), InboxFragment.this, emailsToDelete).execute();
+                new DeleteMail(getActivity(), SentFragment.this, emailsToDelete).execute();
             }
         });
 

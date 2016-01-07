@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
 import com.sigmobile.dawebmail.network.RestAPI;
-import com.sigmobile.dawebmail.utils.Constants;
 
 import java.util.ArrayList;
 
@@ -22,12 +21,14 @@ public class RefreshInbox extends AsyncTask<Void, Void, Void> {
     boolean result = false;
     String username, pwd;
     ArrayList<EmailMessage> refreshedEmails;
+    String REFRESH_TYPE;
 
-    public RefreshInbox(Context context, RefreshInboxListener refreshInboxListener) {
+    public RefreshInbox(Context context, RefreshInboxListener refreshInboxListener, String REFRESH_TYPE) {
         this.context = context;
         this.listener = refreshInboxListener;
         username = User.getUsername(context);
         pwd = User.getPassword(context);
+        this.REFRESH_TYPE = REFRESH_TYPE;
     }
 
 
@@ -42,7 +43,7 @@ public class RefreshInbox extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... voids) {
 
         RestAPI restAPI = new RestAPI(username, pwd, context);
-        restAPI.refresh(Constants.INBOX);
+        restAPI.refresh(REFRESH_TYPE);
         refreshedEmails = restAPI.getNewEmails();
 
         return null;

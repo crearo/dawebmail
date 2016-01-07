@@ -10,6 +10,7 @@ import com.sigmobile.dawebmail.asyncTasks.LoginListener;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInbox;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInboxListener;
 import com.sigmobile.dawebmail.database.EmailMessage;
+import com.sigmobile.dawebmail.utils.Constants;
 
 import java.util.ArrayList;
 
@@ -53,7 +54,7 @@ public class TestActivity extends AppCompatActivity {
                     public void onPostRefresh(boolean success, ArrayList<EmailMessage> refreshedEmails) {
                         System.out.println("Fini Refresh " + success);
                     }
-                }).execute();
+                }, Constants.INBOX).execute();
             }
         });
     }

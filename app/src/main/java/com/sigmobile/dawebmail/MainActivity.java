@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.sigmobile.dawebmail.database.User;
 import com.sigmobile.dawebmail.fragments.FeedbackFragment;
 import com.sigmobile.dawebmail.fragments.InboxFragment;
+import com.sigmobile.dawebmail.fragments.SentFragment;
 import com.sigmobile.dawebmail.fragments.SettingsFragment;
 import com.sigmobile.dawebmail.fragments.SmartBoxFragment;
 import com.sigmobile.dawebmail.utils.Constants;
@@ -77,6 +78,11 @@ public class MainActivity extends AppCompatActivity {
                         mCurrentSelectedPosition = 3;
                         selectItem(mCurrentSelectedPosition);
                         return true;
+                    case R.id.navigation_item_5:
+                        Snackbar.make(findViewById(R.id.main_rellay), "SentBox", Snackbar.LENGTH_SHORT).show();
+                        mCurrentSelectedPosition = 4;
+                        selectItem(mCurrentSelectedPosition);
+                        return true;
                     default:
                         return true;
                 }
@@ -118,6 +124,9 @@ public class MainActivity extends AppCompatActivity {
             case 3:
                 fragment = new FeedbackFragment();
                 break;
+            case 4:
+                fragment = new SentFragment();
+                break;
             default:
                 break;
         }
@@ -158,17 +167,4 @@ public class MainActivity extends AppCompatActivity {
         selectItem(savedInstanceState.getInt(Constants.SAVED_FRAGMENT, mCurrentSelectedPosition));
 
     }
-
-    /*
-    Initially used for setting up service. Now done in broadcast receiver
-    private void setUpService() {
-        SharedPreferences prefs = getSharedPreferences(Constants.ON_FIRST_RUN, Context.MODE_PRIVATE);
-        Printer.println("FIRSTRUN = " + !prefs.getBoolean(Constants.RUN_EXCEPT_ON_FIRST, false));
-        if (prefs.getBoolean(Constants.RUN_EXCEPT_ON_FIRST, false)) {
-            Printer.println("RUNNING SERVICE RESTART");
-            BackgroundRunner.stopService(getApplicationContext());
-            BackgroundRunner.startHourlyService(getApplicationContext());
-        }
-        prefs.edit().putBoolean(Constants.RUN_EXCEPT_ON_FIRST, true).commit();
-    }*/
 }
