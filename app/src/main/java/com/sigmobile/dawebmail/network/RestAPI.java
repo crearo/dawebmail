@@ -32,6 +32,8 @@ public class RestAPI {
     public static final String REST_URL_SENT = "https://webmail.daiict.ac.in/home/~/sent.json";
     public static final String REST_URL_TRASH = "https://webmail.daiict.ac.in/home/~/trash.json";
 
+    private static final int TIME_OUT = 10 * 1000;
+
     private String username, password;
     private Context context;
 
@@ -71,7 +73,7 @@ public class RestAPI {
             String userPassword = username + ":" + password;
             String encoding = Base64.encodeToString(userPassword.getBytes(), Base64.DEFAULT);
             conn.setRequestProperty("Authorization", "Basic " + encoding);
-            conn.setReadTimeout(30 * 1000);
+            conn.setReadTimeout(TIME_OUT);
             conn.connect();
 
             Log.d(LOGTAG, "Response Code: " + conn.getResponseCode());
@@ -109,7 +111,7 @@ public class RestAPI {
             String userPassword = username + ":" + password;
             String encoding = Base64.encodeToString(userPassword.getBytes(), Base64.DEFAULT);
             conn.setRequestProperty("Authorization", "Basic " + encoding);
-            conn.setReadTimeout(30 * 1000);
+            conn.setReadTimeout(TIME_OUT);
             conn.connect();
 
             Log.d(LOGTAG, "Response Code: " + conn.getResponseCode());
@@ -211,7 +213,7 @@ public class RestAPI {
             String userPassword = username + ":" + password;
             String encoding = Base64.encodeToString(userPassword.getBytes(), Base64.DEFAULT);
             conn.setRequestProperty("Authorization", "Basic " + encoding);
-            conn.setReadTimeout(30 * 1000);
+            conn.setReadTimeout(TIME_OUT);
             conn.connect();
 
             Log.d(LOGTAG, "Response Code: " + conn.getResponseCode());
@@ -280,7 +282,7 @@ public class RestAPI {
             String userPassword = username + ":" + password;
             String encoding = Base64.encodeToString(userPassword.getBytes(), Base64.DEFAULT);
             conn.setRequestProperty("Authorization", "Basic " + encoding);
-            conn.setReadTimeout(30 * 1000);
+            conn.setReadTimeout(TIME_OUT);
             conn.connect();
 
             Log.d(LOGTAG, "Response Code: " + conn.getResponseCode());
@@ -347,7 +349,7 @@ public class RestAPI {
             String userPassword = username + ":" + password;
             String encoding = Base64.encodeToString(userPassword.getBytes(), Base64.DEFAULT);
             conn.setRequestProperty("Authorization", "Basic " + encoding);
-            conn.setReadTimeout(30 * 1000);
+            conn.setReadTimeout(TIME_OUT);
             conn.connect();
 
             Log.d(LOGTAG, "Response Code: " + conn.getResponseCode());

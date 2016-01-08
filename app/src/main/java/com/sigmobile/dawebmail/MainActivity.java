@@ -161,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
             mDrawerLayout.closeDrawers();
         } else if (mCurrentSelectedPosition != 0) {
             selectItem(0);
+            navigationView.getMenu().getItem(0).setChecked(true);
         } else {
             super.onBackPressed();
         }

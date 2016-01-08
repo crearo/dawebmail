@@ -265,15 +265,6 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
 //        if (position >= 10)
 //            position -= 3;
         listview.setSelection(position);
-        final View view = listview.getChildAt(position);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-//            view.postOnAnimationDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    view.setPressed(true);
-//                }
-//            }, 250);
-//        }
     }
 
     public void refreshAdapter() {
