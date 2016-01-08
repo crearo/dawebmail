@@ -2,6 +2,8 @@ package com.sigmobile.dawebmail.network;
 
 import android.util.Log;
 
+import com.sigmobile.dawebmail.utils.BasePath;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Properties;
@@ -21,13 +23,13 @@ public class MailParser {
 
     private static final String LOGTAG = "RESTAPI";
     private String contentHTML = "";
+    private int totalAttachments = 0;
 
     public MailParser() {
 
     }
 
-    public static void newMailParser(int contentID, String emailContentBytes) {
-
+    public void newMailParser(int contentID, String emailContentBytes) {
         try {
             Session s = Session.getDefaultInstance(new Properties());
             InputStream is = new ByteArrayInputStream(emailContentBytes.getBytes());
@@ -54,7 +56,8 @@ public class MailParser {
                         // this part is attachment
                         String fileName = part.getFileName();
                         attachFiles += fileName + ", ";
-                        part.saveFile("/home/rish/Temp/" + fileName);
+                        part.saveFile(BasePath.getBasePath() + "/" + contentID + "-" + fileName);
+                        totalAttachments++;
                     } else {
                         // this part may be the message content
                         messageContent = part.getContent().toString();
@@ -78,6 +81,7 @@ public class MailParser {
             System.out.println("\t Sent Date: " + sentDate);
             System.out.println("\t Message: " + messageContent);
             System.out.println("\t Attachments: " + attachFiles);
+            contentHTML = messageContent;
         } catch (Exception e) {
             Log.d(LOGTAG, "Error in parsing email");
         }
@@ -138,5 +142,9 @@ public class MailParser {
 
     public String getContentHTML() {
         return contentHTML;
+    }
+
+    public int getTotalAttachments() {
+        return totalAttachments;
     }
 }

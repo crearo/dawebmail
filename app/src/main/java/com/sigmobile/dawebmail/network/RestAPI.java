@@ -365,7 +365,7 @@ public class RestAPI {
                 in.close();
 
                 MailParser mailParser = new MailParser();
-                mailParser.parseMail(total.toString());
+                mailParser.newMailParser(emailMessage.contentID, total.toString());
                 String htmlContent = mailParser.getContentHTML();
                 emailMessage.content = htmlContent;
 

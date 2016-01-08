@@ -8,5 +8,4 @@ public class BasePath {
     public static String getBasePath() {
         return "";
     }
-
 }
