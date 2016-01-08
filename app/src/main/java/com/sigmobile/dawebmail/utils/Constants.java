@@ -21,6 +21,7 @@ public class Constants {
 
     public static String CURRENT_EMAIL_SERIALIZABLE = "CURRENT_EMAIL_SERIALIZABLE";
     public static String CURRENT_EMAIL_TYPE = "CURRENT_EMAIL_TYPE";
+    public static String CURRENT_EMAIL_ID = "CURRENT_EMAIL_ID";
 
 
     public static String LOGIN_PAGE_TITLE = "DA-IICT Webmail Log In";

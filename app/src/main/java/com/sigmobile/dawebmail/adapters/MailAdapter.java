@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
@@ -150,8 +151,13 @@ public class MailAdapter extends BaseAdapter {
             public void onClick(View v) {
                 Intent intent = new Intent(context, ViewEmail.class);
                 Bundle bundle = new Bundle();
+                Log.wtf("VE", "" + emails.get(position).getId());
                 bundle.putSerializable(Constants.CURRENT_EMAIL_SERIALIZABLE, emails.get(position));
                 bundle.putString(Constants.CURRENT_EMAIL_TYPE, EMAIL_TYPE);
+                if (emails.get(position).getId() == null)
+                    bundle.putLong(Constants.CURRENT_EMAIL_ID, -1);
+                else
+                    bundle.putLong(Constants.CURRENT_EMAIL_ID, emails.get(position).getId());
                 intent.putExtras(bundle);
                 context.startActivity(intent);
             }

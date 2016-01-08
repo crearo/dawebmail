@@ -70,6 +70,9 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
         if (bundle != null) {
             currentEmail = (EmailMessage) bundle.getSerializable(Constants.CURRENT_EMAIL_SERIALIZABLE);
             EMAIL_TYPE = bundle.getString(Constants.CURRENT_EMAIL_TYPE);
+            long EMAIL_ID = bundle.getLong(Constants.CURRENT_EMAIL_ID);
+            if (EMAIL_ID != -1)
+                currentEmail.setId(EMAIL_ID);
         }
 
         webView_viewContent.setBackgroundColor(Color.parseColor("#E7E7E7"));
@@ -111,8 +114,10 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
         if (emailMessage != null) {
             setEmailContent(emailMessage.content);
             emailMessage.readUnread = Constants.WEBMAIL_READ;
-            if (EMAIL_TYPE.equals(Constants.INBOX))
+            if (EMAIL_TYPE.equals(Constants.INBOX)) {
+                Log.wtf("VE", "" + emailMessage.getId());
                 emailMessage.save();
+            }
             currentEmail = emailMessage;
         } else {
             setEmailContent("<html><head></head><body>Connect to the Internet to download content</body></html>");
