@@ -12,9 +12,6 @@ public class Constants {
     public static String WEBMAIL_READ = "READ";
     public static String WEBMAIL_UNREAD = "UNREAD";
 
-
-    public static boolean IS_LOGGED_IN;
-
     public static String URL = "https://webmail.daiict.ac.in/";
 
     public static String URL_INBOX = "https://webmail.daiict.ac.in/zimbra/h/search?mesg=welcome&initial=true&app=";
@@ -23,9 +20,9 @@ public class Constants {
     public static String CURRENT_EMAIL_TYPE = "CURRENT_EMAIL_TYPE";
     public static String CURRENT_EMAIL_ID = "CURRENT_EMAIL_ID";
 
-
-    public static String LOGIN_PAGE_TITLE = "DA-IICT Webmail Log In";
     public static String BROADCAST_REFRESH_ADAPTERS = "BROADCAST_REFRESH_ADAPTERS";
+    public static String BROADCAST_REFRESH_ADAPTERS_EMAIL_CONTENT_ID = "BROADCAST_REFRESH_ADAPTERS_EMAIL_CONTENT_ID";
+
     public static String USER_PREFERENCES = "USER_PREFERENCES";
 
     public static String USERNAME = "USERNAME";

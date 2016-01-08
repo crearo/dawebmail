@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
@@ -151,10 +150,16 @@ public class MailAdapter extends BaseAdapter {
             public void onClick(View v) {
                 Intent intent = new Intent(context, ViewEmail.class);
                 Bundle bundle = new Bundle();
-                Log.wtf("VE", "" + emails.get(position).getId());
+                /*
+                *Sending email type, and the email itself.
+                * All operations that change the EmailMessage object must happen there,
+                * and it must return from there, the unsaved object.
+                * It is then our choice as to whether we want to save it or not.
+                * I am not saving SentBox, and TrashBox.
+                 */
                 bundle.putSerializable(Constants.CURRENT_EMAIL_SERIALIZABLE, emails.get(position));
                 bundle.putString(Constants.CURRENT_EMAIL_TYPE, EMAIL_TYPE);
-                if (emails.get(position).getId() == null)
+                if (emails.get(position).getId() == null) // isn't a saved object, and hence doesnt have an id
                     bundle.putLong(Constants.CURRENT_EMAIL_ID, -1);
                 else
                     bundle.putLong(Constants.CURRENT_EMAIL_ID, emails.get(position).getId());

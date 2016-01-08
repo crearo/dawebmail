@@ -34,14 +34,11 @@ import com.sigmobile.dawebmail.R;
 import com.sigmobile.dawebmail.adapters.MailAdapter;
 import com.sigmobile.dawebmail.asyncTasks.DeleteMail;
 import com.sigmobile.dawebmail.asyncTasks.DeleteMailListener;
-import com.sigmobile.dawebmail.asyncTasks.Login;
-import com.sigmobile.dawebmail.asyncTasks.LoginListener;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInbox;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInboxListener;
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
 import com.sigmobile.dawebmail.services.NotificationMaker;
-import com.sigmobile.dawebmail.utils.ConnectionManager;
 import com.sigmobile.dawebmail.utils.Constants;
 import com.sigmobile.dawebmail.utils.Printer;
 
@@ -56,7 +53,7 @@ import me.drakeet.materialdialog.MaterialDialog;
  * Created by rish on 6/10/15.
  */
 
-public class InboxFragment extends Fragment implements LoginListener, RefreshInboxListener, DeleteMailListener, MailAdapter.DeleteSelectedListener {
+public class InboxFragment extends Fragment implements RefreshInboxListener, DeleteMailListener, MailAdapter.DeleteSelectedListener {
 
 
     @Bind(R.id.inbox_listView)
@@ -106,7 +103,8 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                refreshAdapter();
+                int SCROLL_TO = intent.getExtras().getInt(Constants.BROADCAST_REFRESH_ADAPTERS_EMAIL_CONTENT_ID);
+                refreshAdapter(SCROLL_TO);
             }
         }, new IntentFilter(Constants.BROADCAST_REFRESH_ADAPTERS));
 
@@ -161,11 +159,7 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (!User.isLoggedIn()) {
-                    new Login(getActivity(), InboxFragment.this).execute();
-                } else {
-                    new RefreshInbox(getActivity(), InboxFragment.this, Constants.INBOX).execute();
-                }
+                new RefreshInbox(getActivity(), InboxFragment.this, Constants.INBOX).execute();
             }
         });
 
@@ -216,33 +210,6 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
         return super.onOptionsItemSelected(item);
     }
 
-
-    @Override
-    public void onPreLogin() {
-        if (ConnectionManager.isConnectedByMobileData(getActivity()))
-            progressDialog = ProgressDialog.show(getActivity(), "", "Logging in.\nYou are connected via mobile data.", true);
-        else
-            progressDialog = ProgressDialog.show(getActivity(), "", "Logging in.", true);
-        progressDialog.setCancelable(false);
-    }
-
-    @Override
-    public void onPostLogin(boolean loginSuccess, String timeTaken) {
-        swipeRefreshLayout.setRefreshing(false);
-        if (loginSuccess) {
-            Snackbar.make(swipeRefreshLayout, "Logged in!", Snackbar.LENGTH_LONG).show();
-            getActivity().invalidateOptionsMenu();
-            swipeRefreshLayout.setRefreshing(false);
-            progressDialog.dismiss();
-            new RefreshInbox(getActivity(), InboxFragment.this, Constants.INBOX).execute();
-        } else {
-            Snackbar.make(swipeRefreshLayout, "Login Unsuccessful", Snackbar.LENGTH_LONG).show();
-        }
-
-        getActivity().invalidateOptionsMenu();
-        progressDialog.dismiss();
-    }
-
     @Override
     public void onPreRefresh() {
         progressDialog2 = ProgressDialog.show(getActivity(), "", "Please wait while we load your content.", true);
@@ -287,6 +254,26 @@ public class InboxFragment extends Fragment implements LoginListener, RefreshInb
         progressDialog.dismiss();
         refreshAdapter();
         fabDelete.setVisibility(View.GONE);
+    }
+
+    public void refreshAdapter(int SCROLL_TO) {
+        refreshAdapter();
+        int position = 0;
+        for (int i = 0; i < allEmails.size(); i++)
+            if (allEmails.get(i).contentID == SCROLL_TO)
+                position = i;
+//        if (position >= 10)
+//            position -= 3;
+        listview.setSelection(position);
+        final View view = listview.getChildAt(position);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+//            view.postOnAnimationDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    view.setPressed(true);
+//                }
+//            }, 250);
+//        }
     }
 
     public void refreshAdapter() {

@@ -14,4 +14,8 @@
     <color name="TextSecondaryAlternate">#F5F5F5</color>
 
 
+    <color name="primaryFocused">#F5F5F5</color>
+    <color name="primaryPressed">#FFFFFF</color>
+    <color name="primary">#F5F5F5</color>
+
 </resources>

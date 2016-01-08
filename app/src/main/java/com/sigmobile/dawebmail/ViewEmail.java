@@ -98,8 +98,7 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(Constants.BROADCAST_REFRESH_ADAPTERS);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        sendRefreshBroadcast();
         finish();
     }
 
@@ -167,6 +166,9 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
     private void sendRefreshBroadcast() {
         Log.d("sender", "Broadcasting message");
         Intent intent = new Intent(Constants.BROADCAST_REFRESH_ADAPTERS);
+        Bundle bundle = new Bundle();
+        bundle.putInt(Constants.BROADCAST_REFRESH_ADAPTERS_EMAIL_CONTENT_ID, currentEmail.contentID);
+        intent.putExtras(bundle);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 }
