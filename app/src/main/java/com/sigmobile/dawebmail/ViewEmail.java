@@ -4,20 +4,28 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.sigmobile.dawebmail.asyncTasks.ViewMailListener;
 import com.sigmobile.dawebmail.asyncTasks.ViewMailManager;
 import com.sigmobile.dawebmail.database.EmailMessage;
+import com.sigmobile.dawebmail.utils.BasePath;
 import com.sigmobile.dawebmail.utils.ConnectionManager;
 import com.sigmobile.dawebmail.utils.Constants;
 import com.sigmobile.dawebmail.utils.DateUtils;
+import com.sigmobile.dawebmail.utils.FileUtils;
+
+import java.io.File;
+import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -48,6 +56,9 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
 
     @Bind(R.id.viewmail_webview)
     WebView webView_viewContent;
+
+    @Bind(R.id.viewmail_attach_ll)
+    LinearLayout ll_attachments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,6 +172,26 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
         tvsubject.setText(currentEmail.subject);
         tvsenderbottom.setText(currentEmail.fromName);
         tvdatebottom.setText(DateUtils.getDate(Long.parseLong(currentEmail.dateInMillis)));
+
+        final ArrayList<String> attachmentsList = BasePath.getAttachmentsPaths(currentEmail.contentID);
+        Log.d("A", "Size is " + attachmentsList.size());
+        for (int i = 0; i < attachmentsList.size(); i++) {
+            Log.d("A", (new File(attachmentsList.get(i))).getName());
+            TextView textView = new TextView(this);
+            ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            textView.setPadding(10, 10, 10, 10);
+            textView.setLayoutParams(layoutParams);
+            textView.setText("Attachment-" + i + " " + (new File(attachmentsList.get(i))).getName().split("-")[1]);
+            final int finalI = i;
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Snackbar.make(view, "" + (new File(attachmentsList.get(finalI))).getName(), Snackbar.LENGTH_LONG).show();
+                    FileUtils.openDoc(getApplicationContext(), attachmentsList.get(finalI));
+                }
+            });
+            ll_attachments.addView(textView);
+        }
     }
 
     private void sendRefreshBroadcast() {

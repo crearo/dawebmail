@@ -8,12 +8,16 @@ import com.orm.StringUtil;
 import com.orm.query.Condition;
 import com.orm.query.Select;
 import com.sigmobile.dawebmail.database.EmailMessage;
+import com.sigmobile.dawebmail.utils.BasePath;
 import com.sigmobile.dawebmail.utils.Constants;
 
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -144,15 +148,18 @@ public class RestAPI {
                 for (int i = 0; i < responseObject.getJSONArray("m").length(); i++) {
                     JSONObject webmailObject = (JSONObject) responseObject.getJSONArray("m").get(i);
                     int contentID = Integer.parseInt(webmailObject.getString("id"));
+                    int totalAttachments = 0;
                     String fromName = "fromName";
                     String fromAddress = "fromAddress";
                     String subject = webmailObject.getString("su");
                     String readUnread = Constants.WEBMAIL_READ;
-                    if (webmailObject.has("f"))
+                    if (webmailObject.has("f")) {
                         if (webmailObject.getString("f").contains("u"))
                             readUnread = Constants.WEBMAIL_UNREAD;
+                        if (webmailObject.getString("f").contains("a"))
+                            totalAttachments = 1;
+                    }
                     String dateInMillis = webmailObject.getString("d");
-//                    String content = webmailObject.getString("fr");
 
                     for (int j = 0; j < webmailObject.getJSONArray("e").length(); j++) {
                         JSONObject fromToObject = (JSONObject) webmailObject.getJSONArray("e").get(j);
@@ -181,10 +188,11 @@ public class RestAPI {
                             emailMessage.subject = subject;
                             emailMessage.dateInMillis = dateInMillis;
                             emailMessage.readUnread = readUnread;
+                            emailMessage.totalAttachments = totalAttachments;
                             emailMessage.save();
                         } else {
                             Log.d(LOGTAG, "No existing mail found, Creating");
-                            emailMessage = new EmailMessage(contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "");
+                            emailMessage = new EmailMessage(contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "", totalAttachments);
                             emailMessage.save();
                             allNewEmails.add(emailMessage);
                         }
@@ -234,13 +242,18 @@ public class RestAPI {
                 for (int i = 0; i < responseObject.getJSONArray("m").length(); i++) {
                     JSONObject webmailObject = (JSONObject) responseObject.getJSONArray("m").get(i);
                     int contentID = Integer.parseInt(webmailObject.getString("id"));
+                    int totalAttachments = 0;
                     String fromName = "fromName";
                     String fromAddress = "fromAddress";
                     String subject = webmailObject.getString("su");
                     String readUnread = Constants.WEBMAIL_READ;
-                    if (webmailObject.has("f"))
+                    if (webmailObject.has("f")) {
                         if (webmailObject.getString("f").contains("u"))
                             readUnread = Constants.WEBMAIL_UNREAD;
+                        if (webmailObject.getString("f").contains("a"))
+                            totalAttachments = 1;
+                    }
+
                     String dateInMillis = webmailObject.getString("d");
 
                     for (int j = 0; j < webmailObject.getJSONArray("e").length(); j++) {
@@ -256,7 +269,7 @@ public class RestAPI {
 
                     Log.d(LOGTAG, "NEW EMAIL | " + contentID + " | " + fromName + " | " + fromAddress + " | " + subject + " | " + dateInMillis + " | " + readUnread);
 
-                    EmailMessage emailMessage = new EmailMessage(contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "");
+                    EmailMessage emailMessage = new EmailMessage(contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "", totalAttachments);
                     allNewEmails.add(emailMessage);
                 }
                 return true;
@@ -303,13 +316,18 @@ public class RestAPI {
                 for (int i = 0; i < responseObject.getJSONArray("m").length(); i++) {
                     JSONObject webmailObject = (JSONObject) responseObject.getJSONArray("m").get(i);
                     int contentID = Integer.parseInt(webmailObject.getString("id"));
+                    int totalAttachments = 0;
                     String fromName = "fromName";
                     String fromAddress = "fromAddress";
                     String subject = webmailObject.getString("su");
                     String readUnread = Constants.WEBMAIL_READ;
-                    if (webmailObject.has("f"))
+                    if (webmailObject.has("f")) {
                         if (webmailObject.getString("f").contains("u"))
                             readUnread = Constants.WEBMAIL_UNREAD;
+                        if (webmailObject.getString("f").contains("a"))
+                            totalAttachments = 1;
+                    }
+
                     String dateInMillis = webmailObject.getString("d");
 
                     for (int j = 0; j < webmailObject.getJSONArray("e").length(); j++) {
@@ -325,7 +343,7 @@ public class RestAPI {
 
                     Log.d(LOGTAG, "NEW EMAIL | " + contentID + " | " + fromName + " | " + fromAddress + " | " + subject + " | " + dateInMillis + " | " + readUnread);
 
-                    EmailMessage emailMessage = new EmailMessage(contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "");
+                    EmailMessage emailMessage = new EmailMessage(contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "", totalAttachments);
                     allNewEmails.add(emailMessage);
                 }
                 return true;
@@ -338,7 +356,6 @@ public class RestAPI {
             return false;
         }
     }
-
 
     private EmailMessage makeFetchRequest(EmailMessage emailMessage) {
         try {
@@ -360,14 +377,19 @@ public class RestAPI {
                 StringBuilder total = new StringBuilder();
                 String line;
                 while ((line = r.readLine()) != null) {
-                    total.append("\n" + line);
+                    total.append(line + "\n");
                 }
                 in.close();
 
+                writeStringAsFile(total.toString());
+
                 MailParser mailParser = new MailParser();
                 mailParser.newMailParser(emailMessage.contentID, total.toString());
-                String htmlContent = mailParser.getContentHTML();
-                emailMessage.content = htmlContent;
+                emailMessage.content = mailParser.getContentHTML();
+                emailMessage.totalAttachments = mailParser.getTotalAttachments();
+
+//                Log.d(LOGTAG, "Content = " + emailMessage.content);
+                Log.d(LOGTAG, "totalAtt = " + emailMessage.totalAttachments);
 
                 return emailMessage;
             } else {
@@ -377,6 +399,15 @@ public class RestAPI {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public static void writeStringAsFile(final String fileContents) {
+        try {
+            FileWriter out = new FileWriter(new File(BasePath.getBasePath(), "email.txt"));
+            out.write(fileContents);
+            out.close();
+        } catch (IOException e) {
         }
     }
 

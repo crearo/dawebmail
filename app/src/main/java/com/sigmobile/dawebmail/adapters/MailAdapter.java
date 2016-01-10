@@ -76,7 +76,10 @@ public class MailAdapter extends BaseAdapter {
 
         if (item.readUnread.equals(Constants.WEBMAIL_UNREAD)) {
             if (!clickedForDelete[position]) {
-                holder.iv_icon.setImageResource(R.drawable.final_unread);
+                if (item.totalAttachments >= 1)
+                    holder.iv_icon.setImageResource(R.drawable.final_unread_a);
+                else
+                    holder.iv_icon.setImageResource(R.drawable.final_unread);
             } else {
                 System.out.println("set holder icon to delete wala");
                 holder.iv_icon.setAnimation(AnimationUtils.loadAnimation(context, R.anim.abc_grow_fade_in_from_bottom));
@@ -85,9 +88,11 @@ public class MailAdapter extends BaseAdapter {
 
             holder.tv_name.setTypeface(null, Typeface.BOLD);
         } else {
-
             if (!clickedForDelete[position]) {
-                holder.iv_icon.setImageResource(R.drawable.final_read);
+                if (item.totalAttachments >= 1)
+                    holder.iv_icon.setImageResource(R.drawable.final_read_a);
+                else
+                    holder.iv_icon.setImageResource(R.drawable.final_read);
             } else {
                 Printer.println("set holder icon to delete wala");
                 holder.iv_icon.setImageResource(R.drawable.ic_action_delete_red);

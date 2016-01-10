@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.sigmobile.dawebmail.R;
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
+import com.sigmobile.dawebmail.utils.Constants;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -32,6 +33,9 @@ public class SmartBoxFragment extends Fragment {
 
     @Bind(R.id.smart_total_avg_length)
     TextView smart_total_avg_length;
+
+    @Bind(R.id.smart_total_longest_length)
+    TextView smart_total_longest_length;
 
     @Bind(R.id.smart_total_emails)
     TextView smart_total_emails;
@@ -72,25 +76,27 @@ public class SmartBoxFragment extends Fragment {
         ArrayList<EmailMessage> emails = (ArrayList<EmailMessage>) EmailMessage.listAll(EmailMessage.class);
         HashMap<String, Integer> senderCount = new HashMap<>();
 
-        double totalLength = 0;
+        int totalLength = 0;
+        int longestLength = 0;
         int emailsWithAttachment = 0;
         int openedWithApp = 0;
         int readEmails = 0;
         for (int i = 0; i < emails.size(); i++) {
-
             String subject = emails.get(i).subject;
             if (subject.contains(" "))
                 totalLength += subject.split(" ").length;
             else
                 totalLength++;
-
-            if (!emails.get(i).content.equals("isempty")) {
+            if (totalLength > longestLength)
+                longestLength = totalLength;
+            if (emails.get(i).totalAttachments >= 1)
+                emailsWithAttachment++;
+            if (!emails.get(i).content.equals("")) {
                 openedWithApp++;
             }
-            if (emails.get(i).readUnread.equals("Unread Message")) {
+            if (emails.get(i).readUnread.equals(Constants.WEBMAIL_READ)) {
                 readEmails++;
             }
-
             if (senderCount.containsKey(emails.get(i).fromName)) {
                 int count = (senderCount.get(emails.get(i).fromName) + 1);
                 senderCount.remove(emails.get(i).fromName);
@@ -102,6 +108,7 @@ public class SmartBoxFragment extends Fragment {
         smart_total_emails.setText("" + emails.size());
         double avgLength = Math.round((totalLength / (double) (emails.size())) * 100) / 100.0;
         smart_total_avg_length.setText("" + avgLength + " words");
+        smart_total_longest_length.setText("" + longestLength + " words");
         smart_total_per_att.setText("" + (100 * emailsWithAttachment) / emails.size() + " %");
         smart_total_no_of_opened_with_app.setText("" + openedWithApp);
         smart_total_no_of_opened.setText("" + ((100 * readEmails) / emails.size()) + " %");
