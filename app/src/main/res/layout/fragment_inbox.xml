@@ -18,6 +18,31 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
+    <LinearLayout
+        android:id="@+id/inbox_empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:src="@drawable/message" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="Looks Like This Section Is Currently Empty\nSwipe to Refresh"
+            android:textColor="@color/TextSecondary"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+
     <EditText
         android:id="@+id/searchET"
         android:layout_width="wrap_content"

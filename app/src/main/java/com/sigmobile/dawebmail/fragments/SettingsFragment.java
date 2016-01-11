@@ -1,7 +1,12 @@
 package com.sigmobile.dawebmail.fragments;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -9,8 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.sigmobile.dawebmail.R;
+import com.sigmobile.dawebmail.database.User;
 import com.sigmobile.dawebmail.utils.Constants;
 import com.sigmobile.dawebmail.utils.Printer;
 
@@ -27,6 +34,9 @@ public class SettingsFragment extends Fragment {
 
     @Bind(R.id.settings_networkcell_switch)
     Switch switch_mobile;
+
+    @Bind(R.id.settings_sound_tv)
+    TextView soundURI;
 
     @Bind(R.id.settings_networkwifi_switch)
     Switch switch_wifi;
@@ -81,6 +91,32 @@ public class SettingsFragment extends Fragment {
                 }
             }
         });
+
+        soundURI.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Tone");
+
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, ("android.resource://" + getActivity().getPackageName() + "/" + R.raw.zoop));
+
+                startActivityForResult(intent, 5);
+            }
+        });
+
         return rootView;
+    }
+
+    @Override
+    public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
+        if (resultCode == Activity.RESULT_OK && requestCode == 5) {
+            Uri uri = intent.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+            if (uri != null) {
+                User.setNotificationSound(getActivity(), uri.toString());
+                Snackbar.make(soundURI, "Updated Notification Sound", Snackbar.LENGTH_LONG).show();
+            } else {
+            }
+        }
     }
 }

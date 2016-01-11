@@ -38,6 +38,7 @@ public class Constants {
     public static String SAVED_FRAGMENT = "SAVED_FRAGMENT";
 
     public static String ALERT_SHOWN = "ALERT_SHOWN";
+    public static String NOTIFICATION_SOUND = "NOTIFICATION_SOUND";
 
 
 }

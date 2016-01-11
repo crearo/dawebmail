@@ -26,6 +26,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.sigmobile.dawebmail.R;
@@ -50,6 +51,9 @@ import me.drakeet.materialdialog.MaterialDialog;
  */
 
 public class SentFragment extends Fragment implements RefreshInboxListener, DeleteMailListener, MailAdapter.DeleteSelectedListener {
+
+    @Bind(R.id.inbox_empty_view)
+    LinearLayout emptyLayout;
 
     @Bind(R.id.inbox_listView)
     ListView listview;
@@ -138,6 +142,8 @@ public class SentFragment extends Fragment implements RefreshInboxListener, Dele
 
         new RefreshInbox(getActivity(), SentFragment.this, Constants.SENT).execute();
 
+        swipeRefreshLayout.setVisibility(View.GONE);
+
         return rootView;
     }
 
@@ -220,6 +226,15 @@ public class SentFragment extends Fragment implements RefreshInboxListener, Dele
                     Snackbar.make(swipeRefreshLayout, refreshedEmails.size() + " New Webmails!", Snackbar.LENGTH_LONG).show();
 
                 progressDialog2.dismiss();
+
+                if (allEmails.size() != 0) {
+                    emptyLayout.setVisibility(View.GONE);
+                    swipeRefreshLayout.setVisibility(View.VISIBLE);
+                } else {
+                    emptyLayout.setVisibility(View.VISIBLE);
+                    swipeRefreshLayout.setVisibility(View.GONE);
+                }
+
             }
         });
         swipeRefreshLayout.setRefreshing(false);

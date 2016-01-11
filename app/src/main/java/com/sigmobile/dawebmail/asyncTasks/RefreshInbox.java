@@ -18,7 +18,6 @@ public class RefreshInbox extends AsyncTask<Void, Void, Void> {
     Context context;
     long timeStarted = 0;
     long timeFinished = 0;
-    boolean result = false;
     String username, pwd;
     ArrayList<EmailMessage> refreshedEmails;
     String REFRESH_TYPE;
@@ -53,10 +52,17 @@ public class RefreshInbox extends AsyncTask<Void, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
 
-        if (result) {
+        /*
+        *This should be changed! Right now every webmail that is refreshed is considered as a new refresh.
+        * Even ones that fail. I need a way to check if we were able to return successfully, and then save the last refreshed.
+         */
+        boolean complete = false;
+        if (refreshedEmails != null) {
             User.setLastRefreshed(context, "" + System.currentTimeMillis());
+            complete = true;
         }
         timeFinished = System.currentTimeMillis();
-        listener.onPostRefresh(result, refreshedEmails);
+        listener.onPostRefresh(complete, refreshedEmails);
+
     }
 }

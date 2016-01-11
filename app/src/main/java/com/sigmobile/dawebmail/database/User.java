@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.sigmobile.dawebmail.R;
 import com.sigmobile.dawebmail.utils.Constants;
 import com.sigmobile.dawebmail.utils.Printer;
 
@@ -62,6 +63,19 @@ public class User {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(Constants.LAST_REFRESHED, lastRefreshed);
+        editor.apply();
+        editor.commit();
+    }
+
+    public static String getNotificationSound(Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.getString(Constants.NOTIFICATION_SOUND, ("android.resource://" + context.getPackageName() + "/" + R.raw.zoop));
+    }
+
+    public static void setNotificationSound(Context context, String uri) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(Constants.NOTIFICATION_SOUND, uri);
         editor.apply();
         editor.commit();
     }

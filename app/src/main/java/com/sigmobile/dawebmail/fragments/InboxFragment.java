@@ -26,6 +26,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.orm.StringUtil;
@@ -55,6 +56,9 @@ import me.drakeet.materialdialog.MaterialDialog;
 
 public class InboxFragment extends Fragment implements RefreshInboxListener, DeleteMailListener, MailAdapter.DeleteSelectedListener {
 
+
+    @Bind(R.id.inbox_empty_view)
+    LinearLayout emptyLayout;
 
     @Bind(R.id.inbox_listView)
     ListView listview;
@@ -86,6 +90,8 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Inbox");
 
         setSwipeRefreshLayout();
+
+        emptyLayout.setVisibility(View.GONE);
 
         allEmails = (ArrayList<EmailMessage>) Select.from(EmailMessage.class).orderBy(StringUtil.toSQLName("contentID")).list();
         Collections.reverse(allEmails);

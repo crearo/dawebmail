@@ -77,18 +77,19 @@ public class SmartBoxFragment extends Fragment {
         HashMap<String, Integer> senderCount = new HashMap<>();
 
         int totalLength = 0;
-        int longestLength = 0;
+        int longestLength = 1;
         int emailsWithAttachment = 0;
         int openedWithApp = 0;
         int readEmails = 0;
         for (int i = 0; i < emails.size(); i++) {
             String subject = emails.get(i).subject;
-            if (subject.contains(" "))
-                totalLength += subject.split(" ").length;
-            else
+            if (subject.contains(" ")) {
+                int currentLength = subject.split(" ").length;
+                totalLength += currentLength;
+                if (currentLength > longestLength)
+                    longestLength = currentLength;
+            } else
                 totalLength++;
-            if (totalLength > longestLength)
-                longestLength = totalLength;
             if (emails.get(i).totalAttachments >= 1)
                 emailsWithAttachment++;
             if (!emails.get(i).content.equals("")) {
