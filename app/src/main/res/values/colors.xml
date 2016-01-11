@@ -5,7 +5,8 @@
     <color name="colorAccent">#FF5252</color>
 
     <color name="EmailBackground">#FFFFFF</color>
-    <color name="EmailBackgroundSecondary">#FAFAFA</color>
+    <color name="EmailBackgroundSecondary">#FEFEFE</color>
+    <color name="EmailBackgroundTertiary">#FCFCFC</color>
 
     <color name="TextPrimary">#212121</color>
     <color name="TextSecondary">#424242</color>

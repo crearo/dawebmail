@@ -55,9 +55,6 @@ public class SmartBoxFragment extends Fragment {
     @Bind(R.id.smart_total_no_of_opened)
     TextView smart_total_no_of_opened;
 
-    @Bind(R.id.smart_total_no_of_opened_with_app)
-    TextView smart_total_no_of_opened_with_app;
-
     @Bind(R.id.smart_total_per_att)
     TextView smart_total_per_att;
 
@@ -92,9 +89,7 @@ public class SmartBoxFragment extends Fragment {
                 totalLength++;
             if (emails.get(i).totalAttachments >= 1)
                 emailsWithAttachment++;
-            if (!emails.get(i).content.equals("")) {
-                openedWithApp++;
-            }
+
             if (emails.get(i).readUnread.equals(Constants.WEBMAIL_READ)) {
                 readEmails++;
             }
@@ -111,7 +106,6 @@ public class SmartBoxFragment extends Fragment {
         smart_total_avg_length.setText("" + avgLength + " words");
         smart_total_longest_length.setText("" + longestLength + " words");
         smart_total_per_att.setText("" + (100 * emailsWithAttachment) / emails.size() + " %");
-        smart_total_no_of_opened_with_app.setText("" + openedWithApp);
         smart_total_no_of_opened.setText("" + ((100 * readEmails) / emails.size()) + " %");
 
         String date = getDateFromMillis(User.getLastRefreshed(getActivity()));

@@ -13,6 +13,7 @@ import javax.mail.Part;
 import javax.mail.Session;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 /**
  * Created by rish on 7/1/16.
@@ -39,7 +40,6 @@ public class MailParser {
 //            String sentDate = message.getSentDate().toString();
 
             String contentType = message.getContentType();
-            String messageContent = "";
 
             // store attachment file name, separated by comma
             String attachFiles = "";
@@ -58,7 +58,14 @@ public class MailParser {
                         totalAttachments++;
                     } else {
                         // this part may be the message content
-                        messageContent = part.getContent().toString();
+                        if (part.getContent() instanceof MimeMultipart) {
+//                        System.out.println(((MimeMultipart) (part.getContent())).getBodyPart(1).getContentType());
+                            parseMime((MimeMultipart) part.getContent());
+                            Log.d(LOGTAG, "IS instanceof Mimemultipart");
+                        } else {
+                            contentHTML = part.getContent().toString();
+                            Log.d(LOGTAG, "ISNT instanceof Mimemultipart");
+                        }
                     }
                 }
                 if (attachFiles.length() > 1) {
@@ -67,26 +74,29 @@ public class MailParser {
             } else if (contentType.contains("text/plain")) {
                 Object content = message.getContent();
                 if (content != null) {
-                    messageContent = content.toString();
+                    contentHTML = content.toString();
                 }
             } else if (contentType.contains("text/html")) {
                 Object content = message.getContent();
                 if (content != null) {
-                    messageContent = content.toString();
+                    contentHTML = content.toString();
                 }
             }
 
             // print out details of each message
-            System.out.println("\t Message: " + messageContent);
+            System.out.println("\t Message: " + contentHTML);
+
+            if (contentHTML.contains("background-color: #ffffff;"))
+                contentHTML = contentHTML.replace("background-color: #ffffff;", "");
+
             System.out.println("\t Attachments: " + attachFiles);
-            contentHTML = messageContent;
         } catch (Exception e) {
             Log.d(LOGTAG, "Error in parsing email");
             e.printStackTrace();
         }
     }
 
-//    public void parseMail(String content) {
+    //    public void parseMail(String content) {
 //        try {
 //            System.setProperty("mail.mime.multipart.ignoreexistingboundaryparameter", "true");
 //            ByteArrayDataSource ds = new ByteArrayDataSource(content, "multipart/mixed");
@@ -111,33 +121,29 @@ public class MailParser {
 //        }
 //    }
 //
-//    public void parseMime(MimeMultipart multipart) {
-//        System.setProperty("mail.mime.multipart.ignoreexistingboundaryparameter", "true");
-//        try {
-//            for (int i = 0; i < multipart.getCount(); i++) {
-//                if (multipart.getBodyPart(i).getContent() instanceof MimeMultipart) {
-//                    parseMime((MimeMultipart) (multipart.getBodyPart(i).getContent()));
-//                } else {
-//                    String multiPartType = multipart.getBodyPart(i).getContentType();
-//                    String multiPartContent = "" + ((multipart.getBodyPart(i).getContent()));
-//                    System.out.println(multiPartType + " | " + multiPartContent);
-//                    if (multiPartType.contains("text/html")) {
-//                        contentHTML = multiPartContent;
-//                    } else if (multiPartType.contains("text/plain")) {
-//                        contentHTML = multiPartContent;
-//                    } else if (multiPartType.contains("image/jpeg")) {
-//
-//                    } else if (multiPartType.contains("image/png")) {
-//
-//                    } else {
-//                        Log.d(LOGTAG, "is not defined yet");
-//                    }
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
+    public void parseMime(MimeMultipart multipart) {
+        System.setProperty("mail.mime.multipart.ignoreexistingboundaryparameter", "true");
+        try {
+            for (int i = 0; i < multipart.getCount(); i++) {
+                if (multipart.getBodyPart(i).getContent() instanceof MimeMultipart) {
+                    parseMime((MimeMultipart) (multipart.getBodyPart(i).getContent()));
+                } else {
+                    String multiPartType = multipart.getBodyPart(i).getContentType();
+                    String multiPartContent = "" + ((multipart.getBodyPart(i).getContent()));
+                    System.out.println("INSIDE FUNCTION | " + multiPartType + " | " + multiPartContent);
+                    if (multiPartType.contains("text/html")) {
+                        contentHTML = multiPartContent;
+                    } else if (multiPartType.contains("text/plain")) {
+                        contentHTML = multiPartContent;
+                    } else {
+                        Log.d(LOGTAG, multiPartContent + "\nis not defined yet");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public String getContentHTML() {
         return contentHTML;

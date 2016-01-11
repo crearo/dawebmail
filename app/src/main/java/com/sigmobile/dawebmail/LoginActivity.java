@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -29,6 +30,9 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
     @Bind(R.id.login_loginbtn)
     Button loginbtn;
 
+    @Bind(R.id.tool_bar)
+    Toolbar toolbar;
+
     String username = "", pwd = "";
 
     ProgressDialog progressDialog;
@@ -39,6 +43,10 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
         setContentView(R.layout.activity_login);
 
         ButterKnife.bind(this);
+
+        toolbar.setTitle("DAWebmail");
+        toolbar.setTitleTextColor(getResources().getColor(R.color.EmailBackground));
+        setSupportActionBar(toolbar);
 
         usernametf.requestFocus();
 

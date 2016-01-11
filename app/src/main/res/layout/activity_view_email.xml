@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E7E7E7"
+    android:background="@color/EmailBackgroundSecondary"
     android:fitsSystemWindows="true"
     tools:context="com.sigmobile.dawebmail.ViewEmail">
 
@@ -19,6 +19,7 @@
         android:layout_alignParentLeft="true"
         android:background="#E7E7E7"
         android:clickable="false"
+        android:elevation="10dp"
         android:orientation="horizontal"
         android:padding="5dp">
 
@@ -60,7 +61,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="3dp"
-                android:background="#E7E7E7"
+                android:background="@color/EmailBackgroundTertiary"
                 android:padding="10dp"
                 android:text="FROM"
                 android:textSize="15dp" />
@@ -77,7 +78,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="3dp"
-                android:background="#E7E7E7"
+                android:background="@color/EmailBackgroundTertiary"
                 android:padding="10dp"
                 android:text="SUBJECT"
                 android:textSize="15dp" />
@@ -94,6 +95,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
+                android:background="@color/EmailBackgroundTertiary"
                 tools:ignore="WebViewLayout" />
 
             <LinearLayout
@@ -101,6 +103,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
+                android:background="@color/EmailBackgroundTertiary"
                 android:orientation="vertical"></LinearLayout>
 
         </LinearLayout>

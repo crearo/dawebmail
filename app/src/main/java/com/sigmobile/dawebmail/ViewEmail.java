@@ -2,7 +2,6 @@ package com.sigmobile.dawebmail;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
@@ -86,7 +85,6 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
                 currentEmail.setId(EMAIL_ID);
         }
 
-        webView_viewContent.setBackgroundColor(Color.parseColor("#E7E7E7"));
         progdialog = new ProgressDialog(ViewEmail.this);
 
         getSupportActionBar().setTitle("@" + currentEmail.fromName);

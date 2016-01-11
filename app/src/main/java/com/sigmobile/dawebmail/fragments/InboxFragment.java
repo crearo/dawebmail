@@ -31,6 +31,7 @@ import android.widget.ListView;
 
 import com.orm.StringUtil;
 import com.orm.query.Select;
+import com.sigmobile.dawebmail.LoginActivity;
 import com.sigmobile.dawebmail.R;
 import com.sigmobile.dawebmail.adapters.MailAdapter;
 import com.sigmobile.dawebmail.asyncTasks.DeleteMail;
@@ -315,10 +316,11 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        System.exit(0);
-                        getActivity().finish();
+//                        System.exit(0);
+//                        getActivity().finish();
+                        startActivity(new Intent(getActivity(), LoginActivity.class));
                     }
-                }, 2000);
+                }, 1000);
             }
         });
         materialDialog.show();
