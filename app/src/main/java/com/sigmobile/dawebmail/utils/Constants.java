@@ -13,7 +13,6 @@ public class Constants {
     public static String WEBMAIL_UNREAD = "UNREAD";
 
     public static String URL = "https://webmail.daiict.ac.in/";
-
     public static String URL_INBOX = "https://webmail.daiict.ac.in/zimbra/h/search?mesg=welcome&initial=true&app=";
 
     public static String CURRENT_EMAIL_SERIALIZABLE = "CURRENT_EMAIL_SERIALIZABLE";
@@ -25,8 +24,8 @@ public class Constants {
 
     public static String USER_PREFERENCES = "USER_PREFERENCES";
 
-    public static String USERNAME = "USERNAME";
-    public static String PASSWORD = "PASSWORD";
+    public static String USERNAME = "USERNAME_1";
+    public static String PASSWORD = "PASSWORD_1";
 
     public static String LAST_REFRESHED = "LAST_REFRESHED";
 
@@ -37,7 +36,7 @@ public class Constants {
     public static String ON_FIRST_RUN = "ON_FIRST_RUN";
     public static String SAVED_FRAGMENT = "SAVED_FRAGMENT";
 
-    public static String ALERT_SHOWN = "ALERT_SHOWN";
+    public static String ALERT_SHOWN = "ALERT_SHOWN_UPDATE_1";
     public static String NOTIFICATION_SOUND = "NOTIFICATION_SOUND";
 
 

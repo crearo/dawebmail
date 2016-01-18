@@ -18,6 +18,7 @@ import com.sigmobile.dawebmail.database.User;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import me.drakeet.materialdialog.MaterialDialog;
 
 public class LoginActivity extends AppCompatActivity implements LoginListener {
 
@@ -43,6 +44,8 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
         setContentView(R.layout.activity_login);
 
         ButterKnife.bind(this);
+
+        showUpdateDialog();
 
         toolbar.setTitle("DAWebmail");
         toolbar.setTitleTextColor(getResources().getColor(R.color.EmailBackground));
@@ -94,6 +97,22 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
             finish();
             usernametf.setText("");
             pwdtf.setText("");
+        }
+    }
+
+    private void showUpdateDialog() {
+        if (!User.getAlertShown(getApplicationContext())) {
+            final MaterialDialog materialDialog = new MaterialDialog(LoginActivity.this);
+            materialDialog.setTitle("And it's up!");
+            materialDialog.setMessage("We've changed the entire structure of the application. Material UI + you'll receive notifications, smoother than ever! I'm really thankful to all those that contributed.\n\nSend, and delete will show up soon too. :D");
+            materialDialog.show();
+            materialDialog.setPositiveButton("Alright!", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    materialDialog.dismiss();
+                }
+            });
+            User.setAlertShown(getApplicationContext(), true);
         }
     }
 }

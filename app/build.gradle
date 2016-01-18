@@ -12,7 +12,7 @@ android {
         applicationId "com.sigmobile.dawebmail"
         minSdkVersion 14
         targetSdkVersion 22
-        versionCode 10
+        versionCode 11
         versionName "4.0"
     }
     buildTypes {

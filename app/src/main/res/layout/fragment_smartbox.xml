@@ -220,13 +220,6 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Master Refresh for Accurate value"
-                        android:textSize="12sp"
-                        android:textStyle="normal" />
-
-                    <TextView
                         android:id="@+id/smart_total_no_of_opened"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

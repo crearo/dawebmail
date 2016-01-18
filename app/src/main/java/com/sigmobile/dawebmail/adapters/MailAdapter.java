@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.Vibrator;
+import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
@@ -108,21 +108,22 @@ public class MailAdapter extends BaseAdapter {
         convertView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View arg0) {
-                Printer.println("Long click");
-                if (clickedForDelete[position]) {
-                    clickedForDelete[position] = false;
-                    notifyDataSetChanged();
-                    emailsToDelete.remove(item);
-                    System.out.println("clicked for delete is true, returning to normal");
-                } else {
-                    clickedForDelete[position] = true;
-                    emailsToDelete.add(item);
-                    notifyDataSetChanged();
-                    Vibrator vibe = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-                    vibe.vibrate(20);
-                    System.out.println("clicked for delete is false, added to emailsToDelete");
-                }
-                deleteSelectedListener.onItemClickedForDelete(emailsToDelete);
+//                Printer.println("Long click");
+//                if (clickedForDelete[position]) {
+//                    clickedForDelete[position] = false;
+//                    notifyDataSetChanged();
+//                    emailsToDelete.remove(item);
+//                    System.out.println("clicked for delete is true, returning to normal");
+//                } else {
+//                    clickedForDelete[position] = true;
+//                    emailsToDelete.add(item);
+//                    notifyDataSetChanged();
+//                    Vibrator vibe = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+//                    vibe.vibrate(20);
+//                    System.out.println("clicked for delete is false, added to emailsToDelete");
+//                }
+//                deleteSelectedListener.onItemClickedForDelete(emailsToDelete);
+                Snackbar.make(arg0, "Delete will be available in the next version", Snackbar.LENGTH_LONG).show();
                 return true;
             }
         });
@@ -131,22 +132,21 @@ public class MailAdapter extends BaseAdapter {
 
             @Override
             public void onClick(View arg0) {
-
-                if (clickedForDelete[position]) {
-                    clickedForDelete[position] = false;
-                    notifyDataSetChanged();
-                    emailsToDelete.remove(item);
-                    Printer.println("clicked for delete is true, returning to normal");
-
-                } else {
-                    clickedForDelete[position] = true;
-                    emailsToDelete.add(item);
-                    notifyDataSetChanged();
-                    Vibrator vibe = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-                    vibe.vibrate(20);
-                    Printer.println("clicked for delete is false, added to emailsToDelete");
-                }
-                deleteSelectedListener.onItemClickedForDelete(emailsToDelete);
+//                if (clickedForDelete[position]) {
+//                    clickedForDelete[position] = false;
+//                    notifyDataSetChanged();
+//                    emailsToDelete.remove(item);
+//                    Printer.println("clicked for delete is true, returning to normal");
+//                } else {
+//                    clickedForDelete[position] = true;
+//                    emailsToDelete.add(item);
+//                    notifyDataSetChanged();
+//                    Vibrator vibe = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+//                    vibe.vibrate(20);
+//                    Printer.println("clicked for delete is false, added to emailsToDelete");
+//                }
+//                deleteSelectedListener.onItemClickedForDelete(emailsToDelete);
+                Snackbar.make(arg0, "Delete will be available in the next version", Snackbar.LENGTH_LONG).show();
             }
         });
 

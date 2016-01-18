@@ -73,6 +73,7 @@ public class SmartBoxFragment extends Fragment {
         ArrayList<EmailMessage> emails = (ArrayList<EmailMessage>) EmailMessage.listAll(EmailMessage.class);
         HashMap<String, Integer> senderCount = new HashMap<>();
 
+        String longestSubject = "";
         int totalLength = 0;
         int longestLength = 1;
         int emailsWithAttachment = 0;
@@ -83,8 +84,10 @@ public class SmartBoxFragment extends Fragment {
             if (subject.contains(" ")) {
                 int currentLength = subject.split(" ").length;
                 totalLength += currentLength;
-                if (currentLength > longestLength)
+                if (currentLength > longestLength) {
                     longestLength = currentLength;
+                    longestSubject = subject;
+                }
             } else
                 totalLength++;
             if (emails.get(i).totalAttachments >= 1)
@@ -104,7 +107,7 @@ public class SmartBoxFragment extends Fragment {
         smart_total_emails.setText("" + emails.size());
         double avgLength = Math.round((totalLength / (double) (emails.size())) * 100) / 100.0;
         smart_total_avg_length.setText("" + avgLength + " words");
-        smart_total_longest_length.setText("" + longestLength + " words");
+        smart_total_longest_length.setText("" + longestLength + " words\n" + longestSubject);
         smart_total_per_att.setText("" + (100 * emailsWithAttachment) / emails.size() + " %");
         smart_total_no_of_opened.setText("" + ((100 * readEmails) / emails.size()) + " %");
 
