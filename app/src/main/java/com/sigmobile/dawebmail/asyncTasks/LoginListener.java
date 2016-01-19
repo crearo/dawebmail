@@ -5,8 +5,8 @@ package com.sigmobile.dawebmail.asyncTasks;
  */
 public interface LoginListener {
 
-    public void onPreLogin();
+    void onPreLogin();
 
-    public void onPostLogin(boolean loginSuccess, String timeTaken);
+    void onPostLogin(boolean loginSuccess, String timeTaken);
 
 }

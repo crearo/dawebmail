@@ -31,6 +31,7 @@ import android.widget.ListView;
 
 import com.orm.StringUtil;
 import com.orm.query.Select;
+import com.sigmobile.dawebmail.ComposeActivity;
 import com.sigmobile.dawebmail.LoginActivity;
 import com.sigmobile.dawebmail.R;
 import com.sigmobile.dawebmail.adapters.MailAdapter;
@@ -72,6 +73,9 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
 
     @Bind(R.id.inbox_delete_fab)
     FloatingActionButton fabDelete;
+
+    @Bind(R.id.inbox_send_fab)
+    FloatingActionButton fabSend;
 
     MailAdapter mailAdapter;
     ProgressDialog progressDialog, progressDialog2;
@@ -159,6 +163,14 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
         });
 
         fabDelete.setVisibility(View.GONE);
+
+        fabSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), ComposeActivity.class));
+            }
+        });
+
         return rootView;
     }
 
@@ -299,7 +311,7 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
                 User.setUsername("null", getActivity());
                 User.setPassword("null", getActivity());
 
-                SharedPreferences prefs = getActivity().getSharedPreferences(Constants.USER_PREFERENCES, getActivity().MODE_PRIVATE);
+                SharedPreferences prefs = getActivity().getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
 
                 editor.putBoolean(Constants.TOGGLE_MOBILEDATA, false);

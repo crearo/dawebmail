@@ -42,7 +42,7 @@ public class ScrapingMachine {
 
     public boolean logIn(String username, String pwd) {
         try {
-            Printer.println("Attempting login with " + username + " " + pwd);
+            Printer.println("Attempting sendMsg with " + username + " " + pwd);
             userAgent.settings.checkSSLCerts = false;
             userAgent.visit(Constants.URL);
             Printer.println("Location is now " + userAgent.getLocation());
@@ -71,12 +71,12 @@ public class ScrapingMachine {
                 return true;
             } else {
                 User.setIsLoggedIn(false);
-                Printer.println("login unsuccessful");
+                Printer.println("sendMsg unsuccessful");
                 return false;
             }
         } catch (Exception e) {
             Printer.println("Error while logging in - " + e.getMessage());
-            Printer.println("login Unsuccessful");
+            Printer.println("sendMsg Unsuccessful");
             User.setIsLoggedIn(false);
             return false;
         }
@@ -88,7 +88,7 @@ public class ScrapingMachine {
             if (!User.isLoggedIn()) {
                 Printer.println("Not Logged in Logging in from scrapeallmsgs.");
                 if (!logIn(username, pwd)) {
-                    Printer.println("unable to login");
+                    Printer.println("unable to sendMsg");
                     return false;
                 }
             }
@@ -423,11 +423,7 @@ public class ScrapingMachine {
             }
             Printer.println("sending values to delete function");
             boolean result = deleteMails(values_checkboxes, emails_tobedeleted_clone);
-            if (!result) {
-                return false;
-            } else {
-                return true;
-            }
+            return result;
         } catch (Exception e) {
             Printer.println(e.getMessage());
             return false;

@@ -1,6 +1,7 @@
 package com.sigmobile.dawebmail.fragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.RingtoneManager;
@@ -51,7 +52,7 @@ public class SettingsFragment extends Fragment {
 
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Settings");
 
-        SharedPreferences prefs = getActivity().getSharedPreferences(Constants.USER_PREFERENCES, getActivity().MODE_PRIVATE);
+        SharedPreferences prefs = getActivity().getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);
         toggleMobileData = prefs.getBoolean(Constants.TOGGLE_MOBILEDATA, true);
         toggleWifi = prefs.getBoolean(Constants.TOGGLE_WIFI, true);
 
@@ -61,7 +62,7 @@ public class SettingsFragment extends Fragment {
         switch_wifi.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SharedPreferences prefs = getActivity().getSharedPreferences(Constants.USER_PREFERENCES, getActivity().MODE_PRIVATE);
+                SharedPreferences prefs = getActivity().getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
 
                 if (!switch_wifi.isChecked()) {
@@ -78,7 +79,7 @@ public class SettingsFragment extends Fragment {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SharedPreferences prefs = getActivity().getSharedPreferences(Constants.USER_PREFERENCES, getActivity().MODE_PRIVATE);
+                SharedPreferences prefs = getActivity().getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
 
                 if (!switch_mobile.isChecked()) {

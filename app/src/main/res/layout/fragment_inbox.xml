@@ -14,8 +14,8 @@
             android:id="@+id/inbox_listView"
             style="@style/Widget.AppCompat.ListView"
             android:layout_width="match_parent"
-            android:background="@color/EmailBackgroundSecondary"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:background="@color/EmailBackgroundSecondary" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
@@ -68,5 +68,17 @@
         android:layout_margin="10dp"
         android:elevation="4dp"
         android:src="@drawable/ic_action_delete" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/inbox_send_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dp"
+        android:elevation="4dp"
+        android:src="@drawable/ic_action_send" />
+
 
 </RelativeLayout>

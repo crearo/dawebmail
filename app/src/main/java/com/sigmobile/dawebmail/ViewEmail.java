@@ -93,7 +93,7 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
         if (currentEmail.content.equals("") || currentEmail.content == null) {
             setEmailContent("<html><head></head><body>Connect to the Internet to download content</body></html>");
             /*
-            *since we dont have to login in to view the webmail anymore
+            *since we dont have to sendMsg in to view the webmail anymore
             * (since basic auth in restapi provides us to be logged in always)
             * I am directly calling viewmailmanager
              */

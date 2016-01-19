@@ -10,10 +10,12 @@
 
     <color name="TextPrimary">#212121</color>
     <color name="TextSecondary">#424242</color>
+    <color name="TextTertiary">#989898</color>
+
+    <color name="dividerColor">#EFEFEF</color>
 
     <color name="TextPrimaryAlternate">#FFFFFF</color>
     <color name="TextSecondaryAlternate">#F5F5F5</color>
-
 
     <color name="primaryFocused">#F5F5F5</color>
     <color name="primaryPressed">#FFFFFF</color>

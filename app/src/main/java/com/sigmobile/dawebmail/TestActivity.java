@@ -40,7 +40,7 @@ public class TestActivity extends AppCompatActivity {
 
                     @Override
                     public void onPostLogin(boolean loginSuccess, String timeTaken) {
-                        System.out.println("Fini login");
+                        System.out.println("Fini sendMsg");
                     }
                 }).execute();
 

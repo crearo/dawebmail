@@ -279,7 +279,7 @@ public class TrashFragment extends Fragment implements RefreshInboxListener, Del
                 User.setUsername("null", getActivity());
                 User.setPassword("null", getActivity());
 
-                SharedPreferences prefs = getActivity().getSharedPreferences(Constants.USER_PREFERENCES, getActivity().MODE_PRIVATE);
+                SharedPreferences prefs = getActivity().getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
 
                 editor.putBoolean(Constants.TOGGLE_MOBILEDATA, false);

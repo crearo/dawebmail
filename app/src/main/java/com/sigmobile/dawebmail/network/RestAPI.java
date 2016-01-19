@@ -5,6 +5,7 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.orm.StringUtil;
+import com.orm.SugarRecord;
 import com.orm.query.Condition;
 import com.orm.query.Select;
 import com.sigmobile.dawebmail.database.EmailMessage;
@@ -179,7 +180,8 @@ public class RestAPI {
                         break;
                     } else {
 
-                        EmailMessage emailMessage = (EmailMessage) (Select.from(EmailMessage.class).where(Condition.prop(StringUtil.toSQLName("contentID")).eq(contentID)).first());
+                        SugarRecord sugarRecord = Select.from(EmailMessage.class).where(Condition.prop(StringUtil.toSQLName("contentID")).eq(contentID)).first();
+                        EmailMessage emailMessage = (EmailMessage) sugarRecord;
                         if (emailMessage != null) {
                             Log.d(LOGTAG, "Found existing mail, updating");
                             emailMessage.contentID = contentID;
