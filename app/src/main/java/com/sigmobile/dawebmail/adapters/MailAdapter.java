@@ -78,6 +78,8 @@ public class MailAdapter extends BaseAdapter {
             if (!clickedForDelete[position]) {
                 if (item.totalAttachments >= 1)
                     holder.iv_icon.setImageResource(R.drawable.final_unread_a);
+                else if (item.important)
+                    holder.iv_icon.setImageResource(R.drawable.final_unread_imp);
                 else
                     holder.iv_icon.setImageResource(R.drawable.final_unread);
             } else {
@@ -91,6 +93,8 @@ public class MailAdapter extends BaseAdapter {
             if (!clickedForDelete[position]) {
                 if (item.totalAttachments >= 1)
                     holder.iv_icon.setImageResource(R.drawable.final_read_a);
+                else if (item.important)
+                    holder.iv_icon.setImageResource(R.drawable.final_read_imp);
                 else
                     holder.iv_icon.setImageResource(R.drawable.final_read);
             } else {

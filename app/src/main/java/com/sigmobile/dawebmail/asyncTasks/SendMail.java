@@ -2,7 +2,6 @@ package com.sigmobile.dawebmail.asyncTasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.sigmobile.dawebmail.database.User;
 import com.zimbra.wsdl.zimbraservice_wsdl.ZcsService;
@@ -32,17 +31,19 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
     SendMailListener sendMailListener;
     Context context;
     String mailSubject, mailContent, mailToAddress;
+    boolean important = false;
 
     String username, pwd;
 
     boolean result = false;
 
-    public SendMail(SendMailListener sendMailListener, Context context, String mailSubject, String mailContent, String mailToAddress) {
+    public SendMail(SendMailListener sendMailListener, Context context, String mailSubject, String mailContent, String mailToAddress, boolean important) {
         this.sendMailListener = sendMailListener;
         this.context = context;
         this.mailSubject = mailSubject;
         this.mailContent = mailContent;
         this.mailToAddress = mailToAddress;
+        this.important = important;
         this.username = User.getUsername(context);
         this.pwd = User.getPassword(context);
     }
@@ -129,7 +130,8 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
 
             msgToSend.setMp(mimePartInfo);
             msgToSend.setSu(mailSubject);
-            msgToSend.setF("!");
+            if (important)
+                msgToSend.setF("!");
 
             System.out.println("Subject : " + msgToSend.getSu());
             System.out.println("Att Count : " + msgToSend.getAttributeCount());
@@ -143,12 +145,14 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
 
             SendMsgResponse sendMsgResponse = zcsService.sendMsgRequest(sendMsgRequest, context);
 
-            Log.d("TAG", sendMsgResponse.getName());
-
+            System.out.println("RESPONSE : " + sendMsgRequest.getSuid());
+            result = true;
         } catch (IOException e) {
             e.printStackTrace();
+            result = false;
         } catch (XmlPullParserException e) {
             e.printStackTrace();
+            result = false;
         }
     }
 }

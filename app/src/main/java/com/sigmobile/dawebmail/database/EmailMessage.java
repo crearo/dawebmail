@@ -14,11 +14,12 @@ public class EmailMessage extends SugarRecord implements Serializable {
     public String readUnread = "";
     public String content = "";
     public int totalAttachments = 0;
+    public boolean important = false;
 
     public EmailMessage() {
     }
 
-    public EmailMessage(int contentID, String fromName, String fromAddress, String subject, String dateInMillis, String readUnread, String content, int totalAttachments) {
+    public EmailMessage(int contentID, String fromName, String fromAddress, String subject, String dateInMillis, String readUnread, String content, int totalAttachments, boolean important) {
         this.contentID = contentID;
         this.fromName = fromName;
         this.fromAddress = fromAddress;
@@ -27,5 +28,6 @@ public class EmailMessage extends SugarRecord implements Serializable {
         this.readUnread = readUnread;
         this.content = content;
         this.totalAttachments = totalAttachments;
+        this.important = important;
     }
 }

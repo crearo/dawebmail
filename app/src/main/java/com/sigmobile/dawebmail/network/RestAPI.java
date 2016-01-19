@@ -42,6 +42,8 @@ public class RestAPI {
     private String username, password;
     private Context context;
 
+    private boolean important = false;
+
     private ArrayList<EmailMessage> allNewEmails = new ArrayList<>();
 
     public RestAPI(String username, String password, Context context) {
@@ -159,6 +161,10 @@ public class RestAPI {
                             readUnread = Constants.WEBMAIL_UNREAD;
                         if (webmailObject.getString("f").contains("a"))
                             totalAttachments = 1;
+                        if (webmailObject.getString("f").contains("!"))
+                            important = true;
+                        else
+                            important = false;
                     }
                     String dateInMillis = webmailObject.getString("d");
 
@@ -191,10 +197,11 @@ public class RestAPI {
                             emailMessage.dateInMillis = dateInMillis;
                             emailMessage.readUnread = readUnread;
                             emailMessage.totalAttachments = totalAttachments;
+                            emailMessage.important = important;
                             emailMessage.save();
                         } else {
                             Log.d(LOGTAG, "No existing mail found, Creating");
-                            emailMessage = new EmailMessage(contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "", totalAttachments);
+                            emailMessage = new EmailMessage(contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "", totalAttachments, important);
                             emailMessage.save();
                             allNewEmails.add(emailMessage);
                         }
@@ -254,6 +261,10 @@ public class RestAPI {
                             readUnread = Constants.WEBMAIL_UNREAD;
                         if (webmailObject.getString("f").contains("a"))
                             totalAttachments = 1;
+                        if (webmailObject.getString("f").contains("!"))
+                            important = true;
+                        else
+                            important = false;
                     }
 
                     String dateInMillis = webmailObject.getString("d");
@@ -271,7 +282,7 @@ public class RestAPI {
 
                     Log.d(LOGTAG, "NEW EMAIL | " + contentID + " | " + fromName + " | " + fromAddress + " | " + subject + " | " + dateInMillis + " | " + readUnread);
 
-                    EmailMessage emailMessage = new EmailMessage(contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "", totalAttachments);
+                    EmailMessage emailMessage = new EmailMessage(contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "", totalAttachments, important);
                     allNewEmails.add(emailMessage);
                 }
                 return true;
@@ -328,6 +339,10 @@ public class RestAPI {
                             readUnread = Constants.WEBMAIL_UNREAD;
                         if (webmailObject.getString("f").contains("a"))
                             totalAttachments = 1;
+                        if (webmailObject.getString("f").contains("!"))
+                            important = true;
+                        else
+                            important = false;
                     }
 
                     String dateInMillis = webmailObject.getString("d");
@@ -345,7 +360,7 @@ public class RestAPI {
 
                     Log.d(LOGTAG, "NEW EMAIL | " + contentID + " | " + fromName + " | " + fromAddress + " | " + subject + " | " + dateInMillis + " | " + readUnread);
 
-                    EmailMessage emailMessage = new EmailMessage(contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "", totalAttachments);
+                    EmailMessage emailMessage = new EmailMessage(contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "", totalAttachments, important);
                     allNewEmails.add(emailMessage);
                 }
                 return true;
