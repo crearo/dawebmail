@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.sigmobile.dawebmail.ComposeActivity">
+
+    <include
+        android:id="@+id/compose_toolbar"
+        layout="@layout/tool_bar" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="To"
+            android:textColor="@color/TextTertiary"
+            android:textSize="20sp"
+            android:textStyle="normal" />
+
+        <EditText
+            android:id="@+id/compose_to_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:padding="10dp"
+            android:textColor="@color/TextSecondary" />
+    </LinearLayout>
+
+    <include layout="@layout/divider" />
+
+    <EditText
+        android:id="@+id/compose_subject"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/linearLayout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/linearLayout"
+        android:layout_below="@+id/linearLayout"
+        android:layout_margin="10dp"
+        android:background="@android:color/transparent"
+        android:hint="Subject"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:textColor="@color/TextSecondary"
+        android:textSize="20sp" />
+
+    <include layout="@layout/divider" />
+
+    <EditText
+        android:id="@+id/compose_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/linearLayout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/linearLayout"
+        android:layout_below="@+id/linearLayout"
+        android:layout_margin="10dp"
+        android:background="@android:color/transparent"
+        android:hint="Compose Webmail"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:textColor="@color/TextSecondary"
+        android:textSize="18sp" />
+
+
+</LinearLayout>
