@@ -1,95 +1,23 @@
 package com.sigmobile.dawebmail.database;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+import com.orm.SugarRecord;
 
-import com.sigmobile.dawebmail.R;
-import com.sigmobile.dawebmail.utils.Constants;
-import com.sigmobile.dawebmail.utils.Printer;
+import java.io.Serializable;
 
 /**
- * Created by rish on 6/10/15.
+ * Created by rish on 11/6/16.
  */
-public class User {
+public class User extends SugarRecord implements Serializable {
 
-    private static boolean loggedIn = false;
-    private static String lastRefreshed = "NEVER";
-    private boolean alertShown = false;
+    public String username;
+    public String password;
 
-    public static boolean isLoggedIn() {
-        return loggedIn;
+    public User() {
+
     }
 
-    public static void setIsLoggedIn(boolean b) {
-        loggedIn = b;
-    }
-
-    public static void setUsername(String username, Context context) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(Constants.USERNAME, username);
-        editor.apply();
-        editor.commit();
-    }
-
-    public static String getUsername(Context context) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String name = preferences.getString(Constants.USERNAME, null);
-        Printer.println("USERNAME  = " + name);
-        return name;
-    }
-
-
-    public static void setPassword(String pwd, Context context) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(Constants.PASSWORD, pwd);
-        editor.apply();
-        editor.commit();
-    }
-
-    public static String getPassword(Context context) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return preferences.getString(Constants.PASSWORD, null);
-    }
-
-    public static String getLastRefreshed(Context context) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return preferences.getString(Constants.LAST_REFRESHED, null);
-    }
-
-    public static void setLastRefreshed(Context context, String lastRefreshed) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(Constants.LAST_REFRESHED, lastRefreshed);
-        editor.apply();
-        editor.commit();
-    }
-
-    public static String getNotificationSound(Context context) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return preferences.getString(Constants.NOTIFICATION_SOUND, ("android.resource://" + context.getPackageName() + "/" + R.raw.zoop));
-    }
-
-    public static void setNotificationSound(Context context, String uri) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(Constants.NOTIFICATION_SOUND, uri);
-        editor.apply();
-        editor.commit();
-    }
-
-    public static boolean getAlertShown(Context context) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return preferences.getBoolean(Constants.ALERT_SHOWN, false);
-    }
-
-    public static void setAlertShown(Context context, boolean alertShown) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean(Constants.ALERT_SHOWN, alertShown);
-        editor.apply();
-        editor.commit();
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 }

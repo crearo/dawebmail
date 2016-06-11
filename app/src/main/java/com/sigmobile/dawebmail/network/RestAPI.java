@@ -9,6 +9,7 @@ import com.orm.SugarRecord;
 import com.orm.query.Condition;
 import com.orm.query.Select;
 import com.sigmobile.dawebmail.database.EmailMessage;
+import com.sigmobile.dawebmail.database.User;
 import com.sigmobile.dawebmail.utils.BasePath;
 import com.sigmobile.dawebmail.utils.Constants;
 
@@ -39,16 +40,15 @@ public class RestAPI {
 
     private static final int TIME_OUT = 10 * 1000;
 
-    private String username, password;
+    private User user;
     private Context context;
 
     private boolean important = false;
 
     private ArrayList<EmailMessage> allNewEmails = new ArrayList<>();
 
-    public RestAPI(String username, String password, Context context) {
-        this.username = username;
-        this.password = password;
+    public RestAPI(User user, Context context) {
+        this.user = user;
         this.context = context;
     }
 
@@ -77,7 +77,7 @@ public class RestAPI {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
 
-            String userPassword = username + ":" + password;
+            String userPassword = user.username + ":" + user.password;
             String encoding = Base64.encodeToString(userPassword.getBytes(), Base64.DEFAULT);
             conn.setRequestProperty("Authorization", "Basic " + encoding);
             conn.setReadTimeout(TIME_OUT);
@@ -115,7 +115,7 @@ public class RestAPI {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
 
-            String userPassword = username + ":" + password;
+            String userPassword = user.username + ":" + user.password;
             String encoding = Base64.encodeToString(userPassword.getBytes(), Base64.DEFAULT);
             conn.setRequestProperty("Authorization", "Basic " + encoding);
             conn.setReadTimeout(TIME_OUT);
@@ -201,7 +201,7 @@ public class RestAPI {
                             emailMessage.save();
                         } else {
                             Log.d(LOGTAG, "No existing mail found, Creating");
-                            emailMessage = new EmailMessage(contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "", totalAttachments, important);
+                            emailMessage = new EmailMessage(user, contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "", totalAttachments, important);
                             emailMessage.save();
                             allNewEmails.add(emailMessage);
                         }
@@ -227,7 +227,7 @@ public class RestAPI {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
 
-            String userPassword = username + ":" + password;
+            String userPassword = user.username + ":" + user.password;
             String encoding = Base64.encodeToString(userPassword.getBytes(), Base64.DEFAULT);
             conn.setRequestProperty("Authorization", "Basic " + encoding);
             conn.setReadTimeout(TIME_OUT);
@@ -282,7 +282,7 @@ public class RestAPI {
 
                     Log.d(LOGTAG, "NEW EMAIL | " + contentID + " | " + fromName + " | " + fromAddress + " | " + subject + " | " + dateInMillis + " | " + readUnread);
 
-                    EmailMessage emailMessage = new EmailMessage(contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "", totalAttachments, important);
+                    EmailMessage emailMessage = new EmailMessage(user, contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "", totalAttachments, important);
                     allNewEmails.add(emailMessage);
                 }
                 return true;
@@ -305,7 +305,7 @@ public class RestAPI {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
 
-            String userPassword = username + ":" + password;
+            String userPassword = user.username + ":" + user.password;
             String encoding = Base64.encodeToString(userPassword.getBytes(), Base64.DEFAULT);
             conn.setRequestProperty("Authorization", "Basic " + encoding);
             conn.setReadTimeout(TIME_OUT);
@@ -360,7 +360,7 @@ public class RestAPI {
 
                     Log.d(LOGTAG, "NEW EMAIL | " + contentID + " | " + fromName + " | " + fromAddress + " | " + subject + " | " + dateInMillis + " | " + readUnread);
 
-                    EmailMessage emailMessage = new EmailMessage(contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "", totalAttachments, important);
+                    EmailMessage emailMessage = new EmailMessage(user, contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "", totalAttachments, important);
                     allNewEmails.add(emailMessage);
                 }
                 return true;
@@ -380,7 +380,7 @@ public class RestAPI {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
 
-            String userPassword = username + ":" + password;
+            String userPassword = user.username + ":" + user.password;
             String encoding = Base64.encodeToString(userPassword.getBytes(), Base64.DEFAULT);
             conn.setRequestProperty("Authorization", "Basic " + encoding);
             conn.setReadTimeout(TIME_OUT);

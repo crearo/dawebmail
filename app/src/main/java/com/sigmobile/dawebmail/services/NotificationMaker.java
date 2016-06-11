@@ -14,7 +14,7 @@ import com.sigmobile.dawebmail.ContributeActivity;
 import com.sigmobile.dawebmail.LoginActivity;
 import com.sigmobile.dawebmail.R;
 import com.sigmobile.dawebmail.database.EmailMessage;
-import com.sigmobile.dawebmail.database.User;
+import com.sigmobile.dawebmail.database.UserSettings;
 
 import java.util.ArrayList;
 
@@ -30,7 +30,7 @@ public class NotificationMaker {
         mBuilder.setSmallIcon(R.drawable.icon_final);
         mBuilder.setContentTitle(sendername);
         mBuilder.setContentText(subject);
-        mBuilder.setSound(Uri.parse(User.getNotificationSound(context)));
+        mBuilder.setSound(Uri.parse(UserSettings.getNotificationSound(context)));
         mBuilder.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE);
         mBuilder.setAutoCancel(true);
 
@@ -77,7 +77,7 @@ public class NotificationMaker {
             PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
             mBuilder.setContentIntent(resultPendingIntent);
-            mBuilder.setSound(Uri.parse(User.getNotificationSound(context)));
+            mBuilder.setSound(Uri.parse(UserSettings.getNotificationSound(context)));
             mBuilder.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE);
             NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -96,7 +96,7 @@ public class NotificationMaker {
         mBuilder.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE);
         mBuilder.setContentTitle(title);
         mBuilder.setTicker(title);
-        mBuilder.setSound(Uri.parse(User.getNotificationSound(context)));
+        mBuilder.setSound(Uri.parse(UserSettings.getNotificationSound(context)));
         mBuilder.setContentText(message);
         mBuilder.setAutoCancel(true);
 

@@ -11,7 +11,7 @@ import com.jaunt.component.Form;
 import com.orm.SugarRecord;
 import com.orm.query.Select;
 import com.sigmobile.dawebmail.database.EmailMessage;
-import com.sigmobile.dawebmail.database.User;
+import com.sigmobile.dawebmail.database.UserSettings;
 import com.sigmobile.dawebmail.utils.Constants;
 import com.sigmobile.dawebmail.utils.Printer;
 
@@ -49,7 +49,7 @@ public class ScrapingMachine {
 
             if (userAgent.getLocation().equals(Constants.URL_INBOX)) {
                 Printer.println("Already logged in");
-                User.setIsLoggedIn(true);
+                UserSettings.setIsLoggedIn(true);
                 return true;
             }
 
@@ -66,18 +66,18 @@ public class ScrapingMachine {
             Printer.println(title);
 
             if (userAgent.getLocation().trim().equals(Constants.URL_INBOX)) {
-                User.setIsLoggedIn(true);
+                UserSettings.setIsLoggedIn(true);
                 Printer.println("logged in successfully");
                 return true;
             } else {
-                User.setIsLoggedIn(false);
+                UserSettings.setIsLoggedIn(false);
                 Printer.println("sendMsg unsuccessful");
                 return false;
             }
         } catch (Exception e) {
             Printer.println("Error while logging in - " + e.getMessage());
             Printer.println("sendMsg Unsuccessful");
-            User.setIsLoggedIn(false);
+            UserSettings.setIsLoggedIn(false);
             return false;
         }
     }
@@ -85,7 +85,7 @@ public class ScrapingMachine {
     public boolean scrapeAllMessagesfromInbox() {
         // go to the homepage
         try {
-            if (!User.isLoggedIn()) {
+            if (!UserSettings.isLoggedIn()) {
                 Printer.println("Not Logged in Logging in from scrapeallmsgs.");
                 if (!logIn(username, pwd)) {
                     Printer.println("unable to sendMsg");
@@ -350,7 +350,7 @@ public class ScrapingMachine {
         try {
             ArrayList<String> values_checkboxes = new ArrayList<String>();
 
-            if (!User.isLoggedIn()) {
+            if (!UserSettings.isLoggedIn()) {
                 Printer.println("Not logged in man");
                 if (logIn(username, pwd)) {
                     Printer.println("So logged you in");

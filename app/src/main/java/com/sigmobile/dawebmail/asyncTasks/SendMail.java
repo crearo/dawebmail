@@ -1,13 +1,18 @@
 package com.sigmobile.dawebmail.asyncTasks;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Base64;
 
-import com.sigmobile.dawebmail.database.User;
+import com.sigmobile.dawebmail.R;
+import com.sigmobile.dawebmail.database.UserSettings;
 import com.zimbra.wsdl.zimbraservice_wsdl.ZcsService;
 
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Date;
 
@@ -44,8 +49,8 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
         this.mailContent = mailContent;
         this.mailToAddress = mailToAddress;
         this.important = important;
-        this.username = User.getUsername(context);
-        this.pwd = User.getPassword(context);
+        this.username = UserSettings.getUsername(context);
+        this.pwd = UserSettings.getPassword(context);
     }
 
     @Override
@@ -115,7 +120,7 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
 
             msgToSend.setE(emailAddrInfos);
 
-            MimePartInfo[] mimePartInfos = new MimePartInfo[2];
+            MimePartInfo[] mimePartInfos = new MimePartInfo[3];
             mimePartInfos[0] = new MimePartInfo();
             mimePartInfos[0].setContent(mailContent);
             mimePartInfos[0].setCt("text/plain"); //content type
@@ -124,8 +129,18 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
             mimePartInfos[1].setContent(mailContent);
             mimePartInfos[1].setCt("text/html");
 
+            Bitmap bm = BitmapFactory.decodeResource(this.context.getResources(), R.drawable.ic_action_mail);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bm.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
+            byte[] b = baos.toByteArray();
+            String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+
+            mimePartInfos[2] = new MimePartInfo();
+            mimePartInfos[2].setContent(encodedImage);
+            mimePartInfos[2].setCt("image/jpeg");
+
             MimePartInfo mimePartInfo = new MimePartInfo();
-            mimePartInfo.setCt("multipart/alternative"); //content type
+            mimePartInfo.setCt("multipart/mixed"); //content type
             mimePartInfo.setMp(mimePartInfos);
 
             msgToSend.setMp(mimePartInfo);

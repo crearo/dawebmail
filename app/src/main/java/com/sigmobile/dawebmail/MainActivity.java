@@ -15,7 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.sigmobile.dawebmail.database.User;
+import com.sigmobile.dawebmail.database.UserSettings;
 import com.sigmobile.dawebmail.fragments.FeedbackFragment;
 import com.sigmobile.dawebmail.fragments.InboxFragment;
 import com.sigmobile.dawebmail.fragments.SentFragment;
@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         mCurrentSelectedPosition = 0;
         selectItem(mCurrentSelectedPosition);
 
-        headerTitle.setText(User.getUsername(getApplicationContext()));
+        headerTitle.setText(UserSettings.getUsername(getApplicationContext()));
     }
 
     private void selectItem(int position) {

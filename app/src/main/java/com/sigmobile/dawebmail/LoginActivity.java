@@ -14,7 +14,7 @@ import android.widget.EditText;
 
 import com.sigmobile.dawebmail.asyncTasks.Login;
 import com.sigmobile.dawebmail.asyncTasks.LoginListener;
-import com.sigmobile.dawebmail.database.User;
+import com.sigmobile.dawebmail.database.UserSettings;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -53,15 +53,15 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
 
         usernametf.requestFocus();
 
-        if (User.getUsername(getApplicationContext()) == null || User.getUsername(getApplicationContext()).equalsIgnoreCase("null")) {
+        if (UserSettings.getUsername(getApplicationContext()) == null || UserSettings.getUsername(getApplicationContext()).equalsIgnoreCase("null")) {
             // user not logged in
             loginbtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     username = usernametf.getText().toString().trim();
                     pwd = pwdtf.getText().toString();
-                    User.setUsername(username, getApplicationContext());
-                    User.setPassword(pwd, getApplicationContext());
+                    UserSettings.setUsername(username, getApplicationContext());
+                    UserSettings.setPassword(pwd, getApplicationContext());
                     new Login(getApplicationContext(), LoginActivity.this).execute();
                 }
             });
@@ -87,8 +87,8 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
         progressDialog.dismiss();
         if (!loginSuccess) {
             Snackbar.make(findViewById(R.id.login_rellay), "Login Unsuccessful", Snackbar.LENGTH_LONG).show();
-            User.setUsername("null", getApplicationContext());
-            User.setPassword("null", getApplicationContext());
+            UserSettings.setUsername("null", getApplicationContext());
+            UserSettings.setPassword("null", getApplicationContext());
             usernametf.setText(username);
             pwdtf.setText("");
         } else {
@@ -101,7 +101,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
     }
 
     private void showUpdateDialog() {
-        if (!User.getAlertShown(getApplicationContext())) {
+        if (!UserSettings.getAlertShown(getApplicationContext())) {
             final MaterialDialog materialDialog = new MaterialDialog(LoginActivity.this);
             materialDialog.setTitle("And it's up!");
             materialDialog.setMessage("We've changed the entire structure of the application. Material UI + you'll receive notifications, smoother than ever! I'm really thankful to all those that contributed.\n\nSend, and delete will show up soon too. :D");
@@ -112,7 +112,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
                     materialDialog.dismiss();
                 }
             });
-            User.setAlertShown(getApplicationContext(), true);
+            UserSettings.setAlertShown(getApplicationContext(), true);
         }
     }
 }

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.sigmobile.dawebmail.database.EmailMessage;
-import com.sigmobile.dawebmail.database.User;
+import com.sigmobile.dawebmail.database.UserSettings;
 
 import java.util.ArrayList;
 
@@ -23,8 +23,8 @@ public class DeleteMail extends AsyncTask<Void, Void, Void> {
         this.deleteMailListener = deleteMailListener;
         this.emailToBeDeleted = emailsToBeDeleted;
         this.context = context;
-        username = User.getUsername(context);
-        pwd = User.getPassword(context);
+        username = UserSettings.getUsername(context);
+        pwd = UserSettings.getPassword(context);
     }
 
     @Override

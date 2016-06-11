@@ -98,8 +98,8 @@ public class MailAdapter extends BaseAdapter {
                 else
                     holder.iv_icon.setImageResource(R.drawable.final_read);
             } else {
-                Printer.println("set holder icon to delete wala");
                 holder.iv_icon.setImageResource(R.drawable.ic_action_delete_red);
+                Printer.println("set holder icon to delete wala");
                 holder.iv_icon.setAnimation(AnimationUtils.loadAnimation(context, R.anim.abc_grow_fade_in_from_bottom));
             }
             holder.tv_name.setTypeface(null, Typeface.NORMAL);

@@ -36,7 +36,7 @@ import com.sigmobile.dawebmail.asyncTasks.DeleteMailListener;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInbox;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInboxListener;
 import com.sigmobile.dawebmail.database.EmailMessage;
-import com.sigmobile.dawebmail.database.User;
+import com.sigmobile.dawebmail.database.UserSettings;
 import com.sigmobile.dawebmail.services.NotificationMaker;
 import com.sigmobile.dawebmail.utils.Constants;
 
@@ -277,8 +277,8 @@ public class SentFragment extends Fragment implements RefreshInboxListener, Dele
         materialDialog.setPositiveButton("Log out", new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                User.setUsername("null", getActivity());
-                User.setPassword("null", getActivity());
+                UserSettings.setUsername("null", getActivity());
+                UserSettings.setPassword("null", getActivity());
 
                 SharedPreferences prefs = getActivity().getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();

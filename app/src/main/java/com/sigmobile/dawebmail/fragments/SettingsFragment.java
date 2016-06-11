@@ -18,7 +18,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.sigmobile.dawebmail.R;
-import com.sigmobile.dawebmail.database.User;
+import com.sigmobile.dawebmail.database.UserSettings;
 import com.sigmobile.dawebmail.utils.Constants;
 import com.sigmobile.dawebmail.utils.Printer;
 
@@ -114,7 +114,7 @@ public class SettingsFragment extends Fragment {
         if (resultCode == Activity.RESULT_OK && requestCode == 5) {
             Uri uri = intent.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
             if (uri != null) {
-                User.setNotificationSound(getActivity(), uri.toString());
+                UserSettings.setNotificationSound(getActivity(), uri.toString());
                 Snackbar.make(soundURI, "Updated Notification Sound", Snackbar.LENGTH_LONG).show();
             } else {
             }

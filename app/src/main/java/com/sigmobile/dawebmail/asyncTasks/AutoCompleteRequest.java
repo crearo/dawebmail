@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.sigmobile.dawebmail.database.User;
+import com.sigmobile.dawebmail.database.UserSettings;
 import com.zimbra.wsdl.zimbraservice_wsdl.ZcsService;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -36,8 +36,8 @@ public class AutoCompleteRequest extends AsyncTask<Void, Void, Void> {
         this.autoCompleteListener = autoCompleteListener;
         this.context = context;
         this.searchText = searchText;
-        this.username = User.getUsername(context);
-        this.pwd = User.getPassword(context);
+        this.username = UserSettings.getUsername(context);
+        this.pwd = UserSettings.getPassword(context);
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.sigmobile.dawebmail.database.User;
+import com.sigmobile.dawebmail.database.UserSettings;
 import com.sigmobile.dawebmail.network.RestAPI;
 
 /**
@@ -12,16 +13,15 @@ import com.sigmobile.dawebmail.network.RestAPI;
 public class Login extends AsyncTask<Void, Void, Void> {
 
     LoginListener loginListener;
-    String username, pwd;
     long initTime, finalTime = 0;
     Context context;
     boolean loggedIn = false;
+    User user;
 
-    public Login(Context context, LoginListener loginListener) {
+    public Login(User user, Context context, LoginListener loginListener) {
         this.loginListener = loginListener;
         this.context = context;
-        username = User.getUsername(context);
-        pwd = User.getPassword(context);
+        this.user = user;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class Login extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... voids) {
-        RestAPI restAPI = new RestAPI(username, pwd, context);
+        RestAPI restAPI = new RestAPI(user, context);
         loggedIn = restAPI.logIn();
 
         return null;
@@ -43,8 +43,7 @@ public class Login extends AsyncTask<Void, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         if (loggedIn)
-            User.setLastRefreshed(context, "" + System.currentTimeMillis());
-        User.setIsLoggedIn(loggedIn);
+            UserSettings.setLastRefreshed(context, "" + System.currentTimeMillis());
         finalTime = System.currentTimeMillis();
         loginListener.onPostLogin(loggedIn, "" + (finalTime - initTime));
     }

@@ -15,15 +15,14 @@ public class ViewMailManager extends AsyncTask<Void, Void, Void> {
     Context context;
     ViewMailListener viewMailListener;
     boolean result = false;
-    String username, pwd;
     EmailMessage emailMessage;
+    User user;
 
-    public ViewMailManager(Context context, ViewMailListener viewMailListener, EmailMessage emailMessage) {
+    public ViewMailManager(User user, Context context, ViewMailListener viewMailListener, EmailMessage emailMessage) {
         this.viewMailListener = viewMailListener;
         this.context = context;
         this.emailMessage = emailMessage;
-        username = User.getUsername(context);
-        pwd = User.getPassword(context);
+        this.user = user;
     }
 
     @Override
@@ -34,7 +33,7 @@ public class ViewMailManager extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... voids) {
-        RestAPI restAPI = new RestAPI(username, pwd, context);
+        RestAPI restAPI = new RestAPI(user, context);
         emailMessage = restAPI.fetchEmailContent(emailMessage);
         return null;
     }

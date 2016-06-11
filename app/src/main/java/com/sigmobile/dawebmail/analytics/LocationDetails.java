@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.Date;
 
-import com.sigmobile.dawebmail.database.User;
+import com.sigmobile.dawebmail.database.UserSettings;
 import com.sigmobile.dawebmail.utils.Constants;
 
 public class LocationDetails implements Serializable {
@@ -34,7 +34,7 @@ public class LocationDetails implements Serializable {
     public void setValue(Context context) {
         this.context = context;
         SharedPreferences settings = context.getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);
-        Location_studentID = User.getUsername(context);
+        Location_studentID = UserSettings.getUsername(context);
         Location_TimeStamp = DateFormat.getDateTimeInstance().format(new Date());
         Location_WifiName = getWifiName(context);
         Location_IPAddress = getIPAddress(context);

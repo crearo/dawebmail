@@ -8,7 +8,7 @@ import android.os.IBinder;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInbox;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInboxListener;
 import com.sigmobile.dawebmail.database.EmailMessage;
-import com.sigmobile.dawebmail.database.User;
+import com.sigmobile.dawebmail.database.UserSettings;
 import com.sigmobile.dawebmail.utils.ConnectionManager;
 import com.sigmobile.dawebmail.utils.Constants;
 import com.sigmobile.dawebmail.utils.Printer;
@@ -32,8 +32,8 @@ public class BackgroundService extends Service implements RefreshInboxListener {
     public void onStart(Intent intent, int startId) {
 
         Printer.println("Started Service");
-        username = User.getUsername(getApplicationContext());
-        pwd = User.getPassword(getApplicationContext());
+        username = UserSettings.getUsername(getApplicationContext());
+        pwd = UserSettings.getPassword(getApplicationContext());
 
         Printer.println("SERVICE USERNAME " + username);
         refreshInbox_BroadcastFunction();
