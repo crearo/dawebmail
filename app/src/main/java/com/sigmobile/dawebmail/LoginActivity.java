@@ -107,7 +107,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
             pwdtf.setText("");
         } else {
             Snackbar.make(findViewById(R.id.login_rellay), "Login Successful!", Snackbar.LENGTH_LONG).show();
-            User.createNewUser(user);
+            user = User.createNewUser(user);
             UserSettings.setCurrentUser(user, getApplicationContext());
             startActivity(new Intent(this, MainActivity.class));
             finish();

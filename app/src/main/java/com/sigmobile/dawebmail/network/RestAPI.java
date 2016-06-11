@@ -4,10 +4,6 @@ import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
-import com.orm.StringUtil;
-import com.orm.SugarRecord;
-import com.orm.query.Condition;
-import com.orm.query.Select;
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
 import com.sigmobile.dawebmail.utils.BasePath;
@@ -136,13 +132,7 @@ public class RestAPI {
 
                 JSONObject responseObject = new JSONObject(total.toString());
 
-//                SugarRecord latestRecord = Select.from(EmailMessage.class).orderBy(StringUtil.toSQLName("contentID")).first();
-                ArrayList<EmailMessage> emails = (ArrayList<EmailMessage>) Select.from(EmailMessage.class).orderBy(StringUtil.toSQLName("contentID")).list();
-                EmailMessage latestWebmail = null;
-                if (emails.size() > 0) {
-                    latestWebmail = emails.get(emails.size() - 1);
-                    Log.wtf(LOGTAG, latestWebmail.contentID + " | " + latestWebmail.fromName + " | " + latestWebmail.subject);
-                }
+                EmailMessage latestWebmail = EmailMessage.getLatestWebmailOfUser(user);
 
                 if (latestWebmail != null && total.toString().contains("\"id\":\"" + latestWebmail.contentID + "\"")) {
                     Log.d(LOGTAG, "Phone's latest email is still there on webmail");
@@ -185,24 +175,13 @@ public class RestAPI {
                         Log.d(LOGTAG, "Found same email. ID = " + contentID);
                         break;
                     } else {
-
-                        SugarRecord sugarRecord = Select.from(EmailMessage.class).where(Condition.prop(StringUtil.toSQLName("contentID")).eq(contentID)).first();
-                        EmailMessage emailMessage = (EmailMessage) sugarRecord;
+                        EmailMessage emailMessage = EmailMessage.getEmailMessageFromContentID(contentID);
                         if (emailMessage != null) {
                             Log.d(LOGTAG, "Found existing mail, updating");
-                            emailMessage.contentID = contentID;
-                            emailMessage.fromName = fromName;
-                            emailMessage.fromAddress = fromAddress;
-                            emailMessage.subject = subject;
-                            emailMessage.dateInMillis = dateInMillis;
-                            emailMessage.readUnread = readUnread;
-                            emailMessage.totalAttachments = totalAttachments;
-                            emailMessage.important = important;
-                            emailMessage.save();
+                            EmailMessage.updateExistingEmailMessage(user, emailMessage, contentID, fromName, fromAddress, subject, dateInMillis, readUnread, totalAttachments, important);
                         } else {
                             Log.d(LOGTAG, "No existing mail found, Creating");
-                            emailMessage = new EmailMessage(user, contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "", totalAttachments, important);
-                            emailMessage.save();
+                            emailMessage = EmailMessage.createNewEmailMessage(user, contentID, fromName, fromAddress, subject, dateInMillis, readUnread, totalAttachments, important);
                             allNewEmails.add(emailMessage);
                         }
                     }
@@ -282,7 +261,7 @@ public class RestAPI {
 
                     Log.d(LOGTAG, "NEW EMAIL | " + contentID + " | " + fromName + " | " + fromAddress + " | " + subject + " | " + dateInMillis + " | " + readUnread);
 
-                    EmailMessage emailMessage = new EmailMessage(user, contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "", totalAttachments, important);
+                    EmailMessage emailMessage = new EmailMessage(user.username, contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "", totalAttachments, important);
                     allNewEmails.add(emailMessage);
                 }
                 return true;
@@ -360,7 +339,7 @@ public class RestAPI {
 
                     Log.d(LOGTAG, "NEW EMAIL | " + contentID + " | " + fromName + " | " + fromAddress + " | " + subject + " | " + dateInMillis + " | " + readUnread);
 
-                    EmailMessage emailMessage = new EmailMessage(user, contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "", totalAttachments, important);
+                    EmailMessage emailMessage = new EmailMessage(user.username, contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "", totalAttachments, important);
                     allNewEmails.add(emailMessage);
                 }
                 return true;

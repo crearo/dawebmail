@@ -14,8 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,8 +28,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-import com.orm.StringUtil;
-import com.orm.query.Select;
 import com.sigmobile.dawebmail.ComposeActivity;
 import com.sigmobile.dawebmail.LoginActivity;
 import com.sigmobile.dawebmail.R;
@@ -84,6 +81,8 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
 
     User currentUser;
 
+    private static final String TAG = "InboxFragment";
+
     public InboxFragment() {
 
     }
@@ -105,12 +104,14 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
         allEmails = (ArrayList<EmailMessage>) EmailMessage.getAllMailsOfUser(currentUser);
         Collections.reverse(allEmails);
 
+        Log.d(TAG, "allEmails size is " + allEmails.size() + " for the user " + currentUser.username);
+
         mailAdapter = new MailAdapter(allEmails, getActivity(), this, Constants.INBOX);
         listview.setAdapter(mailAdapter);
 
         progressDialog = new ProgressDialog(getActivity());
 
-        if (Select.from(EmailMessage.class).count() == 0) {
+        if (EmailMessage.getAllMailsOfUser(currentUser).size() == 0) {
             Printer.println("Printing, count is 0, refreshing inbox");
             new RefreshInbox(currentUser, getActivity(), InboxFragment.this, Constants.INBOX).execute();
         }
@@ -123,6 +124,7 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
             }
         }, new IntentFilter(Constants.BROADCAST_REFRESH_ADAPTERS));
 
+        /*
         searchET.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -165,6 +167,7 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
 
             }
         });
+        */
 
         fabDelete.setVisibility(View.GONE);
 
@@ -291,7 +294,7 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
     }
 
     public void refreshAdapter() {
-        allEmails = (ArrayList<EmailMessage>) (Select.from(EmailMessage.class).orderBy(StringUtil.toSQLName("contentID")).list());
+        allEmails = (ArrayList<EmailMessage>) EmailMessage.getAllMailsOfUser(currentUser);
         Collections.reverse(allEmails);
 
         mailAdapter = new MailAdapter(allEmails, getActivity(), this, Constants.INBOX);
@@ -312,6 +315,21 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
         materialDialog.setPositiveButton("Log out", new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SharedPreferences prefs = getActivity().getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+
+                editor.putBoolean(Constants.TOGGLE_MOBILEDATA, false);
+                editor.putBoolean(Constants.TOGGLE_WIFI, false);
+
+                EmailMessage.deleteAllMailsOfUser(currentUser);
+
+                SharedPreferences firstRunPrefs = getActivity().getSharedPreferences(Constants.ON_FIRST_RUN, Context.MODE_PRIVATE);
+                firstRunPrefs.edit().putBoolean(Constants.RUN_EXCEPT_ON_FIRST, false).commit();
+
+                NotificationMaker.cancelNotification(getActivity());
+                materialDialog.dismiss();
+                Snackbar.make(swipeRefreshLayout, "Logging Out!", Snackbar.LENGTH_LONG).show();
+
                 /**
                  * Delete the current User and set the next user in line as current user
                  */
@@ -321,20 +339,6 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
                 else
                     UserSettings.setCurrentUser(null, getActivity());
 
-                SharedPreferences prefs = getActivity().getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = prefs.edit();
-
-                editor.putBoolean(Constants.TOGGLE_MOBILEDATA, false);
-                editor.putBoolean(Constants.TOGGLE_WIFI, false);
-
-                EmailMessage.deleteAll(EmailMessage.class);
-
-                SharedPreferences firstRunPrefs = getActivity().getSharedPreferences(Constants.ON_FIRST_RUN, Context.MODE_PRIVATE);
-                firstRunPrefs.edit().putBoolean(Constants.RUN_EXCEPT_ON_FIRST, false).commit();
-
-                NotificationMaker.cancelNotification(getActivity());
-                materialDialog.dismiss();
-                Snackbar.make(swipeRefreshLayout, "Logging Out!", Snackbar.LENGTH_LONG).show();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
