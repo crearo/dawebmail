@@ -1,5 +1,6 @@
 package com.sigmobile.dawebmail;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
@@ -40,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.main_tool_bar)
     Toolbar toolbar;
 
+    @Bind(R.id.main_frame_layout)
+    FrameLayout frameLayout;
+
     int mCurrentSelectedPosition = 0;
 
     Drawer drawer;
@@ -65,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
             profileDrawerItems.add(new ProfileDrawerItem().withName(user.username));
         }
 
+        profileDrawerItems.add(new ProfileDrawerItem().withName("+ Account"));
+
         AccountHeader accountHeader = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.snackbar_background)
@@ -72,9 +79,15 @@ public class MainActivity extends AppCompatActivity {
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
                     public boolean onProfileChanged(View view, IProfile profile, boolean current) {
+                        if (profile.getName().equals("+ Account")) {
+                            UserSettings.setCurrentUser(null, getApplicationContext());
+                            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                            return true;
+                        }
                         UserSettings.setCurrentUser(User.getUserFromUserName(profile.getName()), getApplicationContext());
+                        drawer.closeDrawer();
+                        selectItem(0);
                         return true;
-                        // TODO : Add refresh here!
                     }
                 })
                 .build();
@@ -108,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public boolean onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
                         selectItem(position);
-                        return false;
+                        return true;
                     }
                 })
                 .build();
@@ -121,37 +134,38 @@ public class MainActivity extends AppCompatActivity {
 
         Fragment fragment = null;
 
+        drawer.setSelection(position);
         switch (position) {
             case 0:
                 fragment = new InboxFragment();
-                Snackbar.make(findViewById(R.id.main_rellay), "Inbox", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(frameLayout, "Inbox", Snackbar.LENGTH_SHORT).show();
                 break;
             case 1:
                 fragment = new SmartBoxFragment();
-                Snackbar.make(findViewById(R.id.main_rellay), "SmartBox", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(frameLayout, "SmartBox", Snackbar.LENGTH_SHORT).show();
                 break;
             case 2:
                 fragment = new SentFragment();
-                Snackbar.make(findViewById(R.id.main_rellay), "SentBox", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(frameLayout, "SentBox", Snackbar.LENGTH_SHORT).show();
                 break;
             case 3:
                 fragment = new TrashFragment();
-                Snackbar.make(findViewById(R.id.main_rellay), "TrashBox", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(frameLayout, "TrashBox", Snackbar.LENGTH_SHORT).show();
                 break;
             case 4:
                 fragment = new SettingsFragment();
-                Snackbar.make(findViewById(R.id.main_rellay), "Settings", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(frameLayout, "Settings", Snackbar.LENGTH_SHORT).show();
                 break;
             case 5:
                 fragment = new FeedbackFragment();
-                Snackbar.make(findViewById(R.id.main_rellay), "Feedback", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(frameLayout, "Feedback", Snackbar.LENGTH_SHORT).show();
                 break;
             default:
                 break;
         }
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.main_rellay, fragment).commit();
+            fragmentManager.beginTransaction().replace(R.id.main_frame_layout, fragment).commit();
             fragmentManager.popBackStack();
         } else {
             Log.e("MainActivity", "Error in creating fragment");
