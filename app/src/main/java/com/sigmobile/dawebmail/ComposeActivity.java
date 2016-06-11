@@ -22,6 +22,8 @@ import com.sigmobile.dawebmail.asyncTasks.AutoCompleteListener;
 import com.sigmobile.dawebmail.asyncTasks.AutoCompleteRequest;
 import com.sigmobile.dawebmail.asyncTasks.SendMail;
 import com.sigmobile.dawebmail.asyncTasks.SendMailListener;
+import com.sigmobile.dawebmail.database.User;
+import com.sigmobile.dawebmail.database.UserSettings;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -46,12 +48,16 @@ public class ComposeActivity extends AppCompatActivity implements SendMailListen
     @Bind(R.id.compose_imp_checkbox)
     CheckBox checkBox_imp;
 
+    User currentUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compose);
 
         ButterKnife.bind(this);
+
+        currentUser = UserSettings.getCurrentUser(getApplicationContext());
 
         toolbar.setTitleTextColor(getResources().getColor(R.color.EmailBackground));
         toolbar.setTitle("Compose");
@@ -86,7 +92,7 @@ public class ComposeActivity extends AppCompatActivity implements SendMailListen
     }
 
     private void fetchContacts(String searchText) {
-        new AutoCompleteRequest(getApplicationContext(), this, searchText).execute();
+        new AutoCompleteRequest(currentUser, getApplicationContext(), this, searchText).execute();
     }
 
     @Override

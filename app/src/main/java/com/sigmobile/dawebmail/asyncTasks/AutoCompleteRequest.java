@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.sigmobile.dawebmail.database.UserSettings;
+import com.sigmobile.dawebmail.database.User;
 import com.zimbra.wsdl.zimbraservice_wsdl.ZcsService;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -27,17 +27,16 @@ public class AutoCompleteRequest extends AsyncTask<Void, Void, Void> {
 
     boolean result = false;
     AutoCompleteListener autoCompleteListener;
-    String username, pwd;
     Context context;
     String searchText;
     String addresses[];
+    User user;
 
-    public AutoCompleteRequest(Context context, AutoCompleteListener autoCompleteListener, String searchText) {
+    public AutoCompleteRequest(User user, Context context, AutoCompleteListener autoCompleteListener, String searchText) {
         this.autoCompleteListener = autoCompleteListener;
         this.context = context;
         this.searchText = searchText;
-        this.username = UserSettings.getUsername(context);
-        this.pwd = UserSettings.getPassword(context);
+        this.user = user;
     }
 
     @Override
@@ -60,19 +59,19 @@ public class AutoCompleteRequest extends AsyncTask<Void, Void, Void> {
 
         AccountSelector accountSelector = new AccountSelector();
         accountSelector.setBy(AccountBy.OPT5_NAME);
-        accountSelector.setValue(username);
+        accountSelector.setValue(user.username);
 
         AuthRequest authRequest = new AuthRequest();
         authRequest.setAccount(accountSelector);
         authRequest.setCsrfTokenSecured(true);
         authRequest.setPersistAuthTokenCookie(true);
-        authRequest.setPassword(pwd);
+        authRequest.setPassword(user.password);
 
         try {
             AuthResponse authResponse = zcsService.authRequest(authRequest, null);
 
             HeaderAccountInfo headerAccountInfo = new HeaderAccountInfo();
-            headerAccountInfo.setValue(username);
+            headerAccountInfo.setValue(user.username);
             headerAccountInfo.setBy("name");
 
             HeaderContext headerContext = new HeaderContext();

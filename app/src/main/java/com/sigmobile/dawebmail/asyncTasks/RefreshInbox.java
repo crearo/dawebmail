@@ -19,7 +19,6 @@ public class RefreshInbox extends AsyncTask<Void, Void, Void> {
     Context context;
     long timeStarted = 0;
     long timeFinished = 0;
-    String username, pwd;
     ArrayList<EmailMessage> refreshedEmails;
     String REFRESH_TYPE;
     User user;
@@ -41,6 +40,8 @@ public class RefreshInbox extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... voids) {
+
+        // TODO : Remove emails that dont exist here.
 
         RestAPI restAPI = new RestAPI(user, context);
         restAPI.refresh(REFRESH_TYPE);
@@ -64,6 +65,5 @@ public class RefreshInbox extends AsyncTask<Void, Void, Void> {
         }
         timeFinished = System.currentTimeMillis();
         listener.onPostRefresh(complete, refreshedEmails);
-
     }
 }

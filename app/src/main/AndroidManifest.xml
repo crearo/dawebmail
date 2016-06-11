@@ -23,7 +23,7 @@
             android:value="emailsdatabase_sugar_man.db" />
         <meta-data
             android:name="VERSION"
-            android:value="2" />
+            android:value="3" />
         <meta-data
             android:name="QUERY_LOG"
             android:value="true" />

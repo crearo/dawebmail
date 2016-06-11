@@ -8,6 +8,7 @@ import android.os.IBinder;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInbox;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInboxListener;
 import com.sigmobile.dawebmail.database.EmailMessage;
+import com.sigmobile.dawebmail.database.User;
 import com.sigmobile.dawebmail.database.UserSettings;
 import com.sigmobile.dawebmail.utils.ConnectionManager;
 import com.sigmobile.dawebmail.utils.Constants;
@@ -16,7 +17,8 @@ import com.sigmobile.dawebmail.utils.Printer;
 import java.util.ArrayList;
 
 public class BackgroundService extends Service implements RefreshInboxListener {
-    String username, pwd;
+
+    User currentUser;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -31,11 +33,8 @@ public class BackgroundService extends Service implements RefreshInboxListener {
     @Override
     public void onStart(Intent intent, int startId) {
 
-        Printer.println("Started Service");
-        username = UserSettings.getUsername(getApplicationContext());
-        pwd = UserSettings.getPassword(getApplicationContext());
-
-        Printer.println("SERVICE CURRENT_USERNAME " + username);
+        currentUser = UserSettings.getCurrentUser(getApplicationContext());
+        Printer.println("Background service current username " + currentUser.username);
         refreshInbox_BroadcastFunction();
 
     }
@@ -52,7 +51,7 @@ public class BackgroundService extends Service implements RefreshInboxListener {
         boolean dataEnabled = prefs.getBoolean(Constants.TOGGLE_MOBILEDATA, false);
 
         if (((wifiEnabled && ConnectionManager.isConnectedByWifi(this)) || (dataEnabled && ConnectionManager.isConnectedByMobileData(this)))) {
-            new RefreshInbox(getApplicationContext(), this, Constants.INBOX).execute();
+            new RefreshInbox(currentUser, getApplicationContext(), this, Constants.INBOX).execute();
 
         } else if ((ConnectionManager.isConnectedByWifi(this) == false && ConnectionManager.isConnectedByMobileData(this) == false)) {
             Printer.println("No need to check for mail");
@@ -68,7 +67,7 @@ public class BackgroundService extends Service implements RefreshInboxListener {
         if (refreshedEmails.size() == 0)
             Printer.println("No new Webmails");
         else if (refreshedEmails.size() == 1)
-            NotificationMaker.showNotification(this, "One New Webmail!", refreshedEmails.get(0).fromName, refreshedEmails.get(0).subject);
+            NotificationMaker.showNotification(this, "One New Webmail", refreshedEmails.get(0).fromName, refreshedEmails.get(0).subject);
         else {
             int numberToShow = (refreshedEmails.size() >= 5) ? 5 : refreshedEmails.size();
             NotificationMaker.sendInboxNotification(numberToShow, this, refreshedEmails);

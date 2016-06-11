@@ -59,7 +59,6 @@ import me.drakeet.materialdialog.MaterialDialog;
 
 public class InboxFragment extends Fragment implements RefreshInboxListener, DeleteMailListener, MailAdapter.DeleteSelectedListener {
 
-
     @Bind(R.id.inbox_empty_view)
     LinearLayout emptyLayout;
 
@@ -101,15 +100,15 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
 
         emptyLayout.setVisibility(View.GONE);
 
-        allEmails = (ArrayList<EmailMessage>) Select.from(EmailMessage.class).orderBy(StringUtil.toSQLName("contentID")).list();
+        currentUser = UserSettings.getCurrentUser(getActivity());
+
+        allEmails = (ArrayList<EmailMessage>) EmailMessage.getAllMailsOfUser(currentUser);
         Collections.reverse(allEmails);
 
         mailAdapter = new MailAdapter(allEmails, getActivity(), this, Constants.INBOX);
         listview.setAdapter(mailAdapter);
 
         progressDialog = new ProgressDialog(getActivity());
-
-        currentUser = UserSettings.getCurrentUser(getActivity());
 
         if (Select.from(EmailMessage.class).count() == 0) {
             Printer.println("Printing, count is 0, refreshing inbox");

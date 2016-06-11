@@ -1,8 +1,12 @@
 package com.sigmobile.dawebmail.database;
 
+import com.orm.StringUtil;
 import com.orm.SugarRecord;
+import com.orm.query.Condition;
+import com.orm.query.Select;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class EmailMessage extends SugarRecord implements Serializable {
 
@@ -32,4 +36,10 @@ public class EmailMessage extends SugarRecord implements Serializable {
         this.totalAttachments = totalAttachments;
         this.important = important;
     }
+
+
+    public static List<EmailMessage> getAllMailsOfUser(User user) {
+        return Select.from(EmailMessage.class).where(Condition.prop(StringUtil.toSQLName("user")).eq(user)).orderBy(StringUtil.toSQLName("contentID")).list();
+    }
+
 }
