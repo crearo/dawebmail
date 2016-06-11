@@ -45,6 +45,6 @@ public class Login extends AsyncTask<Void, Void, Void> {
         if (loggedIn)
             UserSettings.setLastRefreshed(context, "" + System.currentTimeMillis());
         finalTime = System.currentTimeMillis();
-        loginListener.onPostLogin(loggedIn, "" + (finalTime - initTime));
+        loginListener.onPostLogin(loggedIn, "" + (finalTime - initTime), user);
     }
 }

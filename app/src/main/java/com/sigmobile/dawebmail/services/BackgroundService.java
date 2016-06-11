@@ -35,7 +35,7 @@ public class BackgroundService extends Service implements RefreshInboxListener {
         username = UserSettings.getUsername(getApplicationContext());
         pwd = UserSettings.getPassword(getApplicationContext());
 
-        Printer.println("SERVICE USERNAME " + username);
+        Printer.println("SERVICE CURRENT_USERNAME " + username);
         refreshInbox_BroadcastFunction();
 
     }

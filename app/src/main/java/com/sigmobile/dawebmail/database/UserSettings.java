@@ -6,40 +6,30 @@ import android.preference.PreferenceManager;
 
 import com.sigmobile.dawebmail.R;
 import com.sigmobile.dawebmail.utils.Constants;
-import com.sigmobile.dawebmail.utils.Printer;
 
 /**
  * Created by rish on 6/10/15.
  */
 public class UserSettings {
 
-    public static void setUsername(String username, Context context) {
+    public static void setCurrentUser(User currentUser, Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(Constants.USERNAME, username);
+        if (currentUser == null) {
+            editor.putString(Constants.CURRENT_USERNAME, null);
+        } else {
+            editor.putString(Constants.CURRENT_USERNAME, currentUser.username);
+        }
         editor.apply();
         editor.commit();
     }
 
-    public static String getUsername(Context context) {
+    public static User getCurrentUser(Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String name = preferences.getString(Constants.USERNAME, null);
-        Printer.println("USERNAME  = " + name);
-        return name;
-    }
-
-
-    public static void setPassword(String pwd, Context context) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(Constants.PASSWORD, pwd);
-        editor.apply();
-        editor.commit();
-    }
-
-    public static String getPassword(Context context) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return preferences.getString(Constants.PASSWORD, null);
+        String username = preferences.getString(Constants.CURRENT_USERNAME, null);
+        if (username == null)
+            return null;
+        return User.getUserFromUserName(username);
     }
 
     public static String getLastRefreshed(Context context) {

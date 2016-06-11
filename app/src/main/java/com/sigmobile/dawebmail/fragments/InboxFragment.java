@@ -40,6 +40,7 @@ import com.sigmobile.dawebmail.asyncTasks.DeleteMailListener;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInbox;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInboxListener;
 import com.sigmobile.dawebmail.database.EmailMessage;
+import com.sigmobile.dawebmail.database.User;
 import com.sigmobile.dawebmail.database.UserSettings;
 import com.sigmobile.dawebmail.services.NotificationMaker;
 import com.sigmobile.dawebmail.utils.Constants;
@@ -82,6 +83,8 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
 
     ArrayList<EmailMessage> allEmails;
 
+    User currentUser;
+
     public InboxFragment() {
 
     }
@@ -106,9 +109,11 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
 
         progressDialog = new ProgressDialog(getActivity());
 
+        currentUser = UserSettings.getCurrentUser(getActivity());
+
         if (Select.from(EmailMessage.class).count() == 0) {
             Printer.println("Printing, count is 0, refreshing inbox");
-            new RefreshInbox(getActivity(), InboxFragment.this, Constants.INBOX).execute();
+            new RefreshInbox(currentUser, getActivity(), InboxFragment.this, Constants.INBOX).execute();
         }
 
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(new BroadcastReceiver() {
@@ -178,7 +183,7 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new RefreshInbox(getActivity(), InboxFragment.this, Constants.INBOX).execute();
+                new RefreshInbox(currentUser, getActivity(), InboxFragment.this, Constants.INBOX).execute();
             }
         });
 
@@ -308,8 +313,14 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
         materialDialog.setPositiveButton("Log out", new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UserSettings.setUsername("null", getActivity());
-                UserSettings.setPassword("null", getActivity());
+                /**
+                 * Delete the current User and set the next user in line as current user
+                 */
+                User.deleteUser(currentUser);
+                if (User.getAllUsers().size() != 0)
+                    UserSettings.setCurrentUser(User.getAllUsers().get(0), getActivity());
+                else
+                    UserSettings.setCurrentUser(null, getActivity());
 
                 SharedPreferences prefs = getActivity().getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
@@ -328,8 +339,6 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-//                        System.exit(0);
-//                        getActivity().finish();
                         startActivity(new Intent(getActivity(), LoginActivity.class));
                     }
                 }, 1000);

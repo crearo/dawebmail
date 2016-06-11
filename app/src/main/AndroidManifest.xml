@@ -56,7 +56,6 @@
             android:enabled="true" />
 
         <activity android:name=".ContributeActivity" />
-        <activity android:name=".TestActivity" />
         <activity android:name=".ComposeActivity"></activity>
     </application>
 

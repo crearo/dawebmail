@@ -24,8 +24,7 @@ public class Constants {
 
     public static String USER_PREFERENCES = "USER_PREFERENCES";
 
-    public static String USERNAME = "USERNAME_1";
-    public static String PASSWORD = "PASSWORD_1";
+    public static String CURRENT_USERNAME = "CURRENT_USER";
 
     public static String LAST_REFRESHED = "LAST_REFRESHED";
 

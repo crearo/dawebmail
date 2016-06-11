@@ -14,6 +14,7 @@ import android.widget.EditText;
 
 import com.sigmobile.dawebmail.asyncTasks.Login;
 import com.sigmobile.dawebmail.asyncTasks.LoginListener;
+import com.sigmobile.dawebmail.database.User;
 import com.sigmobile.dawebmail.database.UserSettings;
 
 import butterknife.Bind;
@@ -38,6 +39,8 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
 
     ProgressDialog progressDialog;
 
+    User currentUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,16 +56,29 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
 
         usernametf.requestFocus();
 
-        if (UserSettings.getUsername(getApplicationContext()) == null || UserSettings.getUsername(getApplicationContext()).equalsIgnoreCase("null")) {
+        currentUser = UserSettings.getCurrentUser(this);
+
+        if (currentUser == null) {
             // user not logged in
             loginbtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     username = usernametf.getText().toString().trim();
                     pwd = pwdtf.getText().toString();
-                    UserSettings.setUsername(username, getApplicationContext());
-                    UserSettings.setPassword(pwd, getApplicationContext());
-                    new Login(getApplicationContext(), LoginActivity.this).execute();
+
+                    if (!username.contains("@daiict.ac.in")) {
+                        username = username + "@daiict.ac.in";
+                    }
+
+                    if (User.doesUserExist(username, pwd)) {
+                        Snackbar.make(view, "This user already exists - logging in now", Snackbar.LENGTH_LONG).show();
+                        UserSettings.setCurrentUser(User.getUserFromUserName(username, pwd), getApplicationContext());
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        finish();
+                    } else {
+                        User user = new User(username, pwd);
+                        new Login(user, getApplicationContext(), LoginActivity.this).execute();
+                    }
                 }
             });
         } else {
@@ -83,16 +99,16 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
     }
 
     @Override
-    public void onPostLogin(boolean loginSuccess, String timeTaken) {
+    public void onPostLogin(boolean loginSuccess, String timeTaken, User user) {
         progressDialog.dismiss();
         if (!loginSuccess) {
             Snackbar.make(findViewById(R.id.login_rellay), "Login Unsuccessful", Snackbar.LENGTH_LONG).show();
-            UserSettings.setUsername("null", getApplicationContext());
-            UserSettings.setPassword("null", getApplicationContext());
             usernametf.setText(username);
             pwdtf.setText("");
         } else {
             Snackbar.make(findViewById(R.id.login_rellay), "Login Successful!", Snackbar.LENGTH_LONG).show();
+            User.createNewUser(user);
+            UserSettings.setCurrentUser(user, getApplicationContext());
             startActivity(new Intent(this, MainActivity.class));
             finish();
             usernametf.setText("");

@@ -36,6 +36,7 @@ import com.sigmobile.dawebmail.asyncTasks.DeleteMailListener;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInbox;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInboxListener;
 import com.sigmobile.dawebmail.database.EmailMessage;
+import com.sigmobile.dawebmail.database.User;
 import com.sigmobile.dawebmail.database.UserSettings;
 import com.sigmobile.dawebmail.services.NotificationMaker;
 import com.sigmobile.dawebmail.utils.Constants;
@@ -72,6 +73,8 @@ public class SentFragment extends Fragment implements RefreshInboxListener, Dele
 
     ArrayList<EmailMessage> allEmails;
 
+    User currentUser;
+
     public SentFragment() {
 
     }
@@ -92,6 +95,8 @@ public class SentFragment extends Fragment implements RefreshInboxListener, Dele
         listview.setAdapter(mailAdapter);
 
         progressDialog = new ProgressDialog(getActivity());
+
+        currentUser = UserSettings.getCurrentUser(getActivity());
 
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(new BroadcastReceiver() {
             @Override
@@ -140,7 +145,7 @@ public class SentFragment extends Fragment implements RefreshInboxListener, Dele
             }
         });
 
-        new RefreshInbox(getActivity(), SentFragment.this, Constants.SENT).execute();
+        new RefreshInbox(currentUser, getActivity(), SentFragment.this, Constants.SENT).execute();
 
         swipeRefreshLayout.setVisibility(View.GONE);
 
@@ -151,7 +156,7 @@ public class SentFragment extends Fragment implements RefreshInboxListener, Dele
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new RefreshInbox(getActivity(), SentFragment.this, Constants.SENT).execute();
+                new RefreshInbox(currentUser, getActivity(), SentFragment.this, Constants.SENT).execute();
             }
         });
 
@@ -277,8 +282,11 @@ public class SentFragment extends Fragment implements RefreshInboxListener, Dele
         materialDialog.setPositiveButton("Log out", new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UserSettings.setUsername("null", getActivity());
-                UserSettings.setPassword("null", getActivity());
+                User.deleteUser(currentUser);
+                if (User.getAllUsers().size() != 0)
+                    UserSettings.setCurrentUser(User.getAllUsers().get(0), getActivity());
+                else
+                    UserSettings.setCurrentUser(null, getActivity());
 
                 SharedPreferences prefs = getActivity().getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
