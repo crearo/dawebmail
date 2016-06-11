@@ -17,6 +17,8 @@ import android.widget.TextView;
 import com.sigmobile.dawebmail.asyncTasks.ViewMailListener;
 import com.sigmobile.dawebmail.asyncTasks.ViewMailManager;
 import com.sigmobile.dawebmail.database.EmailMessage;
+import com.sigmobile.dawebmail.database.User;
+import com.sigmobile.dawebmail.database.UserSettings;
 import com.sigmobile.dawebmail.utils.BasePath;
 import com.sigmobile.dawebmail.utils.ConnectionManager;
 import com.sigmobile.dawebmail.utils.Constants;
@@ -59,12 +61,16 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
     @Bind(R.id.viewmail_attach_ll)
     LinearLayout ll_attachments;
 
+    User currentUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_email);
 
         ButterKnife.bind(this);
+
+        currentUser = UserSettings.getCurrentUser(this);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -97,7 +103,7 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
             * (since basic auth in restapi provides us to be logged in always)
             * I am directly calling viewmailmanager
              */
-            new ViewMailManager(getApplicationContext(), ViewEmail.this, currentEmail).execute();
+            new ViewMailManager(currentUser, getApplicationContext(), ViewEmail.this, currentEmail).execute();
             Log.d("T", "Called ViewMailManager");
         } else {
             setEmailContent(currentEmail.content);

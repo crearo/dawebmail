@@ -19,7 +19,7 @@ public class BackgroundRunner {
 
     public static void startService(Context context) {
 
-        Intent intent = new Intent(context,sudo apt-get install kivy-examples BackgroundService.class);
+        Intent intent = new Intent(context, BackgroundService.class);
 
         context.startService(intent);
         Calendar cal = Calendar.getInstance();

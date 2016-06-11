@@ -353,7 +353,7 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
             @Override
             public void onClick(View view) {
                 Snackbar.make(swipeRefreshLayout, "Deleting ...", Snackbar.LENGTH_LONG).show();
-                new DeleteMail(getActivity(), InboxFragment.this, emailsToDelete).execute();
+                new DeleteMail(currentUser, getActivity(), InboxFragment.this, emailsToDelete).execute();
             }
         });
 

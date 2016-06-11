@@ -5,12 +5,12 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import com.sigmobile.dawebmail.database.UserSettings;
+import com.sigmobile.dawebmail.utils.Constants;
+
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.Date;
-
-import com.sigmobile.dawebmail.database.UserSettings;
-import com.sigmobile.dawebmail.utils.Constants;
 
 public class LoginDetails implements Serializable {
 
@@ -37,7 +37,7 @@ public class LoginDetails implements Serializable {
     public void setValues(Context context, String LoginType, String LoginSuccess, String LoginTime) {
         this.context = context;
         SharedPreferences settings = context.getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);
-        Login_studentID = UserSettings.getUsername(context);
+        Login_studentID = UserSettings.getCurrentUser(context).username;
         Login_Connection = getConnectionType();
         Login_TimeStamp = DateFormat.getDateTimeInstance().format(new Date());
         Login_connectionDetails = getConDetails();

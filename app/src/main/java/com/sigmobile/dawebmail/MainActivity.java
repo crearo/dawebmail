@@ -1,20 +1,26 @@
 package com.sigmobile.dawebmail;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.AdapterView;
 
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.accountswitcher.AccountHeader;
+import com.mikepenz.materialdrawer.accountswitcher.AccountHeaderBuilder;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IProfile;
+import com.sigmobile.dawebmail.database.User;
 import com.sigmobile.dawebmail.database.UserSettings;
 import com.sigmobile.dawebmail.fragments.FeedbackFragment;
 import com.sigmobile.dawebmail.fragments.InboxFragment;
@@ -24,6 +30,8 @@ import com.sigmobile.dawebmail.fragments.SmartBoxFragment;
 import com.sigmobile.dawebmail.fragments.TrashFragment;
 import com.sigmobile.dawebmail.utils.Constants;
 
+import java.util.ArrayList;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -32,16 +40,9 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.main_tool_bar)
     Toolbar toolbar;
 
-    @Bind(R.id.main_drawer_layout)
-    DrawerLayout mDrawerLayout;
-
-    @Bind(R.id.main_drawer)
-    NavigationView navigationView;
-
-    @Bind(R.id.header_title)
-    TextView headerTitle;
-
     int mCurrentSelectedPosition = 0;
+
+    Drawer drawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,66 +53,68 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
         toolbar.setTitleTextColor(getResources().getColor(R.color.TextPrimaryAlternate));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        setUpNavDrawer();
+        setupDrawer();
 
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
-                menuItem.setChecked(true);
-                switch (menuItem.getItemId()) {
-                    case R.id.navigation_item_1:
-                        Snackbar.make(findViewById(R.id.main_rellay), "Inbox", Snackbar.LENGTH_SHORT).show();
-                        mCurrentSelectedPosition = 0;
-                        selectItem(mCurrentSelectedPosition);
-                        return true;
-                    case R.id.navigation_item_2:
-                        Snackbar.make(findViewById(R.id.main_rellay), "SmartBox", Snackbar.LENGTH_SHORT).show();
-                        mCurrentSelectedPosition = 1;
-                        selectItem(mCurrentSelectedPosition);
-                        return true;
-                    case R.id.navigation_item_3:
-                        Snackbar.make(findViewById(R.id.main_rellay), "Settings", Snackbar.LENGTH_SHORT).show();
-                        mCurrentSelectedPosition = 2;
-                        selectItem(mCurrentSelectedPosition);
-                        return true;
-                    case R.id.navigation_item_4:
-                        Snackbar.make(findViewById(R.id.main_rellay), "Feedback", Snackbar.LENGTH_SHORT).show();
-                        mCurrentSelectedPosition = 3;
-                        selectItem(mCurrentSelectedPosition);
-                        return true;
-                    case R.id.navigation_item_5:
-                        Snackbar.make(findViewById(R.id.main_rellay), "SentBox", Snackbar.LENGTH_SHORT).show();
-                        mCurrentSelectedPosition = 4;
-                        selectItem(mCurrentSelectedPosition);
-                        return true;
-                    case R.id.navigation_item_6:
-                        Snackbar.make(findViewById(R.id.main_rellay), "TrashBox", Snackbar.LENGTH_SHORT).show();
-                        mCurrentSelectedPosition = 5;
-                        selectItem(mCurrentSelectedPosition);
-                        return true;
-                    default:
-                        return true;
-                }
-            }
-        });
     }
 
-    private void setUpNavDrawer() {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationIcon(R.drawable.ic_action_three);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mDrawerLayout.openDrawer(GravityCompat.START);
-            }
-        });
+    private void setupDrawer() {
+        ArrayList<IProfile> profileDrawerItems = new ArrayList<>();
+        for (User user : User.getAllUsers()) {
+            profileDrawerItems.add(new ProfileDrawerItem().withName(user.username));
+        }
 
-        Snackbar.make(findViewById(R.id.main_rellay), "Inbox", Snackbar.LENGTH_SHORT).show();
-        mCurrentSelectedPosition = 0;
-        selectItem(mCurrentSelectedPosition);
+        AccountHeader accountHeader = new AccountHeaderBuilder()
+                .withActivity(this)
+                .withHeaderBackground(R.drawable.snackbar_background)
+                .withProfiles(profileDrawerItems)
+                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
+                    @Override
+                    public boolean onProfileChanged(View view, IProfile profile, boolean current) {
+                        UserSettings.setCurrentUser(User.getUserFromUserName(profile.getName()), getApplicationContext());
+                        return true;
+                        // TODO : Add refresh here!
+                    }
+                })
+                .build();
 
-        headerTitle.setText(UserSettings.getUsername(getApplicationContext()));
+        final PrimaryDrawerItem pInbox = new PrimaryDrawerItem().withName("Inbox").withIcon(R.drawable.icon_final);
+        final PrimaryDrawerItem pSmartBox = new PrimaryDrawerItem().withName("SmartBox").withIcon(R.drawable.icon_final);
+        final PrimaryDrawerItem pSentBox = new PrimaryDrawerItem().withName("SentBox").withIcon(R.drawable.icon_final);
+        final PrimaryDrawerItem pTrashBox = new PrimaryDrawerItem().withName("TrashBox").withIcon(R.drawable.icon_final);
+
+        final SecondaryDrawerItem sSettings = new SecondaryDrawerItem().withName("Settings").withIcon(R.drawable.icon_final);
+        final SecondaryDrawerItem sFeedback = new SecondaryDrawerItem().withName("Feedback").withIcon(R.drawable.icon_final);
+
+        sSettings.setCheckable(false);
+        sFeedback.setCheckable(false);
+
+        drawer = new DrawerBuilder()
+                .withActivity(this)
+                .withToolbar(toolbar)
+                .withAccountHeader(accountHeader)
+                .addDrawerItems(
+                        pInbox,
+                        pSmartBox,
+                        pSentBox,
+                        pTrashBox,
+                        new DividerDrawerItem(),
+                        sSettings,
+                        sFeedback
+                ).withDelayOnDrawerClose(200)
+                .withCloseOnClick(true)
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
+                        selectItem(position);
+                        return false;
+                    }
+                })
+                .build();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        drawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
+
     }
 
     private void selectItem(int position) {
@@ -121,21 +124,27 @@ public class MainActivity extends AppCompatActivity {
         switch (position) {
             case 0:
                 fragment = new InboxFragment();
+                Snackbar.make(findViewById(R.id.main_rellay), "Inbox", Snackbar.LENGTH_SHORT).show();
                 break;
             case 1:
                 fragment = new SmartBoxFragment();
+                Snackbar.make(findViewById(R.id.main_rellay), "SmartBox", Snackbar.LENGTH_SHORT).show();
                 break;
             case 2:
-                fragment = new SettingsFragment();
+                fragment = new SentFragment();
+                Snackbar.make(findViewById(R.id.main_rellay), "SentBox", Snackbar.LENGTH_SHORT).show();
                 break;
             case 3:
-                fragment = new FeedbackFragment();
+                fragment = new TrashFragment();
+                Snackbar.make(findViewById(R.id.main_rellay), "TrashBox", Snackbar.LENGTH_SHORT).show();
                 break;
             case 4:
-                fragment = new SentFragment();
+                fragment = new SettingsFragment();
+                Snackbar.make(findViewById(R.id.main_rellay), "Settings", Snackbar.LENGTH_SHORT).show();
                 break;
             case 5:
-                fragment = new TrashFragment();
+                fragment = new FeedbackFragment();
+                Snackbar.make(findViewById(R.id.main_rellay), "Feedback", Snackbar.LENGTH_SHORT).show();
                 break;
             default:
                 break;
@@ -147,26 +156,16 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.e("MainActivity", "Error in creating fragment");
         }
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mDrawerLayout.closeDrawers();
-            }
-        }, 25);
     }
 
     @Override
     public void onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            mDrawerLayout.closeDrawers();
-        } else if (mCurrentSelectedPosition != 0) {
-            selectItem(0);
-            navigationView.getMenu().getItem(0).setChecked(true);
+        if (drawer.isDrawerOpen()) {
+            drawer.closeDrawer();
         } else {
             super.onBackPressed();
         }
     }
-
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {

@@ -117,7 +117,7 @@ public class ComposeActivity extends AppCompatActivity implements SendMailListen
     }
 
     private void sendWebmail() {
-        new SendMail(ComposeActivity.this, getApplication(), et_subject.getText().toString(), et_content.getText().toString(), et_to.getText().toString(), checkBox_imp.isChecked()).execute();
+        new SendMail(currentUser, ComposeActivity.this, getApplication(), et_subject.getText().toString(), et_content.getText().toString(), et_to.getText().toString(), checkBox_imp.isChecked()).execute();
     }
 
     @Override

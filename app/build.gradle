@@ -43,4 +43,7 @@ dependencies {
     compile files('libs/WebmailAPI.jar')
     compile files('libs/ksoap2-android-assembly-3.1.1-jar-with-dependencies.jar')
     compile files('libs/ksoap2-binding.jar')
+    compile('com.mikepenz:materialdrawer:3.0.8@aar') {
+        transitive = true
+    }
 }

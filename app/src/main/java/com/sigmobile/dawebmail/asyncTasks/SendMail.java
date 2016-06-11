@@ -7,7 +7,7 @@ import android.os.AsyncTask;
 import android.util.Base64;
 
 import com.sigmobile.dawebmail.R;
-import com.sigmobile.dawebmail.database.UserSettings;
+import com.sigmobile.dawebmail.database.User;
 import com.zimbra.wsdl.zimbraservice_wsdl.ZcsService;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -38,19 +38,18 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
     String mailSubject, mailContent, mailToAddress;
     boolean important = false;
 
-    String username, pwd;
-
     boolean result = false;
 
-    public SendMail(SendMailListener sendMailListener, Context context, String mailSubject, String mailContent, String mailToAddress, boolean important) {
+    User currentUser;
+
+    public SendMail(User user, SendMailListener sendMailListener, Context context, String mailSubject, String mailContent, String mailToAddress, boolean important) {
         this.sendMailListener = sendMailListener;
         this.context = context;
         this.mailSubject = mailSubject;
         this.mailContent = mailContent;
         this.mailToAddress = mailToAddress;
         this.important = important;
-        this.username = UserSettings.getUsername(context);
-        this.pwd = UserSettings.getPassword(context);
+        this.currentUser = user;
     }
 
     @Override
@@ -77,20 +76,20 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
 
         AccountSelector accountSelector = new AccountSelector();
         accountSelector.setBy(AccountBy.OPT5_NAME);
-        accountSelector.setValue(username);
+        accountSelector.setValue(currentUser.username);
         System.out.println("Att count selector : " + accountSelector.getAttributeCount());
 
         AuthRequest authRequest = new AuthRequest();
         authRequest.setAccount(accountSelector);
         authRequest.setCsrfTokenSecured(true);
         authRequest.setPersistAuthTokenCookie(true);
-        authRequest.setPassword(pwd);
+        authRequest.setPassword(currentUser.password);
 
         try {
             AuthResponse authResponse = zcsService.authRequest(authRequest, null);
 
             HeaderAccountInfo headerAccountInfo = new HeaderAccountInfo();
-            headerAccountInfo.setValue(username);
+            headerAccountInfo.setValue(currentUser.username);
             headerAccountInfo.setBy("name");
 
             HeaderContext headerContext = new HeaderContext();

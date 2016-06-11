@@ -1,22 +1,5 @@
 package com.sigmobile.dawebmail.network;
 
-import android.content.Context;
-
-import com.jaunt.Element;
-import com.jaunt.Elements;
-import com.jaunt.HttpRequest;
-import com.jaunt.NotFound;
-import com.jaunt.UserAgent;
-import com.jaunt.component.Form;
-import com.orm.SugarRecord;
-import com.orm.query.Select;
-import com.sigmobile.dawebmail.database.EmailMessage;
-import com.sigmobile.dawebmail.database.UserSettings;
-import com.sigmobile.dawebmail.utils.Constants;
-import com.sigmobile.dawebmail.utils.Printer;
-
-import java.util.ArrayList;
-
 /*
 * @author:Rishabh Bhardwaj
 * DEPRECATED CLASS. I USED THIS FOR A GOOD YEAR OR SO
@@ -27,7 +10,7 @@ import java.util.ArrayList;
  */
 
 public class ScrapingMachine {
-
+/*
     static UserAgent userAgent = new UserAgent();
 
     private ArrayList<EmailMessage> allNewEmails = new ArrayList<>();
@@ -49,7 +32,6 @@ public class ScrapingMachine {
 
             if (userAgent.getLocation().equals(Constants.URL_INBOX)) {
                 Printer.println("Already logged in");
-                UserSettings.setIsLoggedIn(true);
                 return true;
             }
 
@@ -66,18 +48,15 @@ public class ScrapingMachine {
             Printer.println(title);
 
             if (userAgent.getLocation().trim().equals(Constants.URL_INBOX)) {
-                UserSettings.setIsLoggedIn(true);
                 Printer.println("logged in successfully");
                 return true;
             } else {
-                UserSettings.setIsLoggedIn(false);
                 Printer.println("sendMsg unsuccessful");
                 return false;
             }
         } catch (Exception e) {
             Printer.println("Error while logging in - " + e.getMessage());
             Printer.println("sendMsg Unsuccessful");
-            UserSettings.setIsLoggedIn(false);
             return false;
         }
     }
@@ -469,4 +448,5 @@ public class ScrapingMachine {
     public ArrayList<EmailMessage> getNewEmails() {
         return allNewEmails;
     }
+    */
 }

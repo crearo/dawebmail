@@ -72,7 +72,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
 
                     if (User.doesUserExist(username, pwd)) {
                         Snackbar.make(view, "This user already exists - logging in now", Snackbar.LENGTH_LONG).show();
-                        UserSettings.setCurrentUser(User.getUserFromUserName(username, pwd), getApplicationContext());
+                        UserSettings.setCurrentUser(User.getUserFromUserName(username), getApplicationContext());
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                         finish();
                     } else {

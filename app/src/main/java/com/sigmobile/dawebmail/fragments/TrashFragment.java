@@ -286,7 +286,7 @@ public class TrashFragment extends Fragment implements RefreshInboxListener, Del
                     UserSettings.setCurrentUser(User.getAllUsers().get(0), getActivity());
                 else
                     UserSettings.setCurrentUser(null, getActivity());
-                
+
                 SharedPreferences prefs = getActivity().getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
 
@@ -320,7 +320,7 @@ public class TrashFragment extends Fragment implements RefreshInboxListener, Del
             @Override
             public void onClick(View view) {
                 Snackbar.make(swipeRefreshLayout, "Deleting ...", Snackbar.LENGTH_LONG).show();
-                new DeleteMail(getActivity(), TrashFragment.this, emailsToDelete).execute();
+                new DeleteMail(currentUser, getActivity(), TrashFragment.this, emailsToDelete).execute();
             }
         });
 
