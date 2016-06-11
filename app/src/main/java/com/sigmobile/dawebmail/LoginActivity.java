@@ -89,6 +89,17 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
     }
 
     @Override
+    public void onBackPressed() {
+        if (UserSettings.getCurrentUser(this) == null) {
+            if (User.getAllUsers().size() > 0)
+                UserSettings.setCurrentUser(User.getAllUsers().get(0), getApplicationContext());
+        } else {
+            finish();
+        }
+        super.onBackPressed();
+    }
+
+    @Override
     public void onPreLogin() {
         progressDialog = ProgressDialog.show(LoginActivity.this, "", "Logging In", true);
         progressDialog.setCancelable(false);

@@ -65,15 +65,21 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setupDrawer();
+    }
+
     private void setupDrawer() {
 
-        pInbox = new PrimaryDrawerItem().withName("Inbox").withIcon(R.drawable.icon_final);
-        pSmartBox = new PrimaryDrawerItem().withName("SmartBox").withIcon(R.drawable.icon_final);
-        pSentBox = new PrimaryDrawerItem().withName("SentBox").withIcon(R.drawable.icon_final);
-        pTrashBox = new PrimaryDrawerItem().withName("TrashBox").withIcon(R.drawable.icon_final);
+        pInbox = new PrimaryDrawerItem().withName("Inbox").withIcon(R.drawable.inbox);
+        pSmartBox = new PrimaryDrawerItem().withName("SmartBox").withIcon(R.drawable.fire_element);
+        pSentBox = new PrimaryDrawerItem().withName("SentBox").withIcon(R.drawable.sent);
+        pTrashBox = new PrimaryDrawerItem().withName("TrashBox").withIcon(R.drawable.trash);
 
-        sSettings = new SecondaryDrawerItem().withName("Settings").withIcon(R.drawable.icon_final);
-        sFeedback = new SecondaryDrawerItem().withName("Feedback").withIcon(R.drawable.icon_final);
+        sSettings = new SecondaryDrawerItem().withName("Settings").withIcon(R.drawable.settings);
+        sFeedback = new SecondaryDrawerItem().withName("Feedback").withIcon(R.drawable.feedback);
 
         sSettings.setCheckable(false);
         sFeedback.setCheckable(false);
@@ -133,7 +139,6 @@ public class MainActivity extends AppCompatActivity {
                         if (drawerItem == null) {
                             drawerItem = pInbox;
                         }
-
 
                         if (drawerItem.equals(pInbox)) {
                             fragment = new InboxFragment();
