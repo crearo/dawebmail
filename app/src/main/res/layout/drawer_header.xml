@@ -10,7 +10,7 @@
         android:layout_gravity="bottom"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/ic_drawer_user"
+        android:src="@drawable/ic_action_user"
         android:scaleType="fitCenter" />
 
     <TextView
