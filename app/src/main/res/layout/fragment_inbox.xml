@@ -30,7 +30,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center"
-            android:src="@drawable/message" />
+            android:src="@drawable/envelope_l" />
 
         <TextView
             android:layout_width="match_parent"

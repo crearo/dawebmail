@@ -20,7 +20,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center"
-            android:src="@drawable/lifeboy" />
+            android:src="@drawable/envelope_l" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -105,7 +105,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_gravity="center"
-                android:src="@drawable/message" />
+                android:src="@drawable/msg_read_checked" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

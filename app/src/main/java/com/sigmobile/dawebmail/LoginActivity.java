@@ -32,7 +32,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
     @Bind(R.id.login_loginbtn)
     Button loginbtn;
 
-    @Bind(R.id.tool_bar)
+    @Bind(R.id.login_tool_bar)
     Toolbar toolbar;
 
     String username = "", pwd = "";
@@ -106,18 +106,18 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
         progressDialog.show();
         InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         mgr.hideSoftInputFromWindow(loginbtn.getWindowToken(), 0);
-        Snackbar.make(findViewById(R.id.login_rellay), "Attempting Login. Hold On.", Snackbar.LENGTH_LONG).show();
+        Snackbar.make(findViewById(R.id.login_container), "Attempting Login. Hold On.", Snackbar.LENGTH_LONG).show();
     }
 
     @Override
     public void onPostLogin(boolean loginSuccess, String timeTaken, User user) {
         progressDialog.dismiss();
         if (!loginSuccess) {
-            Snackbar.make(findViewById(R.id.login_rellay), "Login Unsuccessful", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(findViewById(R.id.login_container), "Login Unsuccessful", Snackbar.LENGTH_LONG).show();
             usernametf.setText(username);
             pwdtf.setText("");
         } else {
-            Snackbar.make(findViewById(R.id.login_rellay), "Login Successful!", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(findViewById(R.id.login_container), "Login Successful!", Snackbar.LENGTH_LONG).show();
             user = User.createNewUser(user);
             UserSettings.setCurrentUser(user, getApplicationContext());
             startActivity(new Intent(this, MainActivity.class));
