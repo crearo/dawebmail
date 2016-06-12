@@ -81,10 +81,10 @@ public class MainActivity extends AppCompatActivity {
 
         ArrayList<IProfile> profileDrawerItems = new ArrayList<>();
         for (User user : User.getAllUsers()) {
-            profileDrawerItems.add(new ProfileDrawerItem().withName(user.username));
+            profileDrawerItems.add(new ProfileDrawerItem().withName(user.username).withIcon(getResources().getDrawable(R.drawable.git_user)));
         }
 
-        profileDrawerItems.add(new ProfileDrawerItem().withName("+ Account"));
+        profileDrawerItems.add(new ProfileDrawerItem().withName("+ Account").withIcon(getResources().getDrawable(R.drawable.plus)));
 
         AccountHeader accountHeader = new AccountHeaderBuilder()
                 .withActivity(this)
