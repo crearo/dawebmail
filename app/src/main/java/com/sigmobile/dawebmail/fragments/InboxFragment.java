@@ -272,7 +272,7 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
     }
 
     @Override
-    public void onPostRefresh(boolean success, final ArrayList<EmailMessage> refreshedEmails) {
+    public void onPostRefresh(boolean success, final ArrayList<EmailMessage> refreshedEmails, User user) {
         new Handler().post(new Runnable() {
             @Override
             public void run() {

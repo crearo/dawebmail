@@ -60,6 +60,6 @@ public class RefreshInbox extends AsyncTask<Void, Void, Void> {
             UserSettings.setLastRefreshed(context, "" + System.currentTimeMillis());
             complete = true;
         }
-        listener.onPostRefresh(complete, refreshedEmails);
+        listener.onPostRefresh(complete, refreshedEmails, user);
     }
 }

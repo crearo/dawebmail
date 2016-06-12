@@ -215,7 +215,7 @@ public class SentFragment extends Fragment implements RefreshInboxListener, Dele
     }
 
     @Override
-    public void onPostRefresh(boolean success, final ArrayList<EmailMessage> refreshedEmails) {
+    public void onPostRefresh(boolean success, final ArrayList<EmailMessage> refreshedEmails, User user) {
         new Handler().post(new Runnable() {
             @Override
             public void run() {

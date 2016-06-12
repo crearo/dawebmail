@@ -57,6 +57,10 @@ public class User extends SugarRecord<User> implements Serializable {
         return User.listAll(User.class);
     }
 
+    public static int getUsersCount() {
+        return User.listAll(User.class).size();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

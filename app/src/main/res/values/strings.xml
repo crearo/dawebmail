@@ -27,4 +27,9 @@
     <!-- SOAP API URLs -->
     <string name="soap_url">https://webmail.daiict.ac.in/service/soap</string>
 
+    <!-- Notifs -->
+    <string name="notification_ticker_new_webmail">New Webmail!</string>
+    <string name="notification_ticker_new_webmails">New Webmails!</string>
+    <string name="notification_swipe_to_view">Swipe down to view webmails!</string>
+
 </resources>
