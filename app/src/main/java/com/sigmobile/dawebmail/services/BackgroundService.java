@@ -9,6 +9,7 @@ import com.sigmobile.dawebmail.asyncTasks.RefreshInbox;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInboxListener;
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
+import com.sigmobile.dawebmail.database.UserSettings;
 import com.sigmobile.dawebmail.utils.ConnectionManager;
 import com.sigmobile.dawebmail.utils.Constants;
 
@@ -57,11 +58,13 @@ public class BackgroundService extends Service implements RefreshInboxListener {
     @Override
     public void onPostRefresh(boolean success, ArrayList<EmailMessage> refreshedEmails, User user) {
         if (refreshedEmails.size() == 0) {
-        } else if (refreshedEmails.size() == 1)
+        } else if (refreshedEmails.size() == 1) {
             NotificationMaker.showNotification(this, user, refreshedEmails.get(0).fromName, refreshedEmails.get(0).subject);
-        else {
+            UserSettings.setCurrentUser(user, getApplicationContext());
+        } else {
             int numberToShow = (refreshedEmails.size() >= 5) ? 5 : refreshedEmails.size();
             NotificationMaker.sendInboxNotification(numberToShow, user, this, refreshedEmails);
+            UserSettings.setCurrentUser(user, getApplicationContext());
         }
     }
 }

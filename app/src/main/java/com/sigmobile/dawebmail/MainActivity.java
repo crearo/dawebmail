@@ -113,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
         drawer = new DrawerBuilder()
                 .withActivity(this)
+                .withTranslucentStatusBar(false)
                 .withToolbar(toolbar)
                 .withAccountHeader(accountHeader)
                 .addDrawerItems(
