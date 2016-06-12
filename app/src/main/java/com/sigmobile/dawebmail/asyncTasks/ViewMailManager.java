@@ -12,11 +12,10 @@ import com.sigmobile.dawebmail.network.RestAPI;
  */
 public class ViewMailManager extends AsyncTask<Void, Void, Void> {
 
-    Context context;
-    ViewMailListener viewMailListener;
-    boolean result = false;
-    EmailMessage emailMessage;
-    User user;
+    private Context context;
+    private ViewMailListener viewMailListener;
+    private EmailMessage emailMessage;
+    private User user;
 
     public ViewMailManager(User user, Context context, ViewMailListener viewMailListener, EmailMessage emailMessage) {
         this.viewMailListener = viewMailListener;

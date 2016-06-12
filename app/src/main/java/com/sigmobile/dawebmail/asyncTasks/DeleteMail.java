@@ -3,6 +3,7 @@ package com.sigmobile.dawebmail.asyncTasks;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.sigmobile.dawebmail.R;
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
 import com.sigmobile.dawebmail.network.SoapAPI;
@@ -14,12 +15,11 @@ import java.util.ArrayList;
  */
 public class DeleteMail extends AsyncTask<Void, Void, Void> {
 
-    Context context;
-    DeleteMailListener deleteMailListener;
-    boolean result = false;
-    String username, pwd;
-    ArrayList<EmailMessage> emailToBeDeleted;
-    User currentUser;
+    private Context context;
+    private DeleteMailListener deleteMailListener;
+    private Boolean result = false;
+    private ArrayList<EmailMessage> emailToBeDeleted;
+    private User currentUser;
 
     public DeleteMail(User user, Context context, DeleteMailListener deleteMailListener, ArrayList<EmailMessage> emailsToBeDeleted) {
         this.deleteMailListener = deleteMailListener;
@@ -37,8 +37,12 @@ public class DeleteMail extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         SoapAPI soapAPI = new SoapAPI();
+        /**
+         * Traverse through all emailsToBeDeleted
+         * If any of them is unsuccessful, return false
+         */
         for (EmailMessage emailMessage : emailToBeDeleted) {
-            result = soapAPI.performMailAction(currentUser, "trash", "" + emailMessage.contentID);
+            result = soapAPI.performMailAction(currentUser, context.getString(R.string.msg_action_trash), String.valueOf(emailMessage.contentID));
             if (!result)
                 return null;
         }

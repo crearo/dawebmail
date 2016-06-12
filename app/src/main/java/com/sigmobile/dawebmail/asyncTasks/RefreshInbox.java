@@ -15,13 +15,11 @@ import java.util.ArrayList;
  */
 public class RefreshInbox extends AsyncTask<Void, Void, Void> {
 
-    RefreshInboxListener listener;
-    Context context;
-    long timeStarted = 0;
-    long timeFinished = 0;
-    ArrayList<EmailMessage> refreshedEmails;
-    String REFRESH_TYPE;
-    User user;
+    private RefreshInboxListener listener;
+    private Context context;
+    private ArrayList<EmailMessage> refreshedEmails;
+    private String REFRESH_TYPE;
+    private User user;
 
     public RefreshInbox(User user, Context context, RefreshInboxListener refreshInboxListener, String REFRESH_TYPE) {
         this.context = context;
@@ -34,7 +32,6 @@ public class RefreshInbox extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        timeStarted = System.currentTimeMillis();
         listener.onPreRefresh();
     }
 
@@ -63,7 +60,6 @@ public class RefreshInbox extends AsyncTask<Void, Void, Void> {
             UserSettings.setLastRefreshed(context, "" + System.currentTimeMillis());
             complete = true;
         }
-        timeFinished = System.currentTimeMillis();
         listener.onPostRefresh(complete, refreshedEmails);
     }
 }

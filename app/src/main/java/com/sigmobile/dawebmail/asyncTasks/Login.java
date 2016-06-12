@@ -12,11 +12,11 @@ import com.sigmobile.dawebmail.network.RestAPI;
  */
 public class Login extends AsyncTask<Void, Void, Void> {
 
-    LoginListener loginListener;
-    long initTime, finalTime = 0;
-    Context context;
-    boolean loggedIn = false;
-    User user;
+    private LoginListener loginListener;
+    private long initTime, finalTime = 0;
+    private Context context;
+    private boolean loggedIn = false;
+    private User user;
 
     public Login(User user, Context context, LoginListener loginListener) {
         this.loginListener = loginListener;
@@ -35,7 +35,6 @@ public class Login extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... voids) {
         RestAPI restAPI = new RestAPI(user, context);
         loggedIn = restAPI.logIn();
-
         return null;
     }
 

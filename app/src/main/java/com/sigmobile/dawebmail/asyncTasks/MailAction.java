@@ -13,12 +13,12 @@ public class MailAction extends AsyncTask<Void, Void, Void> {
 
     private static final String TAG = "MailAction";
 
-    MailActionListener mailActionListener;
-    Context context;
-    boolean result = false;
-    User currentUser;
-    String mailAction;
-    String contentID;
+    private MailActionListener mailActionListener;
+    private Context context;
+    private boolean result = false;
+    private User currentUser;
+    private String mailAction;
+    private String contentID;
 
     public MailAction(Context context, User currentUser, String mailAction, String contentID, MailActionListener mailActionListener) {
         this.mailActionListener = mailActionListener;

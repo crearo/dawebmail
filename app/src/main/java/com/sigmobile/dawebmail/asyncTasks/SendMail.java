@@ -13,12 +13,12 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
 
     private static final String TAG = "SendMail";
 
-    SendMailListener sendMailListener;
-    Context context;
-    String mailSubject, mailContent, mailToAddress;
-    boolean important = false;
-    boolean result = false;
-    User currentUser;
+    private SendMailListener sendMailListener;
+    private Context context;
+    private String mailSubject, mailContent, mailToAddress;
+    private boolean important = false;
+    private boolean result = false;
+    private User currentUser;
 
     public SendMail(User user, SendMailListener sendMailListener, Context context, String mailSubject, String mailContent, String mailToAddress, boolean important) {
         this.sendMailListener = sendMailListener;
@@ -47,5 +47,4 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
         sendMailListener.onPostSend(result);
         super.onPostExecute(aVoid);
     }
-
 }

@@ -7,9 +7,14 @@
     <string name="github_repo">https://github.com/CreaRo/DAWebmail</string>
     <string name="blog_link">http://bhardwajrish.blogspot.in/2016/01/contributing-to-dawebmail.html</string>
 
-
     <!-- Date Utils -->
     <string name="recent_webmails">Recently, </string>
     <string name="hour_ago_webmails">One Hour Ago, </string>
+
+    <!-- Message ActionRequests SOAP-API -->
+    <string name="msg_action_read">read</string>
+    <string name="msg_action_unread">!read</string>
+    <string name="msg_action_trash">trash</string>
+    <string name="msg_action_delete">delete</string>
 
 </resources>
