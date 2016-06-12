@@ -3,6 +3,13 @@ package com.sigmobile.dawebmail.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+/**
+ * DEPRECATED
+ * This was earlier used to change color schema of webmail.
+ * This has now been removed as a feature.
+ * May be included in future versions of the app.
+ */
+
 public class ColorScheme {
 
     static public String color_readmessage = "#F0F0F0"; // #ACACAC

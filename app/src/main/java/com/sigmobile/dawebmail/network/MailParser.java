@@ -1,5 +1,6 @@
 package com.sigmobile.dawebmail.network;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.sigmobile.dawebmail.utils.BasePath;
@@ -28,7 +29,7 @@ public class MailParser {
 
     }
 
-    public void newMailParser(int contentID, String emailContentBytes) {
+    public void newMailParser(Context context, int contentID, String emailContentBytes) {
         try {
             Session s = Session.getDefaultInstance(new Properties());
             InputStream is = new ByteArrayInputStream(emailContentBytes.getBytes());
@@ -54,7 +55,7 @@ public class MailParser {
                         // this part is attachment
                         String fileName = part.getFileName();
                         attachFiles += fileName + ", ";
-                        part.saveFile(BasePath.getBasePath() + "/" + contentID + "-" + fileName);
+                        part.saveFile(BasePath.getBasePath(context) + "/" + contentID + "-" + fileName);
                         totalAttachments++;
                     } else {
                         // this part may be the message content

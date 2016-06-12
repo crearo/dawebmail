@@ -209,10 +209,10 @@ public class RestAPI {
                 }
                 in.close();
 
-                writeStringAsFile(total.toString());
+                writeStringAsFile(context, total.toString());
 
                 MailParser mailParser = new MailParser();
-                mailParser.newMailParser(emailMessage.contentID, total.toString());
+                mailParser.newMailParser(context, emailMessage.contentID, total.toString());
                 emailMessage.content = mailParser.getContentHTML();
                 emailMessage.totalAttachments = mailParser.getTotalAttachments();
 
@@ -227,9 +227,9 @@ public class RestAPI {
         }
     }
 
-    public static void writeStringAsFile(final String fileContents) {
+    public static void writeStringAsFile(Context context, final String fileContents) {
         try {
-            FileWriter out = new FileWriter(new File(BasePath.getBasePath(), "email.txt"));
+            FileWriter out = new FileWriter(new File(BasePath.getBasePath(context), "email.txt"));
             out.write(fileContents);
             out.close();
         } catch (IOException e) {

@@ -1,6 +1,9 @@
 package com.sigmobile.dawebmail.utils;
 
+import android.content.Context;
 import android.os.Environment;
+
+import com.sigmobile.dawebmail.R;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -10,9 +13,9 @@ import java.util.ArrayList;
  */
 public class BasePath {
 
-    public static String getBasePath() {
+    public static String getBasePath(Context context) {
         File sdCard = Environment.getExternalStorageDirectory();
-        File dir = new File(sdCard.getAbsolutePath() + "/DAWebmail");
+        File dir = new File(sdCard.getAbsolutePath() + "/" + context.getString(R.string.app_name));
 
         if (!dir.exists())
             dir.mkdirs();
@@ -20,11 +23,10 @@ public class BasePath {
         return dir.getAbsolutePath();
     }
 
-    public static ArrayList<String> getAttachmentsPaths(int contentID) {
+    public static ArrayList<String> getAttachmentsPaths(Context context, int contentID) {
         ArrayList<String> attachments = new ArrayList<>();
-        for (File file : new File(getBasePath()).listFiles()) {
+        for (File file : new File(getBasePath(context)).listFiles()) {
             if (file.getName().split("-")[0].toString().equals("" + contentID)) {
-                System.out.println("Found same");
                 attachments.add(file.getAbsolutePath());
             }
         }

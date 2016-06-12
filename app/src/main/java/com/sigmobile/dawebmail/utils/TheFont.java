@@ -8,7 +8,11 @@ import android.graphics.Typeface;
  */
 public class TheFont {
 
+    private static Typeface typeface;
+
     public static Typeface getFont(Context context) {
-        return Typeface.createFromAsset(context.getAssets(), "fonts/GeosansLight.ttf");
+        if (typeface == null)
+            typeface = Typeface.createFromAsset(context.getAssets(), "fonts/GeosansLight.ttf");
+        return typeface;
     }
 }

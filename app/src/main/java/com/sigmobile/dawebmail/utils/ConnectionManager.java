@@ -11,11 +11,7 @@ public class ConnectionManager {
 
     public static Boolean isConnectedByWifi(Context context) {
         try {
-            if (((ConnectivityManager) context
-                    .getSystemService(Context.CONNECTIVITY_SERVICE))
-                    .getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected()) {
-                // Constants.connectedby = Constants.WIFI;
-                Printer.println("is connected by wifi");
+            if (((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected()) {
                 return true;
             } else {
                 return false;
@@ -28,9 +24,7 @@ public class ConnectionManager {
 
     public static Boolean isConnectedByMobileData(Context context) {
         try {
-            if (((ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE))
-                    .getNetworkInfo(ConnectivityManager.TYPE_MOBILE).isConnected()) {
-                Printer.println("is connected by mobile data");
+            if (((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getNetworkInfo(ConnectivityManager.TYPE_MOBILE).isConnected()) {
                 return true;
             } else {
                 return false;

@@ -1,7 +1,6 @@
 <resources>
-    <string name="app_name">DAWebmailLite</string>
+    <string name="app_name">DAWebmail</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_view_email">ViewEmail</string>
     <string name="contribute">DAWebmail needs you! This is a risky step I am willing to take. DAWebmail may lose most of its downloads. But please do stick around if you have found this application useful so far!\n\nWith the new Webmail version in place, the script I wrote to scrape webmails does not work. I\'d love all the Android developers in DA to contribute, and fix the scraping issue, and possibly contribute further! \n\nBonus. The entire interface now follows Material Design guidelines!</string>
     <string name="github_repo">https://github.com/CreaRo/DAWebmail</string>
