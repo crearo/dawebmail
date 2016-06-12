@@ -185,7 +185,7 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
         tvsender.setText(currentEmail.fromAddress);
         tvsubject.setText(currentEmail.subject);
         tvsenderbottom.setText(currentEmail.fromName);
-        tvdatebottom.setText(DateUtils.getDate(Long.parseLong(currentEmail.dateInMillis)));
+        tvdatebottom.setText(DateUtils.getDate(getApplicationContext(), Long.parseLong(currentEmail.dateInMillis)));
 
         final ArrayList<String> attachmentsList = BasePath.getAttachmentsPaths(currentEmail.contentID);
         Log.d("A", "Size is " + attachmentsList.size());

@@ -18,7 +18,6 @@ import com.sigmobile.dawebmail.ViewEmail;
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.utils.Constants;
 import com.sigmobile.dawebmail.utils.DateUtils;
-import com.sigmobile.dawebmail.utils.Printer;
 import com.sigmobile.dawebmail.utils.TheFont;
 
 import java.util.ArrayList;
@@ -66,64 +65,44 @@ public class MailAdapter extends BaseAdapter {
             new ViewHolder(convertView);
         }
         final ViewHolder holder = (ViewHolder) convertView.getTag();
-        final EmailMessage item = getItem(position);
+        final EmailMessage currentEmail = getItem(position);
 
-        if (clickedForDelete[position]) {
-            System.out.println("" + item.fromName + " " + item.subject + " is marked for delete");
-        }
-
-        if (item.readUnread.equals(Constants.WEBMAIL_UNREAD)) {
+        if (currentEmail.readUnread.equals(Constants.WEBMAIL_UNREAD)) {
+            holder.msgFrom.setTypeface(null, Typeface.BOLD);
             if (!clickedForDelete[position]) {
-                if (item.totalAttachments >= 1)
+                if (currentEmail.totalAttachments >= 1)
                     holder.msgIcon.setImageResource(R.drawable.msg_unread_att);
-                else if (item.important)
+                else if (currentEmail.important)
                     holder.msgIcon.setImageResource(R.drawable.msg_unread_imp);
                 else
                     holder.msgIcon.setImageResource(R.drawable.msg_unread);
             } else {
-                System.out.println("set holder icon to delete wala");
                 holder.msgIcon.setAnimation(AnimationUtils.loadAnimation(context, R.anim.abc_grow_fade_in_from_bottom));
-                holder.msgIcon.setImageResource(R.drawable.ic_action_delete_red);
+                holder.msgIcon.setImageResource(R.drawable.msg_unread_checked);
             }
-
-            holder.msgFrom.setTypeface(null, Typeface.BOLD);
         } else {
+            holder.msgFrom.setTypeface(null, Typeface.NORMAL);
             if (!clickedForDelete[position]) {
-                if (item.totalAttachments >= 1)
+                if (currentEmail.totalAttachments >= 1)
                     holder.msgIcon.setImageResource(R.drawable.msg_read_att);
-                else if (item.important)
+                else if (currentEmail.important)
                     holder.msgIcon.setImageResource(R.drawable.msg_read_imp);
                 else
                     holder.msgIcon.setImageResource(R.drawable.msg_read);
             } else {
-                holder.msgIcon.setImageResource(R.drawable.ic_action_delete_red);
-                Printer.println("set holder icon to delete wala");
+                holder.msgIcon.setImageResource(R.drawable.msg_read_checked);
                 holder.msgIcon.setAnimation(AnimationUtils.loadAnimation(context, R.anim.abc_grow_fade_in_from_bottom));
             }
-            holder.msgFrom.setTypeface(null, Typeface.NORMAL);
         }
 
-        holder.msgFrom.setText(item.fromName);
-        holder.msgDateRecv.setText(DateUtils.getDate(Long.parseLong(item.dateInMillis)));
-        holder.msgSubject.setText(item.subject);
+        holder.msgFrom.setText(currentEmail.fromName);
+        holder.msgDateRecv.setText(DateUtils.getDate(context, Long.parseLong(currentEmail.dateInMillis)));
+        holder.msgSubject.setText(currentEmail.subject);
 
-        convertView.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.msgContainer.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View arg0) {
-                if (clickedForDelete[position]) {
-                    clickedForDelete[position] = false;
-                    notifyDataSetChanged();
-                    emailsToDelete.remove(item);
-                    System.out.println("clicked for delete is true, returning to normal");
-                } else {
-                    clickedForDelete[position] = true;
-                    emailsToDelete.add(item);
-                    notifyDataSetChanged();
-                    Vibrator vibe = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-                    vibe.vibrate(20);
-                    System.out.println("clicked for delete is false, added to emailsToDelete");
-                }
-                deleteSelectedListener.onItemClickedForDelete(emailsToDelete);
+                addEmailForDelete(position, currentEmail);
                 return true;
             }
         });
@@ -132,20 +111,7 @@ public class MailAdapter extends BaseAdapter {
 
             @Override
             public void onClick(View arg0) {
-                if (clickedForDelete[position]) {
-                    clickedForDelete[position] = false;
-                    notifyDataSetChanged();
-                    emailsToDelete.remove(item);
-                    Printer.println("clicked for delete is true, returning to normal");
-                } else {
-                    clickedForDelete[position] = true;
-                    emailsToDelete.add(item);
-                    notifyDataSetChanged();
-                    Vibrator vibe = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-                    vibe.vibrate(20);
-                    Printer.println("clicked for delete is false, added to emailsToDelete");
-                }
-                deleteSelectedListener.onItemClickedForDelete(emailsToDelete);
+                addEmailForDelete(position, currentEmail);
             }
         });
 
@@ -155,15 +121,15 @@ public class MailAdapter extends BaseAdapter {
                 Intent intent = new Intent(context, ViewEmail.class);
                 Bundle bundle = new Bundle();
                 /*
-                *Sending email type, and the email itself.
+                * Sending email type, and the email.
                 * All operations that change the EmailMessage object must happen there,
                 * and it must return from there, the unsaved object.
                 * It is then our choice as to whether we want to save it or not.
                 * I am not saving SentBox, and TrashBox.
                  */
-                bundle.putSerializable(Constants.CURRENT_EMAIL_SERIALIZABLE, emails.get(position));
+                bundle.putSerializable(Constants.CURRENT_EMAIL_SERIALIZABLE, currentEmail);
                 bundle.putString(Constants.CURRENT_EMAIL_TYPE, EMAIL_TYPE);
-                if (emails.get(position).getId() == null) // isn't a saved object, and hence doesnt have an id
+                if (currentEmail.getId() == null) // isn't a saved object, and hence doesnt have an id
                     bundle.putLong(Constants.CURRENT_EMAIL_ID, -1);
                 else
                     bundle.putLong(Constants.CURRENT_EMAIL_ID, emails.get(position).getId());
@@ -199,5 +165,20 @@ public class MailAdapter extends BaseAdapter {
 
     public interface DeleteSelectedListener {
         void onItemClickedForDelete(ArrayList<EmailMessage> emailsToDelete);
+    }
+
+    private void addEmailForDelete(int position, EmailMessage item) {
+        if (clickedForDelete[position]) {
+            clickedForDelete[position] = false;
+            notifyDataSetChanged();
+            emailsToDelete.remove(item);
+        } else {
+            clickedForDelete[position] = true;
+            emailsToDelete.add(item);
+            notifyDataSetChanged();
+            Vibrator vibe = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+            vibe.vibrate(20);
+        }
+        deleteSelectedListener.onItemClickedForDelete(emailsToDelete);
     }
 }
