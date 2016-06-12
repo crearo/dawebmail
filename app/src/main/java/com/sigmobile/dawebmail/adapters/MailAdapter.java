@@ -77,11 +77,11 @@ public class MailAdapter extends BaseAdapter {
         if (item.readUnread.equals(Constants.WEBMAIL_UNREAD)) {
             if (!clickedForDelete[position]) {
                 if (item.totalAttachments >= 1)
-                    holder.iv_icon.setImageResource(R.drawable.final_unread_a);
+                    holder.iv_icon.setImageResource(R.drawable.msg_unread_att);
                 else if (item.important)
-                    holder.iv_icon.setImageResource(R.drawable.final_unread_imp);
+                    holder.iv_icon.setImageResource(R.drawable.msg_unread_imp);
                 else
-                    holder.iv_icon.setImageResource(R.drawable.final_unread);
+                    holder.iv_icon.setImageResource(R.drawable.msg_unread);
             } else {
                 System.out.println("set holder icon to delete wala");
                 holder.iv_icon.setAnimation(AnimationUtils.loadAnimation(context, R.anim.abc_grow_fade_in_from_bottom));
@@ -92,11 +92,11 @@ public class MailAdapter extends BaseAdapter {
         } else {
             if (!clickedForDelete[position]) {
                 if (item.totalAttachments >= 1)
-                    holder.iv_icon.setImageResource(R.drawable.final_read_a);
+                    holder.iv_icon.setImageResource(R.drawable.msg_read_att);
                 else if (item.important)
-                    holder.iv_icon.setImageResource(R.drawable.final_read_imp);
+                    holder.iv_icon.setImageResource(R.drawable.msg_read_imp);
                 else
-                    holder.iv_icon.setImageResource(R.drawable.final_read);
+                    holder.iv_icon.setImageResource(R.drawable.msg_read);
             } else {
                 holder.iv_icon.setImageResource(R.drawable.ic_action_delete_red);
                 Printer.println("set holder icon to delete wala");

@@ -81,9 +81,6 @@ public class MainActivity extends AppCompatActivity {
         sSettings = new SecondaryDrawerItem().withName("Settings").withIcon(R.drawable.settings);
         sFeedback = new SecondaryDrawerItem().withName("Feedback").withIcon(R.drawable.feedback);
 
-        sSettings.setCheckable(false);
-        sFeedback.setCheckable(false);
-
         ArrayList<IProfile> profileDrawerItems = new ArrayList<>();
         for (User user : User.getAllUsers()) {
             profileDrawerItems.add(new ProfileDrawerItem().withName(user.username));

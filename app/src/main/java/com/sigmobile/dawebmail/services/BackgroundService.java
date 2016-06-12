@@ -9,7 +9,6 @@ import com.sigmobile.dawebmail.asyncTasks.RefreshInbox;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInboxListener;
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
-import com.sigmobile.dawebmail.database.UserSettings;
 import com.sigmobile.dawebmail.utils.ConnectionManager;
 import com.sigmobile.dawebmail.utils.Constants;
 import com.sigmobile.dawebmail.utils.Printer;
@@ -17,8 +16,6 @@ import com.sigmobile.dawebmail.utils.Printer;
 import java.util.ArrayList;
 
 public class BackgroundService extends Service implements RefreshInboxListener {
-
-    User currentUser;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -33,10 +30,10 @@ public class BackgroundService extends Service implements RefreshInboxListener {
     @Override
     public void onStart(Intent intent, int startId) {
 
-        currentUser = UserSettings.getCurrentUser(getApplicationContext());
-        Printer.println("Background service current username " + currentUser.username);
-        refreshInbox_BroadcastFunction();
-
+        for (User user : User.getAllUsers()) {
+            Printer.println("Background service current username " + user.username);
+            refreshInbox_BroadcastFunction(user);
+        }
     }
 
     @Override
@@ -44,14 +41,14 @@ public class BackgroundService extends Service implements RefreshInboxListener {
         super.onDestroy();
     }
 
-    public void refreshInbox_BroadcastFunction() {
+    public void refreshInbox_BroadcastFunction(User user) {
         SharedPreferences prefs = getSharedPreferences(Constants.USER_PREFERENCES, MODE_PRIVATE);
 
         boolean wifiEnabled = prefs.getBoolean(Constants.TOGGLE_WIFI, true);
         boolean dataEnabled = prefs.getBoolean(Constants.TOGGLE_MOBILEDATA, false);
 
         if (((wifiEnabled && ConnectionManager.isConnectedByWifi(this)) || (dataEnabled && ConnectionManager.isConnectedByMobileData(this)))) {
-            new RefreshInbox(currentUser, getApplicationContext(), this, Constants.INBOX).execute();
+            new RefreshInbox(user, getApplicationContext(), this, Constants.INBOX).execute();
 
         } else if ((ConnectionManager.isConnectedByWifi(this) == false && ConnectionManager.isConnectedByMobileData(this) == false)) {
             Printer.println("No need to check for mail");

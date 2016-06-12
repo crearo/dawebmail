@@ -299,7 +299,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center"
                 android:layout_marginBottom="25dp"
-                android:src="@drawable/final_read" />
+                android:src="@drawable/envelope_m" />
 
         </LinearLayout>
     </ScrollView>

@@ -1,20 +1,15 @@
 package com.sigmobile.dawebmail.asyncTasks;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.util.Base64;
+import android.util.Log;
 
-import com.sigmobile.dawebmail.R;
 import com.sigmobile.dawebmail.database.User;
 import com.zimbra.wsdl.zimbraservice_wsdl.ZcsService;
 
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Date;
 
 import zimbra.AccountBy;
 import zimbra.AccountSelector;
@@ -22,11 +17,9 @@ import zimbra.HeaderAccountInfo;
 import zimbra.HeaderContext;
 import zimbraaccount.AuthRequest;
 import zimbraaccount.AuthResponse;
-import zimbramail.EmailAddrInfo;
-import zimbramail.MimePartInfo;
-import zimbramail.MsgToSend;
-import zimbramail.SendMsgRequest;
-import zimbramail.SendMsgResponse;
+import zimbramail.ActionSelector;
+import zimbramail.MsgActionRequest;
+import zimbramail.MsgActionResponse;
 
 /**
  * Created by rish on 18/1/16.
@@ -41,6 +34,8 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
     boolean result = false;
 
     User currentUser;
+
+    private static final String TAG = "SendMail";
 
     public SendMail(User user, SendMailListener sendMailListener, Context context, String mailSubject, String mailContent, String mailToAddress, boolean important) {
         this.sendMailListener = sendMailListener;
@@ -100,7 +95,14 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
             zimbra.Context context = new zimbra.Context();
             context.setContext(headerContext);
 
-            MsgToSend msgToSend = new MsgToSend();
+            MsgActionRequest msgActionRequest = new MsgActionRequest();
+            ActionSelector actionSelector = new ActionSelector();
+            actionSelector.setId("3761");
+            actionSelector.setOp("delete");
+            msgActionRequest.setAction(actionSelector);
+
+            MsgActionResponse msgActionResponse = zcsService.msgActionRequest(msgActionRequest, context);
+            Log.d(TAG, "Sent msgactionrequest");
 
     /* When replying or forwarding
      * For value of rt choose r when replying and w when forwarding
@@ -110,6 +112,10 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
 
     /* For setting priority of a mail high (!) or low (?)
     msgToSend.setF("!|?"); */
+
+            /*
+
+            MsgToSend msgToSend = new MsgToSend();
 
             EmailAddrInfo[] emailAddrInfos = new EmailAddrInfo[1];
             emailAddrInfos[0] = new EmailAddrInfo();
@@ -160,6 +166,9 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
             SendMsgResponse sendMsgResponse = zcsService.sendMsgRequest(sendMsgRequest, context);
 
             System.out.println("RESPONSE : " + sendMsgRequest.getSuid());
+
+            */
+
             result = true;
         } catch (IOException e) {
             e.printStackTrace();
