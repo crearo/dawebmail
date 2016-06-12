@@ -182,14 +182,14 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Version 2.19"
+                        android:text="Version 3.14"
                         android:textSize="15sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Material Design"
+                        android:text="Material Design | SOAP API"
                         android:textSize="14sp"
                         android:textStyle="normal" />
                 </LinearLayout>
@@ -219,6 +219,48 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:text="UI Update"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="As Material as possible. Fancy colors, standard icons. Eye candy."
+                        android:textSize="14sp"
+                        android:textStyle="normal" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Accounts"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Login through multiple accounts - as many as you like. Useful when you're in a club or committee."
+                        android:textSize="14sp"
+                        android:textStyle="normal" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:text="Notifications"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -226,7 +268,28 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Receiving notifications smoother than ever!"
+                        android:text="Receive notifications for each account."
+                        android:textSize="14sp"
+                        android:textStyle="normal" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Send &amp; Delete"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Send and delete webmails using the soap api. Thanks to Anurag Agarwal! ('11 batch)"
                         android:textSize="14sp"
                         android:textStyle="normal" />
                 </LinearLayout>
@@ -255,7 +318,14 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Rishabh Bhardwaj\nSolo Development and Implementation"
+                        android:text="Rishabh Bhardwaj\nDevelopment, UI, and Implementation"
+                        android:textSize="14sp"
+                        android:textStyle="normal" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Pradeet Swamy\nAnalytics and Development"
                         android:textSize="14sp"
                         android:textStyle="normal" />
                 </LinearLayout>
@@ -284,14 +354,14 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Anurag Agarwal\t | Zimbra API"
+                        android:text="Anurag Agarwal\t | Zimbra SOAP API"
                         android:textSize="14sp"
                         android:textStyle="normal" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Pradeet Swamy\t | Analytics"
+                        android:text="Ankit Lakra\t | Webmail Logo"
                         android:textSize="14sp"
                         android:textStyle="normal" />
                 </LinearLayout>

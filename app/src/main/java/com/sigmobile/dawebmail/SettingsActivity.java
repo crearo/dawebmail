@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import com.sigmobile.dawebmail.database.UserSettings;
 import com.sigmobile.dawebmail.utils.Constants;
-import com.sigmobile.dawebmail.utils.Printer;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -44,11 +43,14 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_feedback);
+        setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.TextPrimaryAlternate));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setTitle("Settings");
 
         SharedPreferences prefs = getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);
         toggleMobileData = prefs.getBoolean(Constants.TOGGLE_MOBILEDATA, true);
@@ -65,10 +67,8 @@ public class SettingsActivity extends AppCompatActivity {
 
                 if (!switch_wifi.isChecked()) {
                     editor.putBoolean(Constants.TOGGLE_WIFI, false).commit();
-                    Printer.println("wifi put to false");
                 } else {
                     editor.putBoolean(Constants.TOGGLE_WIFI, true).commit();
-                    Printer.println("wifi put to true");
                 }
             }
         });

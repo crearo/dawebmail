@@ -148,10 +148,10 @@ public class MainActivity extends AppCompatActivity {
                             fragment = new TrashFragment();
                             Snackbar.make(frameLayout, "TrashBox", Snackbar.LENGTH_SHORT).show();
                         } else if (drawerItem.equals(sSettings)) {
-                            startActivity(new Intent(MainActivity.this, FeedbackActivity.class));
+                            startActivity(new Intent(MainActivity.this, SettingsActivity.class));
                             return false;
                         } else if (drawerItem.equals(sFeedback)) {
-                            startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                            startActivity(new Intent(MainActivity.this, FeedbackActivity.class));
                             return false;
                         }
 
