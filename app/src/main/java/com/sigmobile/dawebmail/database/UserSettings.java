@@ -12,6 +12,14 @@ import com.sigmobile.dawebmail.utils.Constants;
  */
 public class UserSettings {
 
+    /**
+     * Getter and Setter for Current User
+     * Only one user can be active at one time
+     *
+     * @param currentUser
+     * @param context
+     */
+
     public static void setCurrentUser(User currentUser, Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = preferences.edit();
@@ -31,6 +39,13 @@ public class UserSettings {
             return null;
         return User.getUserFromUserName(username);
     }
+
+    /**
+     * Last refreshed time getters and setters
+     *
+     * @param context
+     * @return
+     */
 
     public static String getLastRefreshed(Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
