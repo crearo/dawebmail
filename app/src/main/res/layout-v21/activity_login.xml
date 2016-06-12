@@ -72,7 +72,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="32dp"
-            android:clickable="true">
+            android:clickable="true"
+            android:color="?android:colorControlHighlight">
 
             <ImageView
                 android:id="@+id/login_next_image"

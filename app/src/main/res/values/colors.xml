@@ -21,4 +21,6 @@
     <color name="primaryPressed">#FFFFFF</color>
     <color name="primary">#F5F5F5</color>
 
+    <color name="white">#FFFFFF</color>
+
 </resources>

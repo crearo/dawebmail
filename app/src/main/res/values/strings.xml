@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">DAWebmail</string>
+    <string name="webmail_domain">daiict.ac.in</string>
 
-    <string name="title_activity_view_email">ViewEmail</string>
+    <string name="release_notes_1">We\'ve changed the entire structure of the application. Material UI + you\'ll receive notifications, smoother than ever! I\'m really thankful to all those that contributed. Send, and delete will show up soon too. :D</string>
+    <string name="release_notes_2">Send, Delete, Multiple Accounts. UI overhaul. DAWebmail. It\'s never been better.</string>
+
     <string name="contribute">DAWebmail needs you! This is a risky step I am willing to take. DAWebmail may lose most of its downloads. But please do stick around if you have found this application useful so far!\n\nWith the new Webmail version in place, the script I wrote to scrape webmails does not work. I\'d love all the Android developers in DA to contribute, and fix the scraping issue, and possibly contribute further! \n\nBonus. The entire interface now follows Material Design guidelines!</string>
     <string name="github_repo">https://github.com/CreaRo/DAWebmail</string>
     <string name="blog_link">http://bhardwajrish.blogspot.in/2016/01/contributing-to-dawebmail.html</string>
@@ -30,5 +33,14 @@
     <string name="notification_ticker_new_webmail">New Webmail!</string>
     <string name="notification_ticker_new_webmails">New Webmails!</string>
     <string name="notification_swipe_to_view">Swipe down to view webmails!</string>
+
+    <!-- Snackbars -->
+    <string name="snackbar_login_user_exist">This user already exists - logging in</string>
+    <string name="snackbar_login_attempting">Attempting Login.</string>
+    <string name="snackbar_login_successful">Login Successful!</string>
+    <string name="snackbar_login_failed">Login Failed</string>
+
+    <!-- Progress Dialogs -->
+    <string name="dialog_logging_in">Logging In</string>
 
 </resources>

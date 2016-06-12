@@ -4,13 +4,14 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 
 import com.sigmobile.dawebmail.asyncTasks.Login;
 import com.sigmobile.dawebmail.asyncTasks.LoginListener;
@@ -29,8 +30,8 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
     @Bind(R.id.login_password)
     EditText pwdtf;
 
-    @Bind(R.id.login_loginbtn)
-    Button loginbtn;
+    @Bind(R.id.login_button_container)
+    RelativeLayout loginContainer;
 
     @Bind(R.id.login_tool_bar)
     Toolbar toolbar;
@@ -50,31 +51,36 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
 
         showUpdateDialog();
 
-        toolbar.setTitle("DAWebmail");
-        toolbar.setTitleTextColor(getResources().getColor(R.color.EmailBackground));
+        toolbar.setTitle(getString(R.string.app_name));
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);
 
         usernametf.requestFocus();
-
         currentUser = UserSettings.getCurrentUser(this);
 
         if (currentUser == null) {
             // user not logged in
-            loginbtn.setOnClickListener(new View.OnClickListener() {
+            loginContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    loginContainer.setEnabled(false);
                     username = usernametf.getText().toString().trim();
                     pwd = pwdtf.getText().toString();
 
-                    if (!username.contains("@daiict.ac.in")) {
-                        username = username + "@daiict.ac.in";
+                    if (!username.contains("@" + getString(R.string.webmail_domain))) {
+                        username = username + "@" + getString(R.string.webmail_domain);
                     }
 
                     if (User.doesUserExist(username, pwd)) {
-                        Snackbar.make(view, "This user already exists - logging in now", Snackbar.LENGTH_LONG).show();
-                        UserSettings.setCurrentUser(User.getUserFromUserName(username), getApplicationContext());
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                        finish();
+                        Snackbar.make(view, getString(R.string.snackbar_login_user_exist), Snackbar.LENGTH_LONG).show();
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                UserSettings.setCurrentUser(User.getUserFromUserName(username), getApplicationContext());
+                                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                finish();
+                            }
+                        }, 1000);
                     } else {
                         User user = new User(username, pwd);
                         new Login(user, getApplicationContext(), LoginActivity.this).execute();
@@ -86,6 +92,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
             startActivity(new Intent(this, MainActivity.class));
             finish();
         }
+
     }
 
     @Override
@@ -101,23 +108,24 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
 
     @Override
     public void onPreLogin() {
-        progressDialog = ProgressDialog.show(LoginActivity.this, "", "Logging In", true);
+        progressDialog = ProgressDialog.show(LoginActivity.this, "", getString(R.string.dialog_logging_in), true);
         progressDialog.setCancelable(false);
         progressDialog.show();
         InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        mgr.hideSoftInputFromWindow(loginbtn.getWindowToken(), 0);
-        Snackbar.make(findViewById(R.id.login_container), "Attempting Login. Hold On.", Snackbar.LENGTH_LONG).show();
+        mgr.hideSoftInputFromWindow(loginContainer.getWindowToken(), 0);
+        Snackbar.make(loginContainer, getString(R.string.snackbar_login_attempting), Snackbar.LENGTH_LONG).show();
     }
 
     @Override
     public void onPostLogin(boolean loginSuccess, String timeTaken, User user) {
         progressDialog.dismiss();
+        loginContainer.setEnabled(true);
         if (!loginSuccess) {
-            Snackbar.make(findViewById(R.id.login_container), "Login Unsuccessful", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(loginContainer, getString(R.string.snackbar_login_failed), Snackbar.LENGTH_LONG).show();
             usernametf.setText(username);
             pwdtf.setText("");
         } else {
-            Snackbar.make(findViewById(R.id.login_container), "Login Successful!", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(loginContainer, getString(R.string.snackbar_login_successful), Snackbar.LENGTH_LONG).show();
             user = User.createNewUser(user);
             UserSettings.setCurrentUser(user, getApplicationContext());
             startActivity(new Intent(this, MainActivity.class));
@@ -130,9 +138,10 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
     private void showUpdateDialog() {
         if (!UserSettings.getAlertShown(getApplicationContext())) {
             final MaterialDialog materialDialog = new MaterialDialog(LoginActivity.this);
-            materialDialog.setTitle("And it's up!");
-            materialDialog.setMessage("We've changed the entire structure of the application. Material UI + you'll receive notifications, smoother than ever! I'm really thankful to all those that contributed.\n\nSend, and delete will show up soon too. :D");
+            materialDialog.setTitle(getString(R.string.app_name));
+            materialDialog.setMessage(getString(R.string.release_notes_2));
             materialDialog.show();
+            materialDialog.setCanceledOnTouchOutside(true);
             materialDialog.setPositiveButton("Alright!", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
