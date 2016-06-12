@@ -1,17 +1,10 @@
 package com.sigmobile.dawebmail.network;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Base64;
-
-import com.sigmobile.dawebmail.R;
 import com.sigmobile.dawebmail.database.User;
 import com.zimbra.wsdl.zimbraservice_wsdl.ZcsService;
 
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Date;
 
@@ -67,7 +60,7 @@ public class SoapAPI {
         }
     }
 
-    public boolean sendMail(User user, Context context, String mailToAddress, String mailSubject, String mailContent, boolean important) {
+    public boolean sendMail(User user, String mailToAddress, String mailSubject, String mailContent, boolean important) {
 
         setupZcsServiceForUser(user);
 
@@ -90,7 +83,7 @@ public class SoapAPI {
 
         msgToSend.setE(emailAddrInfos);
 
-        MimePartInfo[] mimePartInfos = new MimePartInfo[3];
+        MimePartInfo[] mimePartInfos = new MimePartInfo[2];
         mimePartInfos[0] = new MimePartInfo();
         mimePartInfos[0].setContent(mailContent);
         mimePartInfos[0].setCt("text/plain"); //content type
@@ -98,16 +91,6 @@ public class SoapAPI {
         mimePartInfos[1] = new MimePartInfo();
         mimePartInfos[1].setContent(mailContent);
         mimePartInfos[1].setCt("text/html");
-
-        Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_action_mail);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
-        byte[] b = baos.toByteArray();
-        String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-
-        mimePartInfos[2] = new MimePartInfo();
-        mimePartInfos[2].setContent(encodedImage);
-        mimePartInfos[2].setCt("image/jpeg");
 
         MimePartInfo mimePartInfo = new MimePartInfo();
         mimePartInfo.setCt("multipart/mixed"); //content type
@@ -118,21 +101,16 @@ public class SoapAPI {
         if (important)
             msgToSend.setF("!");
 
-        System.out.println("Subject : " + msgToSend.getSu());
-        System.out.println("Att Count : " + msgToSend.getAttributeCount());
-
         SendMsgRequest sendMsgRequest = new SendMsgRequest();
         sendMsgRequest.setM(msgToSend);
 
         sendMsgRequest.setSuid(String.valueOf(new Date().getTime())); //Timestamp as uid
 
-        System.out.println("Message : " + sendMsgRequest.getM());
-
-        System.out.println("RESPONSE : " + sendMsgRequest.getSuid());
-
         try {
             SendMsgResponse sendMsgResponse = zcsService.sendMsgRequest(sendMsgRequest, zcsServiceContext);
-            return true;
+            if (sendMsgResponse.getM().getId() != null)
+                return true;
+            return false;
         } catch (IOException e) {
             e.printStackTrace();
             return false;

@@ -28,19 +28,19 @@ import java.util.ArrayList;
  */
 public class MailAdapter extends BaseAdapter {
 
-    ArrayList<EmailMessage> emails;
-    Context context;
+    private ArrayList<EmailMessage> emails;
+    private Context context;
     private ArrayList<EmailMessage> emailsToDelete;
-    DeleteSelectedListener deleteSelectedListener;
-    boolean clickedForDelete[];
-    String EMAIL_TYPE;
+    private DeleteSelectedListener deleteSelectedListener;
+    private Boolean clickedForDelete[];
+    private String EMAIL_TYPE;
 
     public MailAdapter(ArrayList<EmailMessage> emails, Context context, DeleteSelectedListener deleteSelectedListener, String EMAIL_TYPE) {
         this.context = context;
         emailsToDelete = new ArrayList<>();
         this.emails = emails;
         this.deleteSelectedListener = deleteSelectedListener;
-        this.clickedForDelete = new boolean[emails.size()];
+        this.clickedForDelete = new Boolean[emails.size()];
         this.EMAIL_TYPE = EMAIL_TYPE;
     }
 
@@ -68,8 +68,6 @@ public class MailAdapter extends BaseAdapter {
         final ViewHolder holder = (ViewHolder) convertView.getTag();
         final EmailMessage item = getItem(position);
 
-        holder.tv_name.setTextSize(15);
-
         if (clickedForDelete[position]) {
             System.out.println("" + item.fromName + " " + item.subject + " is marked for delete");
         }
@@ -77,37 +75,37 @@ public class MailAdapter extends BaseAdapter {
         if (item.readUnread.equals(Constants.WEBMAIL_UNREAD)) {
             if (!clickedForDelete[position]) {
                 if (item.totalAttachments >= 1)
-                    holder.iv_icon.setImageResource(R.drawable.msg_unread_att);
+                    holder.msgIcon.setImageResource(R.drawable.msg_unread_att);
                 else if (item.important)
-                    holder.iv_icon.setImageResource(R.drawable.msg_unread_imp);
+                    holder.msgIcon.setImageResource(R.drawable.msg_unread_imp);
                 else
-                    holder.iv_icon.setImageResource(R.drawable.msg_unread);
+                    holder.msgIcon.setImageResource(R.drawable.msg_unread);
             } else {
                 System.out.println("set holder icon to delete wala");
-                holder.iv_icon.setAnimation(AnimationUtils.loadAnimation(context, R.anim.abc_grow_fade_in_from_bottom));
-                holder.iv_icon.setImageResource(R.drawable.ic_action_delete_red);
+                holder.msgIcon.setAnimation(AnimationUtils.loadAnimation(context, R.anim.abc_grow_fade_in_from_bottom));
+                holder.msgIcon.setImageResource(R.drawable.ic_action_delete_red);
             }
 
-            holder.tv_name.setTypeface(null, Typeface.BOLD);
+            holder.msgFrom.setTypeface(null, Typeface.BOLD);
         } else {
             if (!clickedForDelete[position]) {
                 if (item.totalAttachments >= 1)
-                    holder.iv_icon.setImageResource(R.drawable.msg_read_att);
+                    holder.msgIcon.setImageResource(R.drawable.msg_read_att);
                 else if (item.important)
-                    holder.iv_icon.setImageResource(R.drawable.msg_read_imp);
+                    holder.msgIcon.setImageResource(R.drawable.msg_read_imp);
                 else
-                    holder.iv_icon.setImageResource(R.drawable.msg_read);
+                    holder.msgIcon.setImageResource(R.drawable.msg_read);
             } else {
-                holder.iv_icon.setImageResource(R.drawable.ic_action_delete_red);
+                holder.msgIcon.setImageResource(R.drawable.ic_action_delete_red);
                 Printer.println("set holder icon to delete wala");
-                holder.iv_icon.setAnimation(AnimationUtils.loadAnimation(context, R.anim.abc_grow_fade_in_from_bottom));
+                holder.msgIcon.setAnimation(AnimationUtils.loadAnimation(context, R.anim.abc_grow_fade_in_from_bottom));
             }
-            holder.tv_name.setTypeface(null, Typeface.NORMAL);
+            holder.msgFrom.setTypeface(null, Typeface.NORMAL);
         }
 
-        holder.tv_name.setText(item.fromName);
-        holder.tv_date.setText(DateUtils.getDate(Long.parseLong(item.dateInMillis)));
-        holder.tv_subject.setText(item.subject);
+        holder.msgFrom.setText(item.fromName);
+        holder.msgDateRecv.setText(DateUtils.getDate(Long.parseLong(item.dateInMillis)));
+        holder.msgSubject.setText(item.subject);
 
         convertView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -130,7 +128,7 @@ public class MailAdapter extends BaseAdapter {
             }
         });
 
-        holder.iv_icon.setOnClickListener(new View.OnClickListener() {
+        holder.msgIcon.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
@@ -151,7 +149,7 @@ public class MailAdapter extends BaseAdapter {
             }
         });
 
-        holder.tv_relaLayout.setOnClickListener(new View.OnClickListener() {
+        holder.msgContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, ViewEmail.class);
@@ -178,22 +176,22 @@ public class MailAdapter extends BaseAdapter {
     }
 
     class ViewHolder {
-        ImageView iv_icon;
-        TextView tv_name, tv_subject, tv_date;
-        LinearLayout tv_relaLayout;
+        ImageView msgIcon;
+        TextView msgFrom, msgSubject, msgDateRecv;
+        LinearLayout msgContainer;
 
         public ViewHolder(View view) {
-            tv_relaLayout = (LinearLayout) view.findViewById(R.id.tv_relativelayout);
-            iv_icon = (ImageView) view.findViewById(R.id.iv_icon);
-            tv_name = (TextView) view.findViewById(R.id.tv_name);
-            tv_date = (TextView) view.findViewById(R.id.tv_date);
-            tv_subject = (TextView) view.findViewById(R.id.tv_subject);
+            msgContainer = (LinearLayout) view.findViewById(R.id.element_msg_container);
+            msgIcon = (ImageView) view.findViewById(R.id.element_msg_icon);
+            msgFrom = (TextView) view.findViewById(R.id.element_msg_from);
+            msgDateRecv = (TextView) view.findViewById(R.id.element_msg_date);
+            msgSubject = (TextView) view.findViewById(R.id.element_msg_subject);
 
             Typeface font = TheFont.getFont(context);
 
-            tv_date.setTypeface(font);
-            tv_name.setTypeface(font);
-            tv_subject.setTypeface(font);
+            msgDateRecv.setTypeface(font);
+            msgFrom.setTypeface(font);
+            msgSubject.setTypeface(font);
 
             view.setTag(this);
         }

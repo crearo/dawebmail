@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/tv_relativelayout"
+    android:id="@+id/element_msg_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
     android:orientation="horizontal"
-    android:paddingBottom="10dp"
-    android:paddingLeft="5dip"
-    android:paddingRight="5dp"
-    android:paddingTop="10dp">
+    android:paddingBottom="12dp"
+    android:paddingLeft="4dp"
+    android:paddingRight="4dp"
+    android:paddingTop="12dp">
 
     <ImageView
-        android:id="@+id/iv_icon"
-        android:layout_width="35dp"
+        android:id="@+id/element_msg_icon"
+        android:layout_width="36dp"
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:src="@drawable/ic_action_delete" />
 
     <LinearLayout
-        android:id="@+id/iv_ll"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="4dp"
         android:orientation="vertical"
         android:padding="8dp">
 
@@ -30,30 +29,35 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/tv_date"
-                android:layout_width="100dp"
+                android:id="@+id/element_msg_date"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:gravity="right"
+                android:gravity="left"
                 android:maxLines="1"
                 android:text="Date"
                 android:textColor="@color/TextSecondary"
-                android:textSize="12sp" />
+                android:textSize="@dimen/text_size_medium" />
 
             <TextView
-                android:id="@+id/tv_name"
-                android:layout_width="fill_parent"
+                android:id="@+id/element_msg_from"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toLeftOf="@id/tv_date"
-                android:gravity="bottom"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@+id/element_msg_date"
+                android:layout_toStartOf="@+id/element_msg_date"
                 android:maxLines="1"
                 android:text="From"
-                android:textColor="@color/TextPrimary" />
+                android:textColor="@color/TextPrimary"
+                android:textSize="@dimen/text_size_large" />
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/tv_subject"
+            android:id="@+id/element_msg_subject"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="top"
