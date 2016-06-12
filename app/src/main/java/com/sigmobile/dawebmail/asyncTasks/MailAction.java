@@ -36,7 +36,7 @@ public class MailAction extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... voids) {
-        result = new SoapAPI().performMailAction(currentUser, mailAction, contentID);
+        result = new SoapAPI().performMailAction(context, currentUser, mailAction, contentID);
         return null;
     }
 

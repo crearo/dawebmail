@@ -20,7 +20,7 @@ import javax.mail.internet.MimeMultipart;
  */
 public class MailParser {
 
-    private static final String LOGTAG = "RESTAPI";
+    private static final String LOGTAG = "MailParser";
     private String contentHTML = "";
     private int totalAttachments = 0;
 
@@ -83,13 +83,9 @@ public class MailParser {
                 }
             }
 
-            // print out details of each message
-            System.out.println("\t Message: " + contentHTML);
-
             if (contentHTML.contains("background-color: #ffffff;"))
                 contentHTML = contentHTML.replace("background-color: #ffffff;", "");
 
-            System.out.println("\t Attachments: " + attachFiles);
         } catch (Exception e) {
             Log.d(LOGTAG, "Error in parsing email");
             e.printStackTrace();
@@ -122,7 +118,6 @@ public class MailParser {
 //    }
 //
     public void parseMime(MimeMultipart multipart) {
-        System.setProperty("mail.mime.multipart.ignoreexistingboundaryparameter", "true");
         try {
             for (int i = 0; i < multipart.getCount(); i++) {
                 if (multipart.getBodyPart(i).getContent() instanceof MimeMultipart) {
@@ -130,7 +125,6 @@ public class MailParser {
                 } else {
                     String multiPartType = multipart.getBodyPart(i).getContentType();
                     String multiPartContent = "" + ((multipart.getBodyPart(i).getContent()));
-                    System.out.println("INSIDE FUNCTION | " + multiPartType + " | " + multiPartContent);
                     if (multiPartType.contains("text/html")) {
                         contentHTML = multiPartContent;
                     } else if (multiPartType.contains("text/plain")) {

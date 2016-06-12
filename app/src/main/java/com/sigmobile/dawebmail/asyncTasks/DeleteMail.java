@@ -42,7 +42,7 @@ public class DeleteMail extends AsyncTask<Void, Void, Void> {
          * If any of them is unsuccessful, return false
          */
         for (EmailMessage emailMessage : emailToBeDeleted) {
-            result = soapAPI.performMailAction(currentUser, context.getString(R.string.msg_action_trash), String.valueOf(emailMessage.contentID));
+            result = soapAPI.performMailAction(context, currentUser, context.getString(R.string.msg_action_trash), String.valueOf(emailMessage.contentID));
             if (!result)
                 return null;
         }

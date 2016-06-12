@@ -17,4 +17,14 @@
     <string name="msg_action_trash">trash</string>
     <string name="msg_action_delete">delete</string>
 
+    <!-- RestAPI URLs -->
+    <string name="rest_url_login">https://webmail.daiict.ac.in/service/home/~/inbox.rss?limit=1</string>
+    <string name="rest_url_inbox">https://webmail.daiict.ac.in/home/~/inbox.json</string>
+    <string name="rest_url_sent">https://webmail.daiict.ac.in/home/~/sent.json</string>
+    <string name="rest_url_trash">https://webmail.daiict.ac.in/home/~/trash.json</string>
+    <string name="rest_url_view_webmail">https://webmail.daiict.ac.in/home/~/?id=</string>
+
+    <!-- SOAP API URLs -->
+    <string name="soap_url">https://webmail.daiict.ac.in/service/soap</string>
+
 </resources>

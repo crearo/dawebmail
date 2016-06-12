@@ -1,5 +1,8 @@
 package com.sigmobile.dawebmail.network;
 
+import android.content.Context;
+
+import com.sigmobile.dawebmail.R;
 import com.sigmobile.dawebmail.database.User;
 import com.zimbra.wsdl.zimbraservice_wsdl.ZcsService;
 
@@ -36,9 +39,9 @@ public class SoapAPI {
 
     }
 
-    public boolean performMailAction(User user, String mailAction, String contentID) {
+    public boolean performMailAction(Context context, User user, String mailAction, String contentID) {
 
-        setupZcsServiceForUser(user);
+        setupZcsServiceForUser(context, user);
 
         MsgActionRequest msgActionRequest = new MsgActionRequest();
         ActionSelector actionSelector = new ActionSelector();
@@ -60,9 +63,9 @@ public class SoapAPI {
         }
     }
 
-    public boolean sendMail(User user, String mailToAddress, String mailSubject, String mailContent, boolean important) {
+    public boolean sendMail(Context context, User user, String mailToAddress, String mailSubject, String mailContent, boolean important) {
 
-        setupZcsServiceForUser(user);
+        setupZcsServiceForUser(context, user);
 
         /* When replying or forwarding
          * For value of rt choose r when replying and w when forwarding
@@ -120,7 +123,7 @@ public class SoapAPI {
         }
     }
 
-    private void setupZcsServiceForUser(User user) {
+    private void setupZcsServiceForUser(Context context, User user) {
 
         /**
          * This is similar to setting up auth for a user.
@@ -132,7 +135,7 @@ public class SoapAPI {
             return;
 
         zcsServiceOfUser = user;
-        zcsService = new ZcsService("https://webmail.daiict.ac.in/service/soap", 2, true);
+        zcsService = new ZcsService(context.getString(R.string.soap_url), 2, true);
 
         AccountSelector accountSelector = new AccountSelector();
         accountSelector.setBy(AccountBy.OPT5_NAME);
