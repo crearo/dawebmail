@@ -169,8 +169,6 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
         });
         */
 
-        fabDelete.setVisibility(View.GONE);
-
         fabSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -178,7 +176,37 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
             }
         });
 
+        setupDeleteAndComposeFABs(false);
+
         return rootView;
+    }
+
+    private void setupDeleteAndComposeFABs(boolean isDeleteVisible) {
+        if (!isDeleteVisible) {
+            Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_down);
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    fabDelete.setVisibility(View.GONE);
+                    fabSend.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.slide_up));
+                    fabSend.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            fabDelete.startAnimation(animation);
+        } else {
+            fabDelete.setVisibility(View.VISIBLE);
+            fabSend.setVisibility(View.GONE);
+        }
     }
 
     private void setSwipeRefreshLayout() {
@@ -353,24 +381,17 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
     @Override
     public void onItemClickedForDelete(final ArrayList<EmailMessage> emailsToDelete) {
 
+        if (emailsToDelete.size() == 0)
+            setupDeleteAndComposeFABs(false);
+        else
+            setupDeleteAndComposeFABs(true);
+
         fabDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(swipeRefreshLayout, "Deleting ...", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(swipeRefreshLayout, "Deleting", Snackbar.LENGTH_LONG).show();
                 new DeleteMail(currentUser, getActivity(), InboxFragment.this, emailsToDelete).execute();
             }
         });
-
-        if (emailsToDelete.size() > 0) {
-            if (fabDelete.getVisibility() != View.VISIBLE) {
-                fabDelete.setVisibility(View.VISIBLE);
-                fabDelete.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.abc_slide_in_bottom));
-            }
-        } else {
-            if (fabDelete.getVisibility() != View.GONE) {
-                fabDelete.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.abc_slide_out_bottom));
-                fabDelete.setVisibility(View.GONE);
-            }
-        }
     }
 }

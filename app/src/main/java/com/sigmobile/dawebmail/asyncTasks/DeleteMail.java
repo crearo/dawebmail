@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
+import com.sigmobile.dawebmail.network.SoapAPI;
 
 import java.util.ArrayList;
 
@@ -35,8 +36,12 @@ public class DeleteMail extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... voids) {
-//        result = new ScrapingMachine(username, pwd, context).getValues_forDelete(emailToBeDeleted);
-        System.out.println("Delete result " + result);
+        SoapAPI soapAPI = new SoapAPI();
+        for (EmailMessage emailMessage : emailToBeDeleted) {
+            result = soapAPI.performMailAction(currentUser, "trash", "" + emailMessage.contentID);
+            if (!result)
+                return null;
+        }
         return null;
     }
 
