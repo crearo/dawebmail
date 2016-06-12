@@ -24,10 +24,8 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.sigmobile.dawebmail.database.User;
 import com.sigmobile.dawebmail.database.UserSettings;
-import com.sigmobile.dawebmail.fragments.FeedbackFragment;
 import com.sigmobile.dawebmail.fragments.InboxFragment;
 import com.sigmobile.dawebmail.fragments.SentFragment;
-import com.sigmobile.dawebmail.fragments.SettingsFragment;
 import com.sigmobile.dawebmail.fragments.SmartBoxFragment;
 import com.sigmobile.dawebmail.fragments.TrashFragment;
 
@@ -150,11 +148,11 @@ public class MainActivity extends AppCompatActivity {
                             fragment = new TrashFragment();
                             Snackbar.make(frameLayout, "TrashBox", Snackbar.LENGTH_SHORT).show();
                         } else if (drawerItem.equals(sSettings)) {
-                            fragment = new SettingsFragment();
-                            Snackbar.make(frameLayout, "Settings", Snackbar.LENGTH_SHORT).show();
+                            startActivity(new Intent(MainActivity.this, FeedbackActivity.class));
+                            return false;
                         } else if (drawerItem.equals(sFeedback)) {
-                            fragment = new FeedbackFragment();
-                            Snackbar.make(frameLayout, "Feedback", Snackbar.LENGTH_SHORT).show();
+                            startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                            return false;
                         }
 
                         if (fragment != null) {

@@ -2,11 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F0F0F0">
+    android:background="@color/white">
+
+    <include
+        android:id="@+id/settings_toolbar"
+        layout="@layout/tool_bar" />
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/settings_toolbar">
 
         <LinearLayout
             android:layout_width="match_parent"

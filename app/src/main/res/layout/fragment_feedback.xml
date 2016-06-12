@@ -3,131 +3,135 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    <include
+        android:id="@+id/feedback_toolbar"
+        layout="@layout/tool_bar" />
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/EmailBackground">
+        android:layout_below="@+id/feedback_toolbar"
+        android:background="@color/white">
 
-
-        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_margin="12dp"
+            android:orientation="vertical">
+
             <LinearLayout
+                android:id="@+id/feedback_rate"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
                 android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/playstore" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:paddingLeft="20dp"
-                    android:paddingRight="20dp"
-                    android:text="Rate On Playstore"
-                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_gravity="center"
+                    android:text="Rate Us"
+                    android:textColor="@color/TextPrimary"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
-                <LinearLayout
-                    android:id="@+id/feedback_rate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:text="Rate"
-                            android:textColor="@color/colorPrimary"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
-
-                        <ImageView
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:src="@drawable/ic_star_blue" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/stat_total_b"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Do leave a comment!"
-                        android:textSize="14sp"
-                        android:textStyle="normal" />
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:paddingLeft="20dp"
-                        android:paddingRight="20dp"
-                        android:text="Write To Us"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-
-                    <ImageView
-                        android:id="@+id/feedback_send"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_gravity="right"
-                        android:src="@drawable/ic_action_send_blue" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
-
-                    <EditText
-                        android:id="@+id/feedback_et"
-                        android:layout_width="match_parent"
-                        android:layout_height="100dp"
-                        android:gravity="top"
-                        android:hint="Let us know what can be improved."
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/stat_rem_b"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:text="We won't judge. Promise!"
-                        android:textSize="12sp"
-                        android:textStyle="normal" />
-                </LinearLayout>
-
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="0.1dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="20dp"
-                    android:background="@color/EmailBackgroundSecondary"
-                    android:elevation="1dp" />
-
+                    android:layout_height="wrap_content"
+                    android:text="Do leave a comment - or write to me below for feature requests/suggestions/complaints."
+                    android:textColor="@color/TextSecondary" />
 
             </LinearLayout>
 
-        </RelativeLayout>
+            <LinearLayout
+                android:id="@+id/feedback_github"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/github" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Fork On Github"
+                    android:textColor="@color/TextPrimary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Contribute to the repository - it's all open source :)\nDo remember to star it! :D"
+                    android:textColor="@color/TextSecondary" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="12dp"
+                android:text="Write To Us"
+                android:textColor="@color/TextPrimary"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/feedback_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:gravity="top"
+                    android:hint="Let us know what can be improved."
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/stat_rem_b"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="We won't judge. Promise!"
+                    android:textSize="12sp"
+                    android:textStyle="normal" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/feedback_send"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="right"
+                android:layout_margin="12dp"
+                android:src="@drawable/sent" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0.1dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/EmailBackgroundSecondary"
+                android:elevation="1dp" />
+
+
+        </LinearLayout>
+
     </ScrollView>
 </RelativeLayout>

@@ -39,6 +39,7 @@
                 android:layout_gravity="center"
                 android:gravity="left"
                 android:hint="DA-IICT ID"
+                android:inputType="textEmailAddress"
                 android:textSize="@dimen/text_size_large" />
         </LinearLayout>
 

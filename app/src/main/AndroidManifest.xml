@@ -57,6 +57,8 @@
 
         <activity android:name=".ContributeActivity" />
         <activity android:name=".ComposeActivity"></activity>
+        <activity android:name=".FeedbackActivity"></activity>
+        <activity android:name=".SettingsActivity"></activity>
     </application>
 
 </manifest>

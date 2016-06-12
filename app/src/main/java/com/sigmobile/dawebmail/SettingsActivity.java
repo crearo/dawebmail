@@ -1,4 +1,4 @@
-package com.sigmobile.dawebmail.fragments;
+package com.sigmobile.dawebmail;
 
 import android.app.Activity;
 import android.content.Context;
@@ -8,16 +8,13 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.sigmobile.dawebmail.R;
 import com.sigmobile.dawebmail.database.UserSettings;
 import com.sigmobile.dawebmail.utils.Constants;
 import com.sigmobile.dawebmail.utils.Printer;
@@ -28,10 +25,7 @@ import butterknife.ButterKnife;
 /**
  * Created by rish on 6/10/15.
  */
-public class SettingsFragment extends Fragment {
-
-    public SettingsFragment() {
-    }
+public class SettingsActivity extends AppCompatActivity {
 
     @Bind(R.id.settings_networkcell_switch)
     Switch switch_mobile;
@@ -39,20 +33,24 @@ public class SettingsFragment extends Fragment {
     @Bind(R.id.settings_sound_tv)
     TextView soundURI;
 
+    @Bind(R.id.settings_toolbar)
+    Toolbar toolbar;
+
     @Bind(R.id.settings_networkwifi_switch)
     Switch switch_wifi;
 
     boolean toggleMobileData = true, toggleWifi = true;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_feedback);
+        ButterKnife.bind(this);
 
-        ButterKnife.bind(this, rootView);
+        setSupportActionBar(toolbar);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.TextPrimaryAlternate));
 
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Settings");
-
-        SharedPreferences prefs = getActivity().getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);
         toggleMobileData = prefs.getBoolean(Constants.TOGGLE_MOBILEDATA, true);
         toggleWifi = prefs.getBoolean(Constants.TOGGLE_WIFI, true);
 
@@ -62,7 +60,7 @@ public class SettingsFragment extends Fragment {
         switch_wifi.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SharedPreferences prefs = getActivity().getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);
+                SharedPreferences prefs = getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
 
                 if (!switch_wifi.isChecked()) {
@@ -79,16 +77,13 @@ public class SettingsFragment extends Fragment {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SharedPreferences prefs = getActivity().getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);
+                SharedPreferences prefs = getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
 
                 if (!switch_mobile.isChecked()) {
                     editor.putBoolean(Constants.TOGGLE_MOBILEDATA, false).commit();
-                    Printer.println("mobile put to false");
-
                 } else {
                     editor.putBoolean(Constants.TOGGLE_MOBILEDATA, true).commit();
-                    Printer.println("mobile put to true");
                 }
             }
         });
@@ -100,13 +95,11 @@ public class SettingsFragment extends Fragment {
                 intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
                 intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Tone");
 
-                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, ("android.resource://" + getActivity().getPackageName() + "/" + R.raw.zoop));
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, ("android.resource://" + getPackageName() + "/" + R.raw.zoop));
 
                 startActivityForResult(intent, 5);
             }
         });
-
-        return rootView;
     }
 
     @Override
@@ -114,7 +107,7 @@ public class SettingsFragment extends Fragment {
         if (resultCode == Activity.RESULT_OK && requestCode == 5) {
             Uri uri = intent.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
             if (uri != null) {
-                UserSettings.setNotificationSound(getActivity(), uri.toString());
+                UserSettings.setNotificationSound(getApplicationContext(), uri.toString());
                 Snackbar.make(soundURI, "Updated Notification Sound", Snackbar.LENGTH_LONG).show();
             } else {
             }

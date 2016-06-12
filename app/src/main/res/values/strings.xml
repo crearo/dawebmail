@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">DAWebmail</string>
     <string name="webmail_domain">daiict.ac.in</string>
+    <string name="developer_email">bhardwaj.rish@gmail.com</string>
 
     <string name="release_notes_1">We\'ve changed the entire structure of the application. Material UI + you\'ll receive notifications, smoother than ever! I\'m really thankful to all those that contributed. Send, and delete will show up soon too. :D</string>
     <string name="release_notes_2">Send, Delete, Multiple Accounts. UI overhaul. DAWebmail. It\'s never been better.</string>

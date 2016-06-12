@@ -1,30 +1,27 @@
-package com.sigmobile.dawebmail.fragments;
+package com.sigmobile.dawebmail;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.sigmobile.dawebmail.R;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by rish on 6/10/15.
  */
-public class FeedbackFragment extends Fragment {
+public class FeedbackActivity extends AppCompatActivity {
 
     @Bind(R.id.feedback_send)
     ImageView send;
@@ -35,27 +32,24 @@ public class FeedbackFragment extends Fragment {
     @Bind(R.id.feedback_rate)
     LinearLayout rate;
 
-    public FeedbackFragment() {
-
-    }
+    @Bind(R.id.feedback_toolbar)
+    Toolbar toolbar;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_feedback, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_feedback);
+        ButterKnife.bind(this);
 
-        ButterKnife.bind(this, rootView);
-
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Feedback");
+        setSupportActionBar(toolbar);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.TextPrimaryAlternate));
 
         send.setVisibility(View.GONE);
 
-        rate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                launchMarket();
-            }
-        });
+        setupTextWatcher();
+    }
 
+    private void setupTextWatcher() {
         TextWatcher textWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -77,37 +71,44 @@ public class FeedbackFragment extends Fragment {
         };
 
         textbox.addTextChangedListener(textWatcher);
+    }
 
-        send.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendEmail();
-            }
-        });
+    @OnClick(R.id.feedback_send)
+    public void onSend() {
+        sendEmail();
+    }
 
-        return rootView;
+    @OnClick(R.id.feedback_rate)
+    public void onRate() {
+        launchMarket();
+    }
+
+    @OnClick(R.id.feedback_github)
+    public void onGitHub() {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.github_repo)));
+        startActivity(browserIntent);
     }
 
     public void sendEmail() {
         Intent sendIntent = new Intent(Intent.ACTION_VIEW);
         sendIntent.setType("plain/text");
-        sendIntent.setData(Uri.parse("bhardwaj.rish@gmail.com"));
+        sendIntent.setData(Uri.parse(getString(R.string.developer_email)));
         sendIntent.setClassName("com.google.android.gm", "com.google.android.gm.ComposeActivityGmail");
-        sendIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"bhardwaj.rish@gmail.com"});
-        sendIntent.putExtra(Intent.EXTRA_SUBJECT, "DAWebmail");
-        sendIntent.putExtra(Intent.EXTRA_TEXT, "Hi Rish!\n\nHere are a few suggestions/complaints about the webmail app : \n\n" + textbox.getText().toString());
-        getActivity().startActivity(sendIntent);
+        sendIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{getString(R.string.developer_email)});
+        sendIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name));
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "Suggestions/Complaints.\n" + textbox.getText().toString());
+        startActivity(sendIntent);
         textbox.setText("");
     }
 
     private void launchMarket() {
-        Uri uri = Uri.parse("market://details?id=" + getActivity().getPackageName());
+        Uri uri = Uri.parse("market://details?id=" + getPackageName());
         Intent myAppLinkToMarket = new Intent(Intent.ACTION_VIEW, uri);
         myAppLinkToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
         try {
             startActivity(myAppLinkToMarket);
         } catch (ActivityNotFoundException e) {
-            Toast.makeText(getActivity(), " unable to rate :(", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), " unable to rate :(", Toast.LENGTH_LONG).show();
         }
     }
 }

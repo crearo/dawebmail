@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -25,18 +26,18 @@ import me.drakeet.materialdialog.MaterialDialog;
 public class LoginActivity extends AppCompatActivity implements LoginListener {
 
     @Bind(R.id.login_username)
-    EditText usernametf;
+    EditText usernameField;
 
     @Bind(R.id.login_password)
-    EditText pwdtf;
+    EditText passwordField;
 
     @Bind(R.id.login_button_container)
-    RelativeLayout loginContainer;
+    RelativeLayout loginButtonContainer;
 
     @Bind(R.id.login_tool_bar)
     Toolbar toolbar;
 
-    String username = "", pwd = "";
+    String enteredUsername = "", enteredPassword = "";
 
     ProgressDialog progressDialog;
 
@@ -55,45 +56,71 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);
 
-        usernametf.requestFocus();
         currentUser = UserSettings.getCurrentUser(this);
+
+        setupEditTexts();
 
         if (currentUser == null) {
             // user not logged in
-            loginContainer.setOnClickListener(new View.OnClickListener() {
+            loginButtonContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    loginContainer.setEnabled(false);
-                    username = usernametf.getText().toString().trim();
-                    pwd = pwdtf.getText().toString();
+                    loginButtonContainer.setEnabled(false);
+                    enteredUsername = usernameField.getText().toString().trim();
+                    enteredPassword = passwordField.getText().toString();
 
-                    if (!username.contains("@" + getString(R.string.webmail_domain))) {
-                        username = username + "@" + getString(R.string.webmail_domain);
+                    if (!enteredUsername.contains("@" + getString(R.string.webmail_domain))) {
+                        enteredUsername = enteredUsername + "@" + getString(R.string.webmail_domain);
                     }
 
-                    if (User.doesUserExist(username, pwd)) {
+                    if (User.doesUserExist(enteredUsername, enteredPassword)) {
                         Snackbar.make(view, getString(R.string.snackbar_login_user_exist), Snackbar.LENGTH_LONG).show();
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                UserSettings.setCurrentUser(User.getUserFromUserName(username), getApplicationContext());
+                                UserSettings.setCurrentUser(User.getUserFromUserName(enteredUsername), getApplicationContext());
                                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                 finish();
                             }
                         }, 1000);
                     } else {
-                        User user = new User(username, pwd);
+                        User user = new User(enteredUsername, enteredPassword);
                         new Login(user, getApplicationContext(), LoginActivity.this).execute();
                     }
                 }
             });
         } else {
-            // user already logged in and has an account username
+            // user already logged in and has an account enteredUsername
             startActivity(new Intent(this, MainActivity.class));
             finish();
         }
-
     }
+
+    private void setupEditTexts() {
+        usernameField.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    usernameField.clearFocus();
+                    passwordField.requestFocus();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        passwordField.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    loginButtonContainer.performClick();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        usernameField.requestFocus();
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -112,26 +139,26 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
         progressDialog.setCancelable(false);
         progressDialog.show();
         InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        mgr.hideSoftInputFromWindow(loginContainer.getWindowToken(), 0);
-        Snackbar.make(loginContainer, getString(R.string.snackbar_login_attempting), Snackbar.LENGTH_LONG).show();
+        mgr.hideSoftInputFromWindow(loginButtonContainer.getWindowToken(), 0);
+        Snackbar.make(loginButtonContainer, getString(R.string.snackbar_login_attempting), Snackbar.LENGTH_LONG).show();
     }
 
     @Override
     public void onPostLogin(boolean loginSuccess, String timeTaken, User user) {
         progressDialog.dismiss();
-        loginContainer.setEnabled(true);
+        loginButtonContainer.setEnabled(true);
         if (!loginSuccess) {
-            Snackbar.make(loginContainer, getString(R.string.snackbar_login_failed), Snackbar.LENGTH_LONG).show();
-            usernametf.setText(username);
-            pwdtf.setText("");
+            Snackbar.make(loginButtonContainer, getString(R.string.snackbar_login_failed), Snackbar.LENGTH_LONG).show();
+            usernameField.setText(enteredUsername);
+            passwordField.setText("");
         } else {
-            Snackbar.make(loginContainer, getString(R.string.snackbar_login_successful), Snackbar.LENGTH_LONG).show();
+            Snackbar.make(loginButtonContainer, getString(R.string.snackbar_login_successful), Snackbar.LENGTH_LONG).show();
             user = User.createNewUser(user);
             UserSettings.setCurrentUser(user, getApplicationContext());
             startActivity(new Intent(this, MainActivity.class));
             finish();
-            usernametf.setText("");
-            pwdtf.setText("");
+            usernameField.setText("");
+            passwordField.setText("");
         }
     }
 
