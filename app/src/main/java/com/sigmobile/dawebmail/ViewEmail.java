@@ -14,6 +14,8 @@ import android.webkit.WebView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.sigmobile.dawebmail.asyncTasks.MailAction;
+import com.sigmobile.dawebmail.asyncTasks.MailActionListener;
 import com.sigmobile.dawebmail.asyncTasks.ViewMailListener;
 import com.sigmobile.dawebmail.asyncTasks.ViewMailManager;
 import com.sigmobile.dawebmail.database.EmailMessage;
@@ -33,6 +35,8 @@ import butterknife.ButterKnife;
 import me.drakeet.materialdialog.MaterialDialog;
 
 public class ViewEmail extends AppCompatActivity implements ViewMailListener {
+
+    private static final String TAG = "ViewEmail";
 
     EmailMessage currentEmail;
     String EMAIL_TYPE;
@@ -126,6 +130,11 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
     @Override
     public void onPostView(EmailMessage emailMessage) {
         if (emailMessage != null) {
+
+            if (currentEmail.readUnread.equals(Constants.WEBMAIL_UNREAD))
+                markWebmailAsRead();
+
+
             setEmailContent(emailMessage.content);
             emailMessage.readUnread = Constants.WEBMAIL_READ;
             if (EMAIL_TYPE.equals(Constants.INBOX)) {
@@ -133,6 +142,7 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
                 emailMessage.save();
             }
             currentEmail = emailMessage;
+
         } else {
             setEmailContent("<html><head></head><body>Connect to the Internet to download content</body></html>");
         }
@@ -205,5 +215,19 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
         bundle.putInt(Constants.BROADCAST_REFRESH_ADAPTERS_EMAIL_CONTENT_ID, currentEmail.contentID);
         intent.putExtras(bundle);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
+    private void markWebmailAsRead() {
+        new MailAction(getApplicationContext(), currentUser, "read", "" + currentEmail.contentID, new MailActionListener() {
+            @Override
+            public void onPreMailAction() {
+
+            }
+
+            @Override
+            public void onPostMailAction(boolean success) {
+                Log.d(TAG, "Marking webmail as " + success);
+            }
+        }).execute();
     }
 }

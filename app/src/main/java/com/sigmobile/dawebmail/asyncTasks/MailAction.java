@@ -20,6 +20,14 @@ public class MailAction extends AsyncTask<Void, Void, Void> {
     String mailAction;
     String contentID;
 
+    public MailAction(Context context, User currentUser, String mailAction, String contentID, MailActionListener mailActionListener) {
+        this.mailActionListener = mailActionListener;
+        this.context = context;
+        this.currentUser = currentUser;
+        this.mailAction = mailAction;
+        this.contentID = contentID;
+    }
+
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
