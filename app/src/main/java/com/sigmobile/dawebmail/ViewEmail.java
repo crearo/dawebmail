@@ -41,7 +41,6 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
     EmailMessage currentEmail;
     String EMAIL_TYPE;
 
-    String username, pwd;
     ProgressDialog progdialog;
 
     @Bind(R.id.view_tool_bar)

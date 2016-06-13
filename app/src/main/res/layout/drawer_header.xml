@@ -2,23 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="70dp"
-    android:padding="10dp"
     android:background="@color/colorPrimary"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:padding="10dp">
 
     <ImageView
-        android:layout_gravity="bottom"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/ic_drawer_user"
-        android:scaleType="fitCenter" />
+        android:layout_gravity="bottom"
+        android:scaleType="fitCenter"
+        android:src="@drawable/git_user" />
 
     <TextView
         android:id="@+id/header_title"
         style="@style/TextAppearance.AppCompat.Subhead"
         android:layout_width="wrap_content"
-        android:layout_weight="1"
         android:layout_height="match_parent"
+        android:layout_weight="1"
         android:gravity="bottom|right"
         android:padding="15dp"
         android:paddingRight="25dp"

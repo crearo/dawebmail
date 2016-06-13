@@ -29,7 +29,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:layout_weight="1"
-            android:text="Sender" />
+            android:text="Sender"
+            android:textColor="@color/TextSecondary" />
 
         <TextView
             android:id="@+id/viewmail_datebottom"
@@ -37,7 +38,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:layout_weight="0"
-            android:text="Date" />
+            android:text="Date"
+            android:textColor="@color/TextSecondary" />
     </LinearLayout>
 
     <ScrollView
@@ -64,6 +66,7 @@
                 android:background="@color/EmailBackgroundTertiary"
                 android:padding="10dp"
                 android:text="FROM"
+                android:textColor="@color/TextSecondary"
                 android:textSize="15dp" />
 
             <View
@@ -81,6 +84,7 @@
                 android:background="@color/EmailBackgroundTertiary"
                 android:padding="10dp"
                 android:text="SUBJECT"
+                android:textColor="@color/TextSecondary"
                 android:textSize="15dp" />
 
             <View

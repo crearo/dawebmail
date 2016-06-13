@@ -9,13 +9,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.FrameLayout;
 
+import com.mikepenz.materialdrawer.AccountHeader;
+import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.accountswitcher.AccountHeader;
-import com.mikepenz.materialdrawer.accountswitcher.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
@@ -76,8 +75,8 @@ public class MainActivity extends AppCompatActivity {
         pSentBox = new PrimaryDrawerItem().withName("SentBox").withIcon(R.drawable.sent);
         pTrashBox = new PrimaryDrawerItem().withName("TrashBox").withIcon(R.drawable.trash);
 
-        sSettings = new SecondaryDrawerItem().withName("Settings").withIcon(R.drawable.settings);
-        sFeedback = new SecondaryDrawerItem().withName("Feedback").withIcon(R.drawable.feedback);
+        sSettings = (SecondaryDrawerItem) new SecondaryDrawerItem().withName("Settings").withIcon(R.drawable.settings);
+        sFeedback = (SecondaryDrawerItem) new SecondaryDrawerItem().withName("Feedback").withIcon(R.drawable.feedback);
 
         ArrayList<IProfile> profileDrawerItems = new ArrayList<>();
         for (User user : User.getAllUsers()) {
@@ -88,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
 
         AccountHeader accountHeader = new AccountHeaderBuilder()
                 .withActivity(this)
-                .withHeaderBackground(R.drawable.snackbar_background)
                 .withProfiles(profileDrawerItems)
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
@@ -98,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(new Intent(MainActivity.this, LoginActivity.class));
                             return true;
                         }
-                        UserSettings.setCurrentUser(User.getUserFromUserName(profile.getName()), getApplicationContext());
+                        UserSettings.setCurrentUser(User.getUserFromUserName(profile.getName().getText()), getApplicationContext());
                         drawer.closeDrawer();
                         drawer.setSelection(pInbox);
                         return true;
@@ -128,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                 .withCloseOnClick(true)
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
-                    public boolean onItemClick(AdapterView<?> parent, View view, int position, long id, IDrawerItem drawerItem) {
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                         Fragment fragment = null;
 
                         drawer.closeDrawer();
