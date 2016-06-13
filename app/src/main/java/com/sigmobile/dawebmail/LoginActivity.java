@@ -134,7 +134,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
 
     @Override
     public void onPreLogin() {
-        progressDialog = ProgressDialog.show(LoginActivity.this, "", getString(R.string.dialog_logging_in), true);
+        progressDialog = ProgressDialog.show(LoginActivity.this, "", getString(R.string.dialog_msg_logging_in), true);
         progressDialog.setCancelable(false);
         progressDialog.show();
         InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);

@@ -87,7 +87,7 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_inbox, container, false);
         ButterKnife.bind(InboxFragment.this, rootView);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Inbox");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.inbox));
 
         currentUser = UserSettings.getCurrentUser(getActivity());
         progressDialog = new ProgressDialog(getActivity());
@@ -256,7 +256,7 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
 
     @Override
     public void onPreRefresh() {
-        progressDialog2 = ProgressDialog.show(getActivity(), "", "Please wait while we load your content.", true);
+        progressDialog2 = ProgressDialog.show(getActivity(), "", getString(R.string.dialog_msg_loading), true);
         progressDialog2.setCancelable(false);
         progressDialog2.show();
     }
@@ -266,15 +266,13 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
         new Handler().post(new Runnable() {
             @Override
             public void run() {
-
                 refreshAdapter();
                 if (refreshedEmails.size() == 0)
-                    Snackbar.make(swipeRefreshLayout, "No New Webmail", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_new_webmail_zero), Snackbar.LENGTH_LONG).show();
                 else if (refreshedEmails.size() == 1)
-                    Snackbar.make(swipeRefreshLayout, "1 New Webmail!", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_new_webmail_one), Snackbar.LENGTH_LONG).show();
                 else
-                    Snackbar.make(swipeRefreshLayout, refreshedEmails.size() + " New Webmails!", Snackbar.LENGTH_LONG).show();
-
+                    Snackbar.make(swipeRefreshLayout, refreshedEmails.size() + getString(R.string.snackbar_new_webmail_many), Snackbar.LENGTH_LONG).show();
                 progressDialog2.dismiss();
             }
         });
@@ -283,17 +281,17 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
 
     @Override
     public void onPreDelete() {
-        progressDialog = ProgressDialog.show(getActivity(), "Deleting ... ", "");
+        progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.dialog_msg_delete));
         progressDialog.show();
     }
 
     @Override
     public void onPostDelete(boolean success) {
-        if (!success) {
-            Snackbar.make(swipeRefreshLayout, "Delete Unsuccessful :(", Snackbar.LENGTH_LONG).show();
-        } else {
-            Snackbar.make(swipeRefreshLayout, "Deleted Successfully", Snackbar.LENGTH_LONG).show();
-        }
+        if (!success)
+            Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_delete_unsuccessful), Snackbar.LENGTH_LONG).show();
+        else
+            Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_delete_successful), Snackbar.LENGTH_LONG).show();
+
         progressDialog.dismiss();
         refreshAdapter();
         fabDelete.setVisibility(View.GONE);
@@ -309,15 +307,15 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
     public void logout() {
         final MaterialDialog materialDialog = new MaterialDialog(getActivity());
         materialDialog.setCanceledOnTouchOutside(true);
-        materialDialog.setTitle("Log Out?");
-        materialDialog.setMessage("Saying bye bye?");
+        materialDialog.setTitle(getString(R.string.dialog_title_logout));
+        materialDialog.setMessage(getString(R.string.dialog_msg_logout));
         materialDialog.setNegativeButton("", new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 materialDialog.dismiss();
             }
         });
-        materialDialog.setPositiveButton("Log out", new View.OnClickListener() {
+        materialDialog.setPositiveButton(getString(R.string.dialog_btn_logout), new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 SharedPreferences prefs = getActivity().getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);
@@ -333,7 +331,7 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
 
                 NotificationMaker.cancelNotification(getActivity());
                 materialDialog.dismiss();
-                Snackbar.make(swipeRefreshLayout, "Logging Out!", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_logging_out), Snackbar.LENGTH_LONG).show();
 
                 /**
                  * Delete the current User and set the next user in line as current user
@@ -366,7 +364,7 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
         fabDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(swipeRefreshLayout, "Deleting", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_deleting), Snackbar.LENGTH_LONG).show();
                 new DeleteMail(currentUser, getActivity(), InboxFragment.this, emailsToDelete).execute();
             }
         });
