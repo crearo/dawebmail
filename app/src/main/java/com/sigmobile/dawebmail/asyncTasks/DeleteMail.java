@@ -52,6 +52,9 @@ public class DeleteMail extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
+        if (result)
+            for (EmailMessage emailMessage : emailToBeDeleted)
+                emailMessage.delete();
         deleteMailListener.onPostDelete(result);
     }
 }

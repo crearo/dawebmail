@@ -158,6 +158,8 @@ public class RestAPI {
                         }
                     }
 
+                    // TODO : Go through all webmails and delete the ones that dont exist in the inbox anymore
+
                     if (REFRESH_TYPE.equals(Constants.INBOX)) {
                         EmailMessage latestWebmail = EmailMessage.getLatestWebmailOfUser(user);
                         if (latestWebmail != null && contentID == latestWebmail.contentID) {

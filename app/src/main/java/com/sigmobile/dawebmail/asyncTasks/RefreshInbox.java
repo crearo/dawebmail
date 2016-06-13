@@ -38,8 +38,6 @@ public class RefreshInbox extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... voids) {
 
-        // TODO : Remove emails that dont exist here.
-
         RestAPI restAPI = new RestAPI(user, context);
         restAPI.refresh(REFRESH_TYPE);
         refreshedEmails = restAPI.getNewEmails();

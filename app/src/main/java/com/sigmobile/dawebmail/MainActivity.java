@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupToolbar() {
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("");
     }
 
     private void setupDrawer() {
@@ -89,7 +88,8 @@ public class MainActivity extends AppCompatActivity {
             profileDrawerItems.add(new ProfileDrawerItem().withName(user.username).withIcon(getResources().getDrawable(R.drawable.git_user)));
         }
 
-        profileDrawerItems.add(new ProfileDrawerItem().withName(getString(R.string.drawer_new_account)).withIcon(getResources().getDrawable(R.drawable.plus)));
+        final String createAccount = getString(R.string.drawer_new_account);
+        profileDrawerItems.add(new ProfileDrawerItem().withName(createAccount).withIcon(getResources().getDrawable(R.drawable.plus)));
 
         AccountHeader accountHeader = new AccountHeaderBuilder()
                 .withActivity(this)
@@ -98,15 +98,18 @@ public class MainActivity extends AppCompatActivity {
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
                     public boolean onProfileChanged(View view, IProfile profile, boolean current) {
-                        if (profile.getName().equals(getString(R.string.drawer_new_account))) {
+                        if (profile.getName().getText().equals(createAccount)) {
                             UserSettings.setCurrentUser(null, getApplicationContext());
                             startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                            drawer.closeDrawer();
+                            return true;
+                        } else {
+                            UserSettings.setCurrentUser(User.getUserFromUserName(profile.getName().getText()), getApplicationContext());
+                            drawer.closeDrawer();
+                            drawer.setSelection(pInbox);
+                            setToolbarTitle(pInbox);
                             return true;
                         }
-                        UserSettings.setCurrentUser(User.getUserFromUserName(profile.getName().getText()), getApplicationContext());
-                        drawer.closeDrawer();
-                        drawer.setSelection(pInbox);
-                        return true;
                     }
                 })
                 .build();
@@ -123,9 +126,10 @@ public class MainActivity extends AppCompatActivity {
                 .withAccountHeader(accountHeader)
                 .addDrawerItems(
                         pInbox,
-                        pSmartBox,
                         pSentBox,
                         pTrashBox,
+                        new DividerDrawerItem(),
+                        pSmartBox,
                         new DividerDrawerItem(),
                         sSettings,
                         sFeedback
@@ -141,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
                             drawerItem = pInbox;
                         }
 
+                        setToolbarTitle(drawerItem);
                         if (drawerItem.equals(pInbox)) {
                             fragment = new InboxFragment();
                             Snackbar.make(frameLayout, getString(R.string.drawer_inbox), Snackbar.LENGTH_SHORT).show();
@@ -219,6 +224,33 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         materialDialog.show();
+    }
+
+    private void setToolbarTitle(IDrawerItem drawerItem) {
+        String currentUserName = "NaN";
+        if (UserSettings.getCurrentUser(getApplicationContext()) != null)
+            currentUserName = UserSettings.getCurrentUser(getApplicationContext()).username;
+        if (currentUserName.startsWith("20")) {
+            currentUserName = currentUserName.substring(0, currentUserName.indexOf("@"));
+            if (currentUserName.length() > 3)
+                currentUserName = currentUserName.substring(currentUserName.length() - 3);
+        } else {
+            currentUserName = currentUserName.substring(0, 3);
+        }
+        String toolbarTitle = "";
+        if (drawerItem.equals(pInbox))
+            toolbarTitle = getString(R.string.drawer_inbox);
+        else if (drawerItem.equals(pSentBox))
+            toolbarTitle = getString(R.string.drawer_sent);
+        else if (drawerItem.equals(pSmartBox))
+            toolbarTitle = getString(R.string.drawer_smartbox);
+        else if (drawerItem.equals(pTrashBox))
+            toolbarTitle = getString(R.string.drawer_trash);
+        else if (drawerItem.equals(sSettings))
+            toolbarTitle = getString(R.string.drawer_settings);
+        else if (drawerItem.equals(sFeedback))
+            toolbarTitle = getString(R.string.drawer_feedback);
+        getSupportActionBar().setTitle(toolbarTitle + " : " + currentUserName);
     }
 
     @Override

@@ -12,7 +12,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -84,10 +83,15 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_inbox, container, false);
         ButterKnife.bind(InboxFragment.this, rootView);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.inbox));
 
         currentUser = UserSettings.getCurrentUser(getActivity());
         progressDialog = new ProgressDialog(getActivity());
+
+        if (currentUser == null) {
+            // Snackbar.make(listview, getString(R.string.error_something_went_wrong), Snackbar.LENGTH_LONG).show();
+            emptyLayout.setVisibility(View.VISIBLE);
+            return rootView;
+        }
 
         registerInternalBroadcastReceivers();
         setupMailAdapter();
@@ -103,12 +107,12 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
     private void setupMailAdapter() {
         allEmails = (ArrayList<EmailMessage>) EmailMessage.getAllMailsOfUser(currentUser);
         Collections.reverse(allEmails);
-
         mailAdapter = new MailAdapter(allEmails, getActivity(), this, Constants.INBOX);
         listview.setAdapter(mailAdapter);
 
         if (allEmails.size() == 0) {
             new RefreshInbox(currentUser, getActivity(), InboxFragment.this, Constants.INBOX).execute();
+            allEmails = new ArrayList<>();
         }
     }
 

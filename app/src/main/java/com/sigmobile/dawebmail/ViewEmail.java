@@ -64,8 +64,8 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
         currentUser = UserSettings.getCurrentUser(this);
         progressDialog = new ProgressDialog(ViewEmail.this);
 
+        setupBundleReceivers();
         setupToolbar();
-        setupInternalBroadcastReceivers();
         showEmailContent();
 
     }
@@ -97,7 +97,7 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
         getSupportActionBar().setTitle("@" + currentEmail.fromName);
     }
 
-    private void setupInternalBroadcastReceivers() {
+    private void setupBundleReceivers() {
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null) {
             currentEmail = (EmailMessage) bundle.getSerializable(Constants.CURRENT_EMAIL_SERIALIZABLE);

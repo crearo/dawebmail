@@ -41,7 +41,7 @@ public class MailAdapter extends BaseAdapter {
         emailsToDelete = new ArrayList<>();
         this.emails = emails;
         this.deleteSelectedListener = deleteSelectedListener;
-        this.clickedForDelete = new boolean[emails.size()];
+        this.clickedForDelete = new boolean[this.emails.size()];
         this.EMAIL_TYPE = EMAIL_TYPE;
     }
 
@@ -186,5 +186,6 @@ public class MailAdapter extends BaseAdapter {
 
     public void setEmails(ArrayList<EmailMessage> emails) {
         this.emails = emails;
+        clickedForDelete = new boolean[this.emails.size()];
     }
 }

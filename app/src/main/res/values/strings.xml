@@ -17,6 +17,7 @@
 
     <!-- Error Strings -->
     <string name="error_connect_to_view_email"><html><head></head><body>Connect to the Internet to download content</body></html></string>
+    <string name="error_something_went_wrong">Something went wrong</string>
 
     <!-- Date Utils -->
     <string name="recent_webmails">Recently, </string>
