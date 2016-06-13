@@ -27,6 +27,8 @@ import java.util.ArrayList;
  */
 public class MailAdapter extends BaseAdapter {
 
+    private final static String TAG = "MailAdapter";
+
     private ArrayList<EmailMessage> emails;
     private Context context;
     private ArrayList<EmailMessage> emailsToDelete;
@@ -180,5 +182,9 @@ public class MailAdapter extends BaseAdapter {
             vibe.vibrate(20);
         }
         deleteSelectedListener.onItemClickedForDelete(emailsToDelete);
+    }
+
+    public void setEmails(ArrayList<EmailMessage> emails) {
+        this.emails = emails;
     }
 }

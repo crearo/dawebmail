@@ -106,7 +106,6 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
             * I am directly calling viewmailmanager
              */
             new ViewMailManager(currentUser, getApplicationContext(), ViewEmail.this, currentEmail).execute();
-            Log.d("T", "Called ViewMailManager");
         } else {
             setEmailContent(currentEmail.content);
         }
@@ -132,15 +131,15 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
             if (currentEmail.readUnread.equals(Constants.WEBMAIL_UNREAD))
                 markWebmailAsRead();
 
+            Log.d(TAG, "Supposed to save this email " + currentEmail.getId());
 
             setEmailContent(emailMessage.content);
             emailMessage.readUnread = Constants.WEBMAIL_READ;
             if (EMAIL_TYPE.equals(Constants.INBOX)) {
-                Log.wtf("VE", "" + emailMessage.getId());
                 emailMessage.save();
+                Log.d(TAG, "Saving this email " + emailMessage.getId());
             }
             currentEmail = emailMessage;
-
         } else {
             setEmailContent("<html><head></head><body>Connect to the Internet to download content</body></html>");
         }
@@ -148,7 +147,7 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
     }
 
 
-    public void createDownloadDialog(final int whichattatchment) {
+    public void createDownloadDialog(final int whichAttatchment) {
         final MaterialDialog materialDialog = new MaterialDialog(ViewEmail.this);
         materialDialog.setTitle("Download the attachment?");
         if (ConnectionManager.isConnectedByMobileData(ViewEmail.this))
@@ -170,7 +169,6 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
             }
         });
         materialDialog.show();
-
     }
 
     public void setEmailContent(String html) {
@@ -186,9 +184,7 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
         tvdatebottom.setText(DateUtils.getDate(getApplicationContext(), Long.parseLong(currentEmail.dateInMillis)));
 
         final ArrayList<String> attachmentsList = BasePath.getAttachmentsPaths(getApplicationContext(), currentEmail.contentID);
-        Log.d("A", "Size is " + attachmentsList.size());
         for (int i = 0; i < attachmentsList.size(); i++) {
-            Log.d("A", (new File(attachmentsList.get(i))).getName());
             TextView textView = new TextView(this);
             ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             textView.setPadding(10, 10, 10, 10);
@@ -207,11 +203,7 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
     }
 
     private void sendRefreshBroadcast() {
-        Log.d("sender", "Broadcasting message");
         Intent intent = new Intent(Constants.BROADCAST_REFRESH_ADAPTERS);
-        Bundle bundle = new Bundle();
-        bundle.putInt(Constants.BROADCAST_REFRESH_ADAPTERS_EMAIL_CONTENT_ID, currentEmail.contentID);
-        intent.putExtras(bundle);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 

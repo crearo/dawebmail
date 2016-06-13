@@ -14,7 +14,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -41,13 +40,13 @@ import com.sigmobile.dawebmail.database.User;
 import com.sigmobile.dawebmail.database.UserSettings;
 import com.sigmobile.dawebmail.services.NotificationMaker;
 import com.sigmobile.dawebmail.utils.Constants;
-import com.sigmobile.dawebmail.utils.Printer;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import me.drakeet.materialdialog.MaterialDialog;
 
 /**
@@ -56,74 +55,76 @@ import me.drakeet.materialdialog.MaterialDialog;
 
 public class InboxFragment extends Fragment implements RefreshInboxListener, DeleteMailListener, MailAdapter.DeleteSelectedListener {
 
+    private static final String TAG = "InboxFragment";
+
     @Bind(R.id.inbox_empty_view)
     LinearLayout emptyLayout;
-
     @Bind(R.id.inbox_listView)
     ListView listview;
-
     @Bind(R.id.swipeContainer)
     SwipeRefreshLayout swipeRefreshLayout;
-
     @Bind(R.id.searchET)
     EditText searchET;
-
     @Bind(R.id.inbox_delete_fab)
     FloatingActionButton fabDelete;
-
     @Bind(R.id.inbox_send_fab)
     FloatingActionButton fabSend;
 
-    MailAdapter mailAdapter;
-    ProgressDialog progressDialog, progressDialog2;
+    @OnClick(R.id.inbox_send_fab)
+    public void sendFab() {
+        startActivity(new Intent(getActivity(), ComposeActivity.class));
+    }
 
-    ArrayList<EmailMessage> allEmails;
-
-    User currentUser;
-
-    private static final String TAG = "InboxFragment";
+    private MailAdapter mailAdapter;
+    private ProgressDialog progressDialog, progressDialog2;
+    private ArrayList<EmailMessage> allEmails;
+    private User currentUser;
 
     public InboxFragment() {
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_inbox, container, false);
-
         ButterKnife.bind(InboxFragment.this, rootView);
-
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Inbox");
 
-        setSwipeRefreshLayout();
+        currentUser = UserSettings.getCurrentUser(getActivity());
+        progressDialog = new ProgressDialog(getActivity());
+
+        registerInternalBroadcastReceivers();
+        setupMailAdapter();
+        setupSwipeRefreshLayout();
+        setupSearchBar();
+        setupDeleteAndComposeFABs(false);
 
         emptyLayout.setVisibility(View.GONE);
 
-        currentUser = UserSettings.getCurrentUser(getActivity());
+        return rootView;
+    }
 
+    private void setupMailAdapter() {
         allEmails = (ArrayList<EmailMessage>) EmailMessage.getAllMailsOfUser(currentUser);
         Collections.reverse(allEmails);
-
-        Log.d(TAG, "allEmails size is " + allEmails.size() + " for the user " + currentUser.username);
 
         mailAdapter = new MailAdapter(allEmails, getActivity(), this, Constants.INBOX);
         listview.setAdapter(mailAdapter);
 
-        progressDialog = new ProgressDialog(getActivity());
-
-        if (EmailMessage.getAllMailsOfUser(currentUser).size() == 0) {
-            Printer.println("Printing, count is 0, refreshing inbox");
+        if (allEmails.size() == 0) {
             new RefreshInbox(currentUser, getActivity(), InboxFragment.this, Constants.INBOX).execute();
         }
+    }
 
+    private void registerInternalBroadcastReceivers() {
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                int SCROLL_TO = intent.getExtras().getInt(Constants.BROADCAST_REFRESH_ADAPTERS_EMAIL_CONTENT_ID);
-                refreshAdapter(SCROLL_TO);
+                refreshAdapter();
             }
         }, new IntentFilter(Constants.BROADCAST_REFRESH_ADAPTERS));
+    }
 
+    private void setupSearchBar() {
         /*
         searchET.addTextChangedListener(new TextWatcher() {
             @Override
@@ -168,17 +169,6 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
             }
         });
         */
-
-        fabSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), ComposeActivity.class));
-            }
-        });
-
-        setupDeleteAndComposeFABs(false);
-
-        return rootView;
     }
 
     private void setupDeleteAndComposeFABs(boolean isDeleteVisible) {
@@ -209,7 +199,7 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
         }
     }
 
-    private void setSwipeRefreshLayout() {
+    private void setupSwipeRefreshLayout() {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -278,7 +268,6 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
             public void run() {
 
                 refreshAdapter();
-
                 if (refreshedEmails.size() == 0)
                     Snackbar.make(swipeRefreshLayout, "No New Webmail", Snackbar.LENGTH_LONG).show();
                 else if (refreshedEmails.size() == 1)
@@ -310,23 +299,11 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
         fabDelete.setVisibility(View.GONE);
     }
 
-    public void refreshAdapter(int SCROLL_TO) {
-        refreshAdapter();
-        int position = 0;
-        for (int i = 0; i < allEmails.size(); i++)
-            if (allEmails.get(i).contentID == SCROLL_TO)
-                position = i;
-//        if (position >= 10)
-//            position -= 3;
-        listview.setSelection(position);
-    }
-
     public void refreshAdapter() {
         allEmails = (ArrayList<EmailMessage>) EmailMessage.getAllMailsOfUser(currentUser);
         Collections.reverse(allEmails);
-
-        mailAdapter = new MailAdapter(allEmails, getActivity(), this, Constants.INBOX);
-        listview.setAdapter(mailAdapter);
+        mailAdapter.setEmails(allEmails);
+        mailAdapter.notifyDataSetChanged();
     }
 
     public void logout() {
