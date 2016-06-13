@@ -18,19 +18,24 @@ import com.sigmobile.dawebmail.database.UserSettings;
 
 import java.util.ArrayList;
 
-
 /**
  * Created by rish on 6/10/15.
  */
 public class NotificationMaker {
 
     public static void showNotification(Context context, User user, String fromName, String subject) {
-
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
         mBuilder.setSmallIcon(R.drawable.envelope_m);
         mBuilder.setTicker(context.getString(R.string.notification_ticker_new_webmail));
-        if (User.getUsersCount() > 1)
-            mBuilder.setContentTitle(fromName + " to " + user.username);
+        String username = user.username;
+        if (User.getUsersCount() > 1) {
+            if (username.indexOf("@") != -1)
+                mBuilder.setContentTitle(fromName + " to " + username.substring(0, username.indexOf("@")));
+            else
+                mBuilder.setContentTitle(fromName + " to " + username);
+        } else {
+            mBuilder.setContentTitle(fromName + " to " + username);
+        }
         mBuilder.setContentText(subject);
         mBuilder.setSound(Uri.parse(UserSettings.getNotificationSound(context)));
         mBuilder.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE);
@@ -47,7 +52,9 @@ public class NotificationMaker {
 
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        mNotificationManager.notify(1002, mBuilder.build());
+        mNotificationManager.notify((int) (System.currentTimeMillis()), mBuilder.build());
+
+        UserSettings.setCurrentUser(user, context);
     }
 
     public static void sendInboxNotification(int numberToShow, User user, Context context, ArrayList<EmailMessage> newEmails) {
@@ -60,8 +67,13 @@ public class NotificationMaker {
                     .setAutoCancel(true)
                     .setSmallIcon(R.drawable.envelope_m);
 
-            if (User.getUsersCount() > 1)
-                mBuilder.setContentTitle(context.getString(R.string.notification_ticker_new_webmails) + " for " + user.username);
+            if (User.getUsersCount() > 1) {
+                String username = user.username;
+                if (username.indexOf("@") != -1)
+                    mBuilder.setContentTitle(context.getString(R.string.notification_ticker_new_webmails) + " for " + username.substring(0, username.indexOf("@")));
+                else
+                    mBuilder.setContentTitle(context.getString(R.string.notification_ticker_new_webmails) + " for " + username);
+            }
 
             Notification.InboxStyle notification = null;
             notification = new Notification.InboxStyle(mBuilder);
@@ -86,7 +98,9 @@ public class NotificationMaker {
             mBuilder.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE);
             NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-            mNotificationManager.notify(1003, mBuilder.build());
+            mNotificationManager.notify((int) System.currentTimeMillis(), mBuilder.build());
+
+            UserSettings.setCurrentUser(user, context);
         }
     }
 
