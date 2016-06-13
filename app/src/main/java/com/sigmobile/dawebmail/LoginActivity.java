@@ -53,7 +53,6 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
         showUpdateDialog();
 
         toolbar.setTitle(getString(R.string.app_name));
-        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);
 
         currentUser = UserSettings.getCurrentUser(this);

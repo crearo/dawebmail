@@ -38,7 +38,6 @@
                 android:gravity="left"
                 android:maxLines="1"
                 android:text="Date"
-                android:textColor="@color/TextSecondary"
                 android:textSize="@dimen/text_size_medium" />
 
             <TextView
@@ -52,7 +51,6 @@
                 android:layout_toStartOf="@+id/element_msg_date"
                 android:maxLines="1"
                 android:text="From"
-                android:textColor="@color/TextPrimary"
                 android:textSize="@dimen/text_size_large" />
         </RelativeLayout>
 
@@ -62,7 +60,6 @@
             android:layout_height="wrap_content"
             android:gravity="top"
             android:maxLines="1"
-            android:text="Subject"
-            android:textColor="@color/TextSecondary" />
+            android:text="Subject" />
     </LinearLayout>
 </LinearLayout>

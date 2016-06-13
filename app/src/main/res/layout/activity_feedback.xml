@@ -10,8 +10,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/feedback_toolbar"
-        android:background="@color/white">
+        android:layout_below="@+id/feedback_toolbar">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,15 +35,13 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="Rate Us"
-                    android:textColor="@color/TextPrimary"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Do leave a comment - or write to me below for feature requests/suggestions/complaints."
-                    android:textColor="@color/TextSecondary" />
+                    android:text="Do leave a comment - or write to me below for feature requests/suggestions/complaints." />
 
             </LinearLayout>
 
@@ -65,15 +62,13 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="Fork On Github"
-                    android:textColor="@color/TextPrimary"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Contribute to the repository - it's all open source :)\nDo remember to star it! :D"
-                    android:textColor="@color/TextSecondary" />
+                    android:text="Contribute to the repository - it's all open source :)\nDo remember to star it! :D" />
 
             </LinearLayout>
 
@@ -83,7 +78,6 @@
                 android:layout_marginLeft="12dp"
                 android:layout_marginTop="12dp"
                 android:text="Write To Us"
-                android:textColor="@color/TextPrimary"
                 android:textSize="15sp"
                 android:textStyle="bold" />
 
@@ -127,11 +121,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="20dp"
-                android:background="@color/EmailBackgroundSecondary"
                 android:elevation="1dp" />
-
-
         </LinearLayout>
-
     </ScrollView>
 </RelativeLayout>

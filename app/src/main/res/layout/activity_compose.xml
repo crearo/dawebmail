@@ -4,7 +4,6 @@
     android:id="@+id/compose_main_rl"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/EmailBackgroundSecondary"
     android:orientation="vertical"
     tools:context="com.sigmobile.dawebmail.ComposeActivity">
 
@@ -25,7 +24,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="To"
-            android:textColor="@color/TextTertiary"
             android:textSize="20sp"
             android:textStyle="normal" />
 
@@ -40,8 +38,7 @@
             android:lines="8"
             android:minLines="6"
             android:padding="10dp"
-            android:scrollbars="vertical"
-            android:textColor="@color/TextSecondary" />
+            android:scrollbars="vertical" />
     </LinearLayout>
 
     <include
@@ -61,8 +58,6 @@
         android:hint="Subject"
         android:paddingBottom="10dp"
         android:paddingTop="10dp"
-        android:textColor="@color/TextSecondary"
-        android:textColorHint="@color/TextTertiary"
         android:textSize="20sp" />
 
     <include
@@ -82,8 +77,6 @@
         android:hint="Compose Webmail"
         android:paddingBottom="10dp"
         android:paddingTop="10dp"
-        android:textColor="@color/TextSecondary"
-        android:textColorHint="@color/TextTertiary"
         android:textSize="18sp" />
 
     <CheckBox
@@ -93,7 +86,6 @@
         android:layout_alignParentBottom="true"
         android:layout_margin="10dp"
         android:text="Mark Webmail As Important"
-        android:textColor="@color/TextSecondary"
         android:textStyle="normal" />
 
 </RelativeLayout>

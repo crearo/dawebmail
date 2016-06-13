@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/EmailBackgroundSecondary"
     android:fitsSystemWindows="true"
     tools:context="com.sigmobile.dawebmail.ViewEmail">
 
@@ -61,7 +60,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="3dp"
-                android:background="@color/EmailBackgroundTertiary"
                 android:padding="10dp"
                 android:text="FROM"
                 android:textSize="15dp" />
@@ -78,7 +76,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="3dp"
-                android:background="@color/EmailBackgroundTertiary"
                 android:padding="10dp"
                 android:text="SUBJECT"
                 android:textSize="15dp" />
@@ -95,7 +92,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:background="@color/EmailBackgroundTertiary"
                 tools:ignore="WebViewLayout" />
 
             <LinearLayout
@@ -103,7 +99,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:background="@color/EmailBackgroundTertiary"
                 android:orientation="vertical"></LinearLayout>
 
         </LinearLayout>

@@ -59,7 +59,6 @@ public class ComposeActivity extends AppCompatActivity implements SendMailListen
 
         currentUser = UserSettings.getCurrentUser(getApplicationContext());
 
-        toolbar.setTitleTextColor(getResources().getColor(R.color.EmailBackground));
         toolbar.setTitle("Compose");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

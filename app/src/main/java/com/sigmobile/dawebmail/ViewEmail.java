@@ -41,7 +41,6 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
     EmailMessage currentEmail;
     String EMAIL_TYPE;
 
-    String username, pwd;
     ProgressDialog progdialog;
 
     @Bind(R.id.view_tool_bar)
@@ -98,7 +97,6 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
         progdialog = new ProgressDialog(ViewEmail.this);
 
         getSupportActionBar().setTitle("@" + currentEmail.fromName);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.TextPrimaryAlternate));
 
         if (currentEmail.content.equals("") || currentEmail.content == null) {
             setEmailContent("<html><head></head><body>Connect to the Internet to download content</body></html>");

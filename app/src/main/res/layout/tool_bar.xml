@@ -5,17 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/colorPrimary"
-    android:fitsSystemWindows="true"
     android:elevation="10dp"
+    android:fitsSystemWindows="true"
     android:minHeight="?attr/actionBarSize"
     app:theme="@style/AppTheme">
 
     <TextView
         android:id="@+id/toolbar_textview"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textColor="@color/EmailBackground"
-        android:textSize="20sp" />
+        android:layout_height="wrap_content" />
 
 </android.support.v7.widget.Toolbar>
