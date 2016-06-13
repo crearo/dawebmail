@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
@@ -14,8 +13,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,6 +26,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.sigmobile.dawebmail.MainActivity;
 import com.sigmobile.dawebmail.R;
 import com.sigmobile.dawebmail.adapters.MailAdapter;
 import com.sigmobile.dawebmail.asyncTasks.DeleteMail;
@@ -38,14 +36,12 @@ import com.sigmobile.dawebmail.asyncTasks.RefreshInboxListener;
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
 import com.sigmobile.dawebmail.database.UserSettings;
-import com.sigmobile.dawebmail.services.NotificationMaker;
 import com.sigmobile.dawebmail.utils.Constants;
 
 import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import me.drakeet.materialdialog.MaterialDialog;
 
 /**
  * Created by rish on 6/10/15.
@@ -82,29 +78,40 @@ public class TrashFragment extends Fragment implements RefreshInboxListener, Del
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_inbox, container, false);
-
         ButterKnife.bind(TrashFragment.this, rootView);
-
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Trash");
-
-        setSwipeRefreshLayout();
-
-        allEmails = new ArrayList<>();
-
-        mailAdapter = new MailAdapter(allEmails, getActivity(), this, Constants.TRASH);
-        listview.setAdapter(mailAdapter);
-
-        progressDialog = new ProgressDialog(getActivity());
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.trash));
 
         currentUser = UserSettings.getCurrentUser(getActivity());
+        progressDialog = new ProgressDialog(getActivity());
 
+        registerInternalBroadcastReceivers();
+        setupMailAdapter();
+        setupSwipeRefreshLayout();
+        setupSearchBar();
+
+        new RefreshInbox(currentUser, getActivity(), TrashFragment.this, Constants.TRASH).execute();
+
+        swipeRefreshLayout.setVisibility(View.GONE);
+        return rootView;
+    }
+
+    private void registerInternalBroadcastReceivers() {
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 refreshAdapter();
             }
         }, new IntentFilter(Constants.BROADCAST_REFRESH_ADAPTERS));
+    }
 
+    private void setupMailAdapter() {
+        allEmails = new ArrayList<>();
+        mailAdapter = new MailAdapter(allEmails, getActivity(), this, Constants.TRASH);
+        listview.setAdapter(mailAdapter);
+    }
+
+    private void setupSearchBar() {
+        /*
         searchET.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -144,15 +151,10 @@ public class TrashFragment extends Fragment implements RefreshInboxListener, Del
 
             }
         });
-
-        new RefreshInbox(currentUser, getActivity(), TrashFragment.this, Constants.TRASH).execute();
-
-        swipeRefreshLayout.setVisibility(View.GONE);
-
-        return rootView;
+        */
     }
 
-    private void setSwipeRefreshLayout() {
+    private void setupSwipeRefreshLayout() {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -209,7 +211,7 @@ public class TrashFragment extends Fragment implements RefreshInboxListener, Del
 
     @Override
     public void onPreRefresh() {
-        progressDialog2 = ProgressDialog.show(getActivity(), "", "Please wait while we load your content.", true);
+        progressDialog2 = ProgressDialog.show(getActivity(), "", getString(R.string.dialog_msg_loading), true);
         progressDialog2.setCancelable(false);
         progressDialog2.show();
     }
@@ -224,12 +226,11 @@ public class TrashFragment extends Fragment implements RefreshInboxListener, Del
                 refreshAdapter();
 
                 if (refreshedEmails.size() == 0)
-                    Snackbar.make(swipeRefreshLayout, "No New Webmail", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_new_webmail_zero), Snackbar.LENGTH_LONG).show();
                 else if (refreshedEmails.size() == 1)
-                    Snackbar.make(swipeRefreshLayout, "1 New Webmail!", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_new_webmail_one), Snackbar.LENGTH_LONG).show();
                 else
-                    Snackbar.make(swipeRefreshLayout, refreshedEmails.size() + " New Webmails!", Snackbar.LENGTH_LONG).show();
-
+                    Snackbar.make(swipeRefreshLayout, refreshedEmails.size() + getString(R.string.snackbar_new_webmail_many), Snackbar.LENGTH_LONG).show();
                 progressDialog2.dismiss();
 
                 if (allEmails.size() != 0) {
@@ -246,17 +247,17 @@ public class TrashFragment extends Fragment implements RefreshInboxListener, Del
 
     @Override
     public void onPreDelete() {
-        progressDialog = ProgressDialog.show(getActivity(), "Deleting ... ", "");
+        progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.dialog_msg_delete));
         progressDialog.show();
     }
 
     @Override
     public void onPostDelete(boolean success) {
-        if (!success) {
-            Snackbar.make(swipeRefreshLayout, "Delete Unsuccessful :(", Snackbar.LENGTH_LONG).show();
-        } else {
-            Snackbar.make(swipeRefreshLayout, "Deleted Successfully", Snackbar.LENGTH_LONG).show();
-        }
+        if (!success)
+            Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_delete_unsuccessful), Snackbar.LENGTH_LONG).show();
+        else
+            Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_delete_successful), Snackbar.LENGTH_LONG).show();
+
         progressDialog.dismiss();
         refreshAdapter();
         fabDelete.setVisibility(View.GONE);
@@ -268,49 +269,7 @@ public class TrashFragment extends Fragment implements RefreshInboxListener, Del
     }
 
     public void logout() {
-        final MaterialDialog materialDialog = new MaterialDialog(getActivity());
-        materialDialog.setCanceledOnTouchOutside(true);
-        materialDialog.setTitle("Log Out?");
-        materialDialog.setMessage("Saying bye bye?");
-        materialDialog.setNegativeButton("", new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                materialDialog.dismiss();
-            }
-        });
-        materialDialog.setPositiveButton("Log out", new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                User.deleteUser(currentUser);
-                if (User.getAllUsers().size() != 0)
-                    UserSettings.setCurrentUser(User.getAllUsers().get(0), getActivity());
-                else
-                    UserSettings.setCurrentUser(null, getActivity());
-
-                SharedPreferences prefs = getActivity().getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = prefs.edit();
-
-                editor.putBoolean(Constants.TOGGLE_MOBILEDATA, false);
-                editor.putBoolean(Constants.TOGGLE_WIFI, false);
-
-                EmailMessage.deleteAll(EmailMessage.class);
-
-                SharedPreferences firstRunPrefs = getActivity().getSharedPreferences(Constants.ON_FIRST_RUN, Context.MODE_PRIVATE);
-                firstRunPrefs.edit().putBoolean(Constants.RUN_EXCEPT_ON_FIRST, false).commit();
-
-                NotificationMaker.cancelNotification(getActivity());
-                materialDialog.dismiss();
-                Snackbar.make(swipeRefreshLayout, "Logging Out!", Snackbar.LENGTH_LONG).show();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        System.exit(0);
-                        getActivity().finish();
-                    }
-                }, 2000);
-            }
-        });
-        materialDialog.show();
+        ((MainActivity) getActivity()).showLogoutDialog(currentUser);
     }
 
     @Override
@@ -319,7 +278,7 @@ public class TrashFragment extends Fragment implements RefreshInboxListener, Del
         fabDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(swipeRefreshLayout, "Deleting ...", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_deleting), Snackbar.LENGTH_LONG).show();
                 new DeleteMail(currentUser, getActivity(), TrashFragment.this, emailsToDelete).execute();
             }
         });

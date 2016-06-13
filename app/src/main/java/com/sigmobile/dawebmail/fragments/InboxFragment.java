@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
@@ -28,7 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.sigmobile.dawebmail.ComposeActivity;
-import com.sigmobile.dawebmail.LoginActivity;
+import com.sigmobile.dawebmail.MainActivity;
 import com.sigmobile.dawebmail.R;
 import com.sigmobile.dawebmail.adapters.MailAdapter;
 import com.sigmobile.dawebmail.asyncTasks.DeleteMail;
@@ -38,7 +37,6 @@ import com.sigmobile.dawebmail.asyncTasks.RefreshInboxListener;
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
 import com.sigmobile.dawebmail.database.UserSettings;
-import com.sigmobile.dawebmail.services.NotificationMaker;
 import com.sigmobile.dawebmail.utils.Constants;
 
 import java.util.ArrayList;
@@ -47,7 +45,6 @@ import java.util.Collections;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import me.drakeet.materialdialog.MaterialDialog;
 
 /**
  * Created by rish on 6/10/15.
@@ -268,11 +265,11 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
             public void run() {
                 refreshAdapter();
                 if (refreshedEmails.size() == 0)
-                    Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_new_webmail_zero), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_webmail_zero), Snackbar.LENGTH_LONG).show();
                 else if (refreshedEmails.size() == 1)
-                    Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_new_webmail_one), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_webmail_one), Snackbar.LENGTH_LONG).show();
                 else
-                    Snackbar.make(swipeRefreshLayout, refreshedEmails.size() + getString(R.string.snackbar_new_webmail_many), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(swipeRefreshLayout, refreshedEmails.size() + getString(R.string.snackbar_webmail_many), Snackbar.LENGTH_LONG).show();
                 progressDialog2.dismiss();
             }
         });
@@ -305,52 +302,7 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
     }
 
     public void logout() {
-        final MaterialDialog materialDialog = new MaterialDialog(getActivity());
-        materialDialog.setCanceledOnTouchOutside(true);
-        materialDialog.setTitle(getString(R.string.dialog_title_logout));
-        materialDialog.setMessage(getString(R.string.dialog_msg_logout));
-        materialDialog.setNegativeButton("", new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                materialDialog.dismiss();
-            }
-        });
-        materialDialog.setPositiveButton(getString(R.string.dialog_btn_logout), new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences prefs = getActivity().getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = prefs.edit();
-
-                editor.putBoolean(Constants.TOGGLE_MOBILEDATA, false);
-                editor.putBoolean(Constants.TOGGLE_WIFI, false);
-
-                EmailMessage.deleteAllMailsOfUser(currentUser);
-
-                SharedPreferences firstRunPrefs = getActivity().getSharedPreferences(Constants.ON_FIRST_RUN, Context.MODE_PRIVATE);
-                firstRunPrefs.edit().putBoolean(Constants.RUN_EXCEPT_ON_FIRST, false).commit();
-
-                NotificationMaker.cancelNotification(getActivity());
-                materialDialog.dismiss();
-                Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_logging_out), Snackbar.LENGTH_LONG).show();
-
-                /**
-                 * Delete the current User and set the next user in line as current user
-                 */
-                User.deleteUser(currentUser);
-                if (User.getAllUsers().size() != 0)
-                    UserSettings.setCurrentUser(User.getAllUsers().get(0), getActivity());
-                else
-                    UserSettings.setCurrentUser(null, getActivity());
-
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        startActivity(new Intent(getActivity(), LoginActivity.class));
-                    }
-                }, 1000);
-            }
-        });
-        materialDialog.show();
+        ((MainActivity) getActivity()).showLogoutDialog(currentUser);
     }
 
     @Override

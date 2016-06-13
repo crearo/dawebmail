@@ -48,6 +48,9 @@
     <string name="snackbar_new_webmail_zero">No New Webmail</string>
     <string name="snackbar_new_webmail_one">1 New Webmail</string>
     <string name="snackbar_new_webmail_many"> New Webmails</string>
+    <string name="snackbar_webmail_zero">No Webmails</string>
+    <string name="snackbar_webmail_one">One Webmail</string>
+    <string name="snackbar_webmail_many"> Webmails</string>
     <string name="snackbar_deleting">Deleting</string>
     <string name="snackbar_delete_unsuccessful">Delete Unsuccessful :(</string>
     <string name="snackbar_delete_successful">Delete Successful</string>
@@ -58,7 +61,7 @@
     <string name="dialog_msg_loading">Please wait while we load your content</string>
     <string name="dialog_msg_delete">Deleting</string>
     <string name="dialog_title_logout">Log Out?</string>
-    <string name="dialog_msg_logout">If you are logged in through another account, we'll open you other account\'s inbox.</string>
+    <string name="dialog_msg_logout">If you are logged in through another account, we\'ll open you other account\'s inbox.</string>
     <string name="dialog_btn_logout">Log out</string>
 
 </resources>

@@ -1,8 +1,11 @@
 package com.sigmobile.dawebmail;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,17 +25,21 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
+import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
 import com.sigmobile.dawebmail.database.UserSettings;
 import com.sigmobile.dawebmail.fragments.InboxFragment;
 import com.sigmobile.dawebmail.fragments.SentFragment;
 import com.sigmobile.dawebmail.fragments.SmartBoxFragment;
 import com.sigmobile.dawebmail.fragments.TrashFragment;
+import com.sigmobile.dawebmail.services.NotificationMaker;
+import com.sigmobile.dawebmail.utils.Constants;
 
 import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import me.drakeet.materialdialog.MaterialDialog;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -169,6 +176,55 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         drawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
 
+    }
+
+    public void showLogoutDialog(final User currentUser) {
+        final MaterialDialog materialDialog = new MaterialDialog(this);
+        materialDialog.setCanceledOnTouchOutside(true);
+        materialDialog.setTitle(getString(R.string.dialog_title_logout));
+        materialDialog.setMessage(getString(R.string.dialog_msg_logout));
+        materialDialog.setNegativeButton("", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                materialDialog.dismiss();
+            }
+        });
+        materialDialog.setPositiveButton(getString(R.string.dialog_btn_logout), new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences prefs = getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+
+                editor.putBoolean(Constants.TOGGLE_MOBILEDATA, false);
+                editor.putBoolean(Constants.TOGGLE_WIFI, false);
+
+                EmailMessage.deleteAllMailsOfUser(currentUser);
+
+                SharedPreferences firstRunPrefs = getSharedPreferences(Constants.ON_FIRST_RUN, Context.MODE_PRIVATE);
+                firstRunPrefs.edit().putBoolean(Constants.RUN_EXCEPT_ON_FIRST, false).commit();
+
+                NotificationMaker.cancelNotification(getApplicationContext());
+                materialDialog.dismiss();
+                Snackbar.make(frameLayout, getString(R.string.snackbar_logging_out), Snackbar.LENGTH_LONG).show();
+
+                /**
+                 * Delete the current User and set the next user in line as current user
+                 */
+                User.deleteUser(currentUser);
+                if (User.getAllUsers().size() != 0)
+                    UserSettings.setCurrentUser(User.getAllUsers().get(0), getApplicationContext());
+                else
+                    UserSettings.setCurrentUser(null, getApplicationContext());
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                    }
+                }, 1000);
+            }
+        });
+        materialDialog.show();
     }
 
     @Override
