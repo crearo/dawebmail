@@ -27,36 +27,28 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
 
     @Bind(R.id.login_username)
     EditText usernameField;
-
     @Bind(R.id.login_password)
     EditText passwordField;
-
     @Bind(R.id.login_button_container)
     RelativeLayout loginButtonContainer;
-
     @Bind(R.id.login_tool_bar)
     Toolbar toolbar;
 
-    String enteredUsername = "", enteredPassword = "";
-
-    ProgressDialog progressDialog;
-
-    User currentUser;
+    private String enteredUsername = "";
+    private String enteredPassword = "";
+    private ProgressDialog progressDialog;
+    private User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         ButterKnife.bind(this);
-
-        showUpdateDialog();
-
-        toolbar.setTitle(getString(R.string.app_name));
-        setSupportActionBar(toolbar);
 
         currentUser = UserSettings.getCurrentUser(this);
 
+        showUpdateDialog();
+        setupToolbar();
         setupEditTexts();
 
         if (currentUser == null) {
@@ -93,6 +85,11 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
             startActivity(new Intent(this, MainActivity.class));
             finish();
         }
+    }
+
+    private void setupToolbar() {
+        toolbar.setTitle(getString(R.string.app_name));
+        setSupportActionBar(toolbar);
     }
 
     private void setupEditTexts() {

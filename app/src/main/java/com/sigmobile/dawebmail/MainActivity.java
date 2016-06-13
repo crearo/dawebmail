@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -45,14 +44,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Bind(R.id.main_tool_bar)
     Toolbar toolbar;
-
     @Bind(R.id.main_frame_layout)
     FrameLayout frameLayout;
 
-    Drawer drawer;
-
-    PrimaryDrawerItem pInbox, pSmartBox, pSentBox, pTrashBox;
-    SecondaryDrawerItem sSettings, sFeedback;
+    private Drawer drawer;
+    private PrimaryDrawerItem pInbox, pSmartBox, pSentBox, pTrashBox;
+    private SecondaryDrawerItem sSettings, sFeedback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,13 +57,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("");
-
+        setupToolbar();
         setupDrawer();
 
         drawer.setSelection(pInbox);
-
     }
 
     @Override
@@ -75,22 +69,27 @@ public class MainActivity extends AppCompatActivity {
         setupDrawer();
     }
 
+    private void setupToolbar() {
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("");
+    }
+
     private void setupDrawer() {
 
-        pInbox = new PrimaryDrawerItem().withName("Inbox").withIcon(R.drawable.inbox);
-        pSmartBox = new PrimaryDrawerItem().withName("SmartBox").withIcon(R.drawable.fire_element);
-        pSentBox = new PrimaryDrawerItem().withName("SentBox").withIcon(R.drawable.sent);
-        pTrashBox = new PrimaryDrawerItem().withName("TrashBox").withIcon(R.drawable.trash);
+        pInbox = new PrimaryDrawerItem().withName(getString(R.string.drawer_inbox)).withIcon(R.drawable.inbox);
+        pSmartBox = new PrimaryDrawerItem().withName(getString(R.string.drawer_smartbox)).withIcon(R.drawable.fire_element);
+        pSentBox = new PrimaryDrawerItem().withName(getString(R.string.drawer_sent)).withIcon(R.drawable.sent);
+        pTrashBox = new PrimaryDrawerItem().withName(getString(R.string.drawer_trash)).withIcon(R.drawable.trash);
 
-        sSettings = (SecondaryDrawerItem) new SecondaryDrawerItem().withName("Settings").withIcon(R.drawable.settings);
-        sFeedback = (SecondaryDrawerItem) new SecondaryDrawerItem().withName("Feedback").withIcon(R.drawable.feedback);
+        sSettings = (SecondaryDrawerItem) new SecondaryDrawerItem().withName(getString(R.string.drawer_settings)).withIcon(R.drawable.settings);
+        sFeedback = (SecondaryDrawerItem) new SecondaryDrawerItem().withName(getString(R.string.drawer_feedback)).withIcon(R.drawable.feedback);
 
         ArrayList<IProfile> profileDrawerItems = new ArrayList<>();
         for (User user : User.getAllUsers()) {
             profileDrawerItems.add(new ProfileDrawerItem().withName(user.username).withIcon(getResources().getDrawable(R.drawable.git_user)));
         }
 
-        profileDrawerItems.add(new ProfileDrawerItem().withName("+ Account").withIcon(getResources().getDrawable(R.drawable.plus)));
+        profileDrawerItems.add(new ProfileDrawerItem().withName(getString(R.string.drawer_new_account)).withIcon(getResources().getDrawable(R.drawable.plus)));
 
         AccountHeader accountHeader = new AccountHeaderBuilder()
                 .withActivity(this)
@@ -99,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
                     public boolean onProfileChanged(View view, IProfile profile, boolean current) {
-                        if (profile.getName().equals("+ Account")) {
+                        if (profile.getName().equals(getString(R.string.drawer_new_account))) {
                             UserSettings.setCurrentUser(null, getApplicationContext());
                             startActivity(new Intent(MainActivity.this, LoginActivity.class));
                             return true;
@@ -144,16 +143,16 @@ public class MainActivity extends AppCompatActivity {
 
                         if (drawerItem.equals(pInbox)) {
                             fragment = new InboxFragment();
-                            Snackbar.make(frameLayout, "Inbox", Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(frameLayout, getString(R.string.drawer_inbox), Snackbar.LENGTH_SHORT).show();
                         } else if (drawerItem.equals(pSmartBox)) {
                             fragment = new SmartBoxFragment();
-                            Snackbar.make(frameLayout, "SmartBox", Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(frameLayout, getString(R.string.drawer_smartbox), Snackbar.LENGTH_SHORT).show();
                         } else if (drawerItem.equals(pSentBox)) {
                             fragment = new SentFragment();
-                            Snackbar.make(frameLayout, "SentBox", Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(frameLayout, getString(R.string.drawer_sent), Snackbar.LENGTH_SHORT).show();
                         } else if (drawerItem.equals(pTrashBox)) {
                             fragment = new TrashFragment();
-                            Snackbar.make(frameLayout, "TrashBox", Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(frameLayout, getString(R.string.drawer_trash), Snackbar.LENGTH_SHORT).show();
                         } else if (drawerItem.equals(sSettings)) {
                             startActivity(new Intent(MainActivity.this, SettingsActivity.class));
                             return false;
@@ -166,8 +165,6 @@ public class MainActivity extends AppCompatActivity {
                             FragmentManager fragmentManager = getSupportFragmentManager();
                             fragmentManager.beginTransaction().replace(R.id.main_frame_layout, fragment).commit();
                             fragmentManager.popBackStack();
-                        } else {
-                            Log.e("MainActivity", "Error in creating fragment");
                         }
                         return false;
                     }
@@ -199,9 +196,6 @@ public class MainActivity extends AppCompatActivity {
                 editor.putBoolean(Constants.TOGGLE_WIFI, false);
 
                 EmailMessage.deleteAllMailsOfUser(currentUser);
-
-                SharedPreferences firstRunPrefs = getSharedPreferences(Constants.ON_FIRST_RUN, Context.MODE_PRIVATE);
-                firstRunPrefs.edit().putBoolean(Constants.RUN_EXCEPT_ON_FIRST, false).commit();
 
                 NotificationMaker.cancelNotification(getApplicationContext());
                 materialDialog.dismiss();
