@@ -1,6 +1,7 @@
 package com.sigmobile.dawebmail.network;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.sigmobile.dawebmail.R;
 import com.sigmobile.dawebmail.database.User;
@@ -13,16 +14,21 @@ import java.util.Date;
 
 import zimbra.AccountBy;
 import zimbra.AccountSelector;
+import zimbra.CursorInfo;
 import zimbra.HeaderAccountInfo;
 import zimbra.HeaderContext;
 import zimbraaccount.AuthRequest;
 import zimbraaccount.AuthResponse;
 import zimbramail.ActionSelector;
+import zimbramail.CalTZInfo;
 import zimbramail.EmailAddrInfo;
 import zimbramail.MimePartInfo;
 import zimbramail.MsgActionRequest;
 import zimbramail.MsgActionResponse;
 import zimbramail.MsgToSend;
+import zimbramail.SearchRequest;
+import zimbramail.SearchResponse;
+import zimbramail.SearchResponseChoice;
 import zimbramail.SendMsgRequest;
 import zimbramail.SendMsgResponse;
 
@@ -30,6 +36,8 @@ import zimbramail.SendMsgResponse;
  * Created by rish on 19/1/16.
  */
 public class SoapAPI {
+
+    private final String TAG = "SoapAPI";
 
     private ZcsService zcsService;
     private User zcsServiceOfUser;
@@ -114,6 +122,40 @@ public class SoapAPI {
             if (sendMsgResponse.getM().getId() != null)
                 return true;
             return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean fetchEmailsFromTime(Context context, User user, long timeInMillis) {
+
+        setupZcsServiceForUser(context, user);
+
+        SearchRequest searchRequest = new SearchRequest();
+        CalTZInfo calTZInfo = new CalTZInfo();
+        calTZInfo.setId("Asia/Kolkata");
+        searchRequest.setTz(calTZInfo);
+        CursorInfo cursorInfo = new CursorInfo();
+        cursorInfo.setSortVal(String.valueOf(timeInMillis));
+        cursorInfo.setId("3063");
+        searchRequest.setCursor(cursorInfo);
+        searchRequest.setQuery("in:inbox");
+        searchRequest.setTypes("message");
+        searchRequest.setOffset(10);
+        searchRequest.setNeedExp(true);
+        searchRequest.setSortBy("dateDesc");
+
+        try {
+            SearchResponse searchResponse = zcsService.searchRequest(searchRequest, zcsServiceContext);
+            Log.d(TAG, "SearachResponse is " + searchResponse.getTotal() + " " + searchResponse.toString());
+            for (SearchResponseChoice searchResponseChoice : searchResponse.getSearchResponseChoice_type0()) {
+                Log.d(TAG, searchResponseChoice.getM().getS() + " " + searchResponseChoice.getM().getSu());
+            }
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
             return false;

@@ -27,6 +27,9 @@ import java.util.ArrayList;
  */
 public class MailAdapter extends BaseAdapter {
 
+    // TODO : Convert Adapter to RecyclerView
+    // https://github.com/race604/FlyRefresh or https://github.com/Aspsine/SwipeToLoadLayout
+
     private final static String TAG = "MailAdapter";
 
     private ArrayList<EmailMessage> emails;
