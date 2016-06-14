@@ -12,6 +12,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,7 +26,6 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 
 import com.sigmobile.dawebmail.ComposeActivity;
 import com.sigmobile.dawebmail.MainActivity;
@@ -55,8 +57,8 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
 
     @Bind(R.id.inbox_empty_view)
     LinearLayout emptyLayout;
-    @Bind(R.id.inbox_listView)
-    ListView listview;
+    @Bind(R.id.inbox_recycleView)
+    RecyclerView recyclerView;
     @Bind(R.id.swipeContainer)
     SwipeRefreshLayout swipeRefreshLayout;
     @Bind(R.id.searchET)
@@ -88,7 +90,7 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
         progressDialog = new ProgressDialog(getActivity());
 
         if (currentUser == null) {
-            // Snackbar.make(listview, getString(R.string.error_something_went_wrong), Snackbar.LENGTH_LONG).show();
+            // Snackbar.make(recyclerView, getString(R.string.error_something_went_wrong), Snackbar.LENGTH_LONG).show();
             emptyLayout.setVisibility(View.VISIBLE);
             return rootView;
         }
@@ -107,8 +109,12 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
     private void setupMailAdapter() {
         allEmails = (ArrayList<EmailMessage>) EmailMessage.getAllMailsOfUser(currentUser);
         Collections.reverse(allEmails);
+//        mailAdapter = new MailAdapter(allEmails, getActivity(), this, Constants.INBOX);
         mailAdapter = new MailAdapter(allEmails, getActivity(), this, Constants.INBOX);
-        listview.setAdapter(mailAdapter);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(mailAdapter);
 
         if (allEmails.size() == 0) {
             new RefreshInbox(currentUser, getActivity(), InboxFragment.this, Constants.INBOX).execute();
@@ -157,7 +163,7 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
                         }
                     }
                     mailAdapter = new MailAdapter(allEmails, getActivity(), InboxFragment.this, Constants.INBOX);
-                    listview.setAdapter(mailAdapter);
+                    recyclerView.setAdapter(mailAdapter);
                     System.out.println("SEARCHED RESULTS COUNT = " + mailAdapter.getCount());
                 } else {
                     refreshAdapter();

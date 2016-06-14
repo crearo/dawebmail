@@ -5,10 +5,11 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,22 +23,16 @@ import com.sigmobile.dawebmail.utils.TheFont;
 
 import java.util.ArrayList;
 
-/**
- * Created by rish on 6/10/15.
- */
-public class MailAdapter extends BaseAdapter {
+public class MailAdapter extends RecyclerView.Adapter<MailAdapter.ViewHolder> {
 
-    // TODO : Convert Adapter to RecyclerView
-    // https://github.com/race604/FlyRefresh or https://github.com/Aspsine/SwipeToLoadLayout
-
-    private final static String TAG = "MailAdapter";
-
-    private ArrayList<EmailMessage> emails;
-    private Context context;
+    Context context;
+    LayoutInflater inflater;
+    ArrayList<EmailMessage> emails;
     private ArrayList<EmailMessage> emailsToDelete;
-    private DeleteSelectedListener deleteSelectedListener;
     private boolean clickedForDelete[];
     private String EMAIL_TYPE;
+
+    private DeleteSelectedListener deleteSelectedListener;
 
     public MailAdapter(ArrayList<EmailMessage> emails, Context context, DeleteSelectedListener deleteSelectedListener, String EMAIL_TYPE) {
         this.context = context;
@@ -46,31 +41,18 @@ public class MailAdapter extends BaseAdapter {
         this.deleteSelectedListener = deleteSelectedListener;
         this.clickedForDelete = new boolean[this.emails.size()];
         this.EMAIL_TYPE = EMAIL_TYPE;
+        this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
-    public int getCount() {
-        return emails.size();
+    public MailAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = inflater.inflate(R.layout.element_email, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
-    public EmailMessage getItem(int position) {
-        return emails.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            convertView = View.inflate(context, R.layout.element_email, null);
-            new ViewHolder(convertView);
-        }
-        final ViewHolder holder = (ViewHolder) convertView.getTag();
-        final EmailMessage currentEmail = getItem(position);
+    public void onBindViewHolder(MailAdapter.ViewHolder holder, final int position) {
+        final EmailMessage currentEmail = emails.get(position);
 
         if (currentEmail.readUnread.equals(Constants.WEBMAIL_UNREAD)) {
             holder.msgFrom.setTypeface(null, Typeface.BOLD);
@@ -142,16 +124,20 @@ public class MailAdapter extends BaseAdapter {
                 context.startActivity(intent);
             }
         });
-
-        return convertView;
     }
 
-    class ViewHolder {
+    @Override
+    public int getItemCount() {
+        return emails.size();
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder {
         ImageView msgIcon;
         TextView msgFrom, msgSubject, msgDateRecv;
         LinearLayout msgContainer;
 
         public ViewHolder(View view) {
+            super(view);
             msgContainer = (LinearLayout) view.findViewById(R.id.element_msg_container);
             msgIcon = (ImageView) view.findViewById(R.id.element_msg_icon);
             msgFrom = (TextView) view.findViewById(R.id.element_msg_from);
@@ -165,6 +151,7 @@ public class MailAdapter extends BaseAdapter {
             msgSubject.setTypeface(font);
 
             view.setTag(this);
+
         }
     }
 
