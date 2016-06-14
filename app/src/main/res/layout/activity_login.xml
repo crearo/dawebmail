@@ -7,7 +7,7 @@
 
     <include
         android:id="@+id/login_tool_bar"
-        layout="@layout/tool_bar" />.
+        layout="@layout/tool_bar" />
 
     <LinearLayout
         android:layout_width="match_parent"
