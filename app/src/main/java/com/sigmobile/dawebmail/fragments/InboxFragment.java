@@ -116,6 +116,12 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
         return rootView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        setupDeleteAndComposeFABs(false);
+    }
+
     private void setupMailAdapter() {
         allEmails = (ArrayList<EmailMessage>) EmailMessage.getAllMailsOfUser(currentUser);
         Collections.reverse(allEmails);
@@ -129,6 +135,14 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
             new RefreshInbox(currentUser, getActivity(), InboxFragment.this, Constants.INBOX, Constants.REFRESH_TYPE_LOAD_MORE).execute();
             allEmails = new ArrayList<>();
         }
+
+        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                fabMenu.collapse();
+            }
+        });
     }
 
     private void registerInternalBroadcastReceivers() {
@@ -335,25 +349,45 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
     }
 
     @Override
-    public void onPostMultiMailAction(boolean success, String mailAction) {
+    public void onPostMultiMailAction(boolean success, String msgAction, ArrayList<EmailMessage> emailsForMultiAction) {
+
+        /* If msgAction was delete or trash, delete the email from database */
+        if (success) {
+            if (msgAction.equals(getString(R.string.msg_action_delete)) || msgAction.equals(getString(R.string.msg_action_trash))) {
+                for (EmailMessage emailMessage : emailsForMultiAction) {
+                    emailMessage.delete();
+                }
+            } else if (msgAction.equals(getString(R.string.msg_action_read))) {
+                for (EmailMessage emailMessage : emailsForMultiAction) {
+                    emailMessage.readUnread = Constants.WEBMAIL_READ;
+                    emailMessage.save();
+                }
+            } else if (msgAction.equals(getString(R.string.msg_action_unread))) {
+                for (EmailMessage emailMessage : emailsForMultiAction) {
+                    emailMessage.readUnread = Constants.WEBMAIL_UNREAD;
+                    emailMessage.save();
+                }
+            }
+            emailsForMultiAction.clear();
+        }
 
         if (!success) {
-            if (mailAction.equals(getString(R.string.msg_action_trash)))
+            if (msgAction.equals(getString(R.string.msg_action_trash)))
                 Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_trash_unsuccessful), Snackbar.LENGTH_LONG).show();
-            else if (mailAction.equals(getString(R.string.msg_action_delete)))
+            else if (msgAction.equals(getString(R.string.msg_action_delete)))
                 Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_delete_unsuccessful), Snackbar.LENGTH_LONG).show();
-            else if (mailAction.equals(getString(R.string.msg_action_read)))
+            else if (msgAction.equals(getString(R.string.msg_action_read)))
                 Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_read_unsuccessful), Snackbar.LENGTH_LONG).show();
-            else if (mailAction.equals(getString(R.string.msg_action_unread)))
+            else if (msgAction.equals(getString(R.string.msg_action_unread)))
                 Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_unread_unsuccessful), Snackbar.LENGTH_LONG).show();
         } else {
-            if (mailAction.equals(getString(R.string.msg_action_trash)))
+            if (msgAction.equals(getString(R.string.msg_action_trash)))
                 Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_trash_successful), Snackbar.LENGTH_LONG).show();
-            else if (mailAction.equals(getString(R.string.msg_action_delete)))
+            else if (msgAction.equals(getString(R.string.msg_action_delete)))
                 Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_delete_successful), Snackbar.LENGTH_LONG).show();
-            else if (mailAction.equals(getString(R.string.msg_action_read)))
+            else if (msgAction.equals(getString(R.string.msg_action_read)))
                 Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_read_successful), Snackbar.LENGTH_LONG).show();
-            else if (mailAction.equals(getString(R.string.msg_action_unread)))
+            else if (msgAction.equals(getString(R.string.msg_action_unread)))
                 Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_unread_successful), Snackbar.LENGTH_LONG).show();
         }
 
@@ -411,6 +445,9 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
     }
 
     private void showConfirmDeleteDialog(final ArrayList<EmailMessage> emailsMarkedForAction) {
+
+        fabMenu.collapse();
+
         final MaterialDialog materialDialog = new MaterialDialog(getActivity());
         materialDialog.setTitle(getString(R.string.dialog_title_permanently_delete));
         materialDialog.setMessage(getString(R.string.dialog_msg_permanently_delete));
@@ -418,12 +455,14 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
             @Override
             public void onClick(View v) {
                 performActionDelete(emailsMarkedForAction);
+                materialDialog.dismiss();
             }
         });
-        materialDialog.setNegativeButton(getString(R.string.dialog_btn_positive_permanently_delete), new View.OnClickListener() {
+        materialDialog.setNegativeButton(getString(R.string.dialog_btn_negative_permanently_delete), new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 performActionTrash(emailsMarkedForAction);
+                materialDialog.dismiss();
             }
         });
         materialDialog.setCanceledOnTouchOutside(true);

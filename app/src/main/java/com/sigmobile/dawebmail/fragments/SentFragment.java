@@ -253,7 +253,7 @@ public class SentFragment extends Fragment implements RefreshInboxListener, Mult
     }
 
     @Override
-    public void onPostMultiMailAction(boolean success, String mailAction) {
+    public void onPostMultiMailAction(boolean success, String mailAction, ArrayList<EmailMessage> emailsForMultiAction) {
         if (!success)
             Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_delete_unsuccessful), Snackbar.LENGTH_LONG).show();
         else

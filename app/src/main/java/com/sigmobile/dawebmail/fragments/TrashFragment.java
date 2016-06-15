@@ -253,12 +253,13 @@ public class TrashFragment extends Fragment implements RefreshInboxListener, Mul
     }
 
     @Override
-    public void onPostMultiMailAction(boolean success, String mailAction) {
+    public void onPostMultiMailAction(boolean success, String mailAction, ArrayList<EmailMessage> emailsForMultiAction) {
         if (!success)
             Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_delete_unsuccessful), Snackbar.LENGTH_LONG).show();
         else
             Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_delete_successful), Snackbar.LENGTH_LONG).show();
 
+        emailsForMultiAction.clear();
         progressDialog.dismiss();
         refreshAdapter();
         fabDelete.setVisibility(View.GONE);
@@ -266,7 +267,7 @@ public class TrashFragment extends Fragment implements RefreshInboxListener, Mul
 
     public void refreshAdapter() {
         mailAdapter = new MailAdapter(allEmails, getActivity(), this, Constants.TRASH);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mailAdapter);

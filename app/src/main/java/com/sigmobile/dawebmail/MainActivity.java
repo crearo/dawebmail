@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
     private PrimaryDrawerItem pInbox, pSmartBox, pSentBox, pTrashBox;
     private SecondaryDrawerItem sSettings, sFeedback;
 
+    private PrimaryDrawerItem selectedDrawerItem;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +62,8 @@ public class MainActivity extends AppCompatActivity {
         setupToolbar();
         setupDrawer();
 
-        drawer.setSelection(pInbox);
+        selectedDrawerItem = pInbox;
+        drawer.setSelection(selectedDrawerItem);
     }
 
     @Override
@@ -106,8 +109,10 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             UserSettings.setCurrentUser(User.getUserFromUserName(profile.getName().getText()), getApplicationContext());
                             drawer.closeDrawer();
-                            drawer.setSelection(pInbox);
-                            setToolbarTitle(pInbox);
+                            if (selectedDrawerItem == null)
+                                selectedDrawerItem = pInbox;
+                            drawer.setSelection(selectedDrawerItem);
+                            setToolbarTitle(selectedDrawerItem);
                             return true;
                         }
                     }
@@ -141,27 +146,27 @@ public class MainActivity extends AppCompatActivity {
                         Fragment fragment = null;
 
                         drawer.closeDrawer();
-                        if (drawerItem == null) {
+                        if (drawerItem == null)
                             drawerItem = pInbox;
-                        }
 
-                        setToolbarTitle(drawerItem);
-                        if (drawerItem.equals(pInbox)) {
+                        selectedDrawerItem = (PrimaryDrawerItem) drawerItem;
+                        setToolbarTitle(selectedDrawerItem);
+                        if (selectedDrawerItem.equals(pInbox)) {
                             fragment = new InboxFragment();
                             Snackbar.make(frameLayout, getString(R.string.drawer_inbox), Snackbar.LENGTH_SHORT).show();
-                        } else if (drawerItem.equals(pSmartBox)) {
+                        } else if (selectedDrawerItem.equals(pSmartBox)) {
                             fragment = new SmartBoxFragment();
                             Snackbar.make(frameLayout, getString(R.string.drawer_smartbox), Snackbar.LENGTH_SHORT).show();
-                        } else if (drawerItem.equals(pSentBox)) {
+                        } else if (selectedDrawerItem.equals(pSentBox)) {
                             fragment = new SentFragment();
                             Snackbar.make(frameLayout, getString(R.string.drawer_sent), Snackbar.LENGTH_SHORT).show();
-                        } else if (drawerItem.equals(pTrashBox)) {
+                        } else if (selectedDrawerItem.equals(pTrashBox)) {
                             fragment = new TrashFragment();
                             Snackbar.make(frameLayout, getString(R.string.drawer_trash), Snackbar.LENGTH_SHORT).show();
-                        } else if (drawerItem.equals(sSettings)) {
+                        } else if (selectedDrawerItem.equals(sSettings)) {
                             startActivity(new Intent(MainActivity.this, SettingsActivity.class));
                             return false;
-                        } else if (drawerItem.equals(sFeedback)) {
+                        } else if (selectedDrawerItem.equals(sFeedback)) {
                             startActivity(new Intent(MainActivity.this, FeedbackActivity.class));
                             return false;
                         }
@@ -175,9 +180,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                 })
                 .build();
+
+        if (selectedDrawerItem != null)
+            drawer.setSelection(selectedDrawerItem);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         drawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
-
     }
 
     public void showLogoutDialog(final User currentUser) {

@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,9 +26,11 @@ import java.util.ArrayList;
 
 public class MailAdapter extends RecyclerView.Adapter<MailAdapter.ViewHolder> {
 
-    Context context;
-    LayoutInflater inflater;
-    ArrayList<EmailMessage> emails;
+    private final String TAG = "MailAdapter";
+
+    private Context context;
+    private LayoutInflater inflater;
+    private ArrayList<EmailMessage> emails;
     private ArrayList<EmailMessage> emailsMarkedForAction;
     private boolean clickedForDelete[];
     private String emailType;
@@ -36,16 +39,18 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.ViewHolder> {
 
     public MailAdapter(ArrayList<EmailMessage> emails, Context context, MultiMailActionSelectedListener multiMailActionSelectedListener, String emailType) {
         this.context = context;
-        emailsMarkedForAction = new ArrayList<>();
+        this.emailsMarkedForAction = new ArrayList<>();
         this.emails = emails;
         this.multiMailActionSelectedListener = multiMailActionSelectedListener;
         this.clickedForDelete = new boolean[this.emails.size()];
         this.emailType = emailType;
-        this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
     public MailAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (context != null)
+            this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        Log.d(TAG, "Context is null? " + (context == null));
         View view = inflater.inflate(R.layout.element_email, parent, false);
         return new ViewHolder(view);
     }
