@@ -48,7 +48,6 @@ public class SoapAPI {
     }
 
     public boolean performMailAction(Context context, User user, String mailAction, String contentID) {
-
         setupZcsServiceForUser(context, user);
 
         MsgActionRequest msgActionRequest = new MsgActionRequest();

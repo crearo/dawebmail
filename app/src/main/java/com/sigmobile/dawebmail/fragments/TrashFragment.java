@@ -31,8 +31,8 @@ import android.widget.LinearLayout;
 import com.sigmobile.dawebmail.MainActivity;
 import com.sigmobile.dawebmail.R;
 import com.sigmobile.dawebmail.adapters.MailAdapter;
-import com.sigmobile.dawebmail.asyncTasks.DeleteMail;
-import com.sigmobile.dawebmail.asyncTasks.DeleteMailListener;
+import com.sigmobile.dawebmail.asyncTasks.MultiMailAction;
+import com.sigmobile.dawebmail.asyncTasks.MultiMailActionListener;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInbox;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInboxListener;
 import com.sigmobile.dawebmail.database.EmailMessage;
@@ -49,7 +49,7 @@ import butterknife.ButterKnife;
  * Created by rish on 6/10/15.
  */
 
-public class TrashFragment extends Fragment implements RefreshInboxListener, DeleteMailListener, MailAdapter.DeleteSelectedListener {
+public class TrashFragment extends Fragment implements RefreshInboxListener, MultiMailActionListener, MailAdapter.MultiMailActionSelectedListener {
 
     @Bind(R.id.inbox_empty_view)
     LinearLayout emptyLayout;
@@ -251,13 +251,13 @@ public class TrashFragment extends Fragment implements RefreshInboxListener, Del
     }
 
     @Override
-    public void onPreDelete() {
-        progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.dialog_msg_delete));
+    public void onPreMultiMailAction() {
+        progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.dialog_msg_attempting_action));
         progressDialog.show();
     }
 
     @Override
-    public void onPostDelete(boolean success) {
+    public void onPostMultiMailAction(boolean success, String mailAction) {
         if (!success)
             Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_delete_unsuccessful), Snackbar.LENGTH_LONG).show();
         else
@@ -281,17 +281,17 @@ public class TrashFragment extends Fragment implements RefreshInboxListener, Del
     }
 
     @Override
-    public void onItemClickedForDelete(final ArrayList<EmailMessage> emailsToDelete) {
+    public void onItemClickedForDelete(final ArrayList<EmailMessage> emailsMarkedForAction) {
 
         fabDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_deleting), Snackbar.LENGTH_LONG).show();
-                new DeleteMail(currentUser, getActivity(), TrashFragment.this, emailsToDelete).execute();
+                new MultiMailAction(currentUser, getActivity(), TrashFragment.this, emailsMarkedForAction, getString(R.string.msg_action_trash)).execute();
             }
         });
 
-        if (emailsToDelete.size() > 0) {
+        if (emailsMarkedForAction.size() > 0) {
             if (fabDelete.getVisibility() != View.VISIBLE) {
                 fabDelete.setVisibility(View.VISIBLE);
                 fabDelete.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.abc_slide_in_bottom));

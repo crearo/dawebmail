@@ -27,20 +27,20 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.ViewHolder> {
 
     Context context;
     LayoutInflater inflater;
-   ArrayList<EmailMessage> emails;
-    private ArrayList<EmailMessage> emailsToDelete;
+    ArrayList<EmailMessage> emails;
+    private ArrayList<EmailMessage> emailsMarkedForAction;
     private boolean clickedForDelete[];
-    private String EMAIL_TYPE;
+    private String emailType;
 
-    private DeleteSelectedListener deleteSelectedListener;
+    private MultiMailActionSelectedListener multiMailActionSelectedListener;
 
-    public MailAdapter(ArrayList<EmailMessage> emails, Context context, DeleteSelectedListener deleteSelectedListener, String EMAIL_TYPE) {
+    public MailAdapter(ArrayList<EmailMessage> emails, Context context, MultiMailActionSelectedListener multiMailActionSelectedListener, String emailType) {
         this.context = context;
-        emailsToDelete = new ArrayList<>();
+        emailsMarkedForAction = new ArrayList<>();
         this.emails = emails;
-        this.deleteSelectedListener = deleteSelectedListener;
+        this.multiMailActionSelectedListener = multiMailActionSelectedListener;
         this.clickedForDelete = new boolean[this.emails.size()];
-        this.EMAIL_TYPE = EMAIL_TYPE;
+        this.emailType = emailType;
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -115,7 +115,7 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.ViewHolder> {
                 * I am not saving SentBox, and TrashBox.
                  */
                 bundle.putSerializable(Constants.CURRENT_EMAIL_SERIALIZABLE, currentEmail);
-                bundle.putString(Constants.CURRENT_EMAIL_TYPE, EMAIL_TYPE);
+                bundle.putString(Constants.CURRENT_EMAIL_TYPE, emailType);
                 if (currentEmail.getId() == null) // isn't a saved object, and hence doesnt have an id
                     bundle.putLong(Constants.CURRENT_EMAIL_ID, -1);
                 else
@@ -155,23 +155,23 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.ViewHolder> {
         }
     }
 
-    public interface DeleteSelectedListener {
-        void onItemClickedForDelete(ArrayList<EmailMessage> emailsToDelete);
+    public interface MultiMailActionSelectedListener {
+        void onItemClickedForDelete(ArrayList<EmailMessage> emailsMarkedForAction);
     }
 
     private void addEmailForDelete(int position, EmailMessage item) {
         if (clickedForDelete[position]) {
             clickedForDelete[position] = false;
             notifyDataSetChanged();
-            emailsToDelete.remove(item);
+            emailsMarkedForAction.remove(item);
         } else {
             clickedForDelete[position] = true;
-            emailsToDelete.add(item);
+            emailsMarkedForAction.add(item);
             notifyDataSetChanged();
             Vibrator vibe = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
             vibe.vibrate(20);
         }
-        deleteSelectedListener.onItemClickedForDelete(emailsToDelete);
+        multiMailActionSelectedListener.onItemClickedForDelete(emailsMarkedForAction);
     }
 
     public void setEmails(ArrayList<EmailMessage> emails) {

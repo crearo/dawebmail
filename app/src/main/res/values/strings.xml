@@ -56,14 +56,23 @@
     <string name="snackbar_webmail_one">One Webmail</string>
     <string name="snackbar_webmail_many"> Webmails</string>
     <string name="snackbar_deleting">Deleting</string>
+    <string name="snackbar_trashing">Moving To Trash</string>
+    <string name="snackbar_marking_unread">Marking Unread</string>
+    <string name="snackbar_marking_read">Marking Read</string>
     <string name="snackbar_delete_unsuccessful">Delete Unsuccessful :(</string>
     <string name="snackbar_delete_successful">Delete Successful</string>
+    <string name="snackbar_trash_unsuccessful">Unable To Move To Trash :(</string>
+    <string name="snackbar_trash_successful">Moved To Trash</string>
+    <string name="snackbar_read_unsuccessful">Unable To Mark Read :(</string>
+    <string name="snackbar_read_successful">Marked Read</string>
+    <string name="snackbar_unread_unsuccessful">Unable to Mark Unread</string>
+    <string name="snackbar_unread_successful">Marked Read</string>
     <string name="snackbar_logging_out">Logging Out!</string>
 
     <!-- Progress Dialogs -->
     <string name="dialog_msg_logging_in">Logging In</string>
     <string name="dialog_msg_loading">Please wait while we load your content</string>
-    <string name="dialog_msg_delete">Deleting</string>
+    <string name="dialog_msg_attempting_action">Requesting Action</string>
     <string name="dialog_title_logout">Log Out?</string>
     <string name="dialog_msg_logout">If you are logged in through another account, we\'ll open you other account\'s inbox.</string>
     <string name="dialog_btn_logout">Log out</string>

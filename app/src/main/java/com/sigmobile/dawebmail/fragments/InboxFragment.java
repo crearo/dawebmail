@@ -32,7 +32,8 @@ import com.sigmobile.dawebmail.ComposeActivity;
 import com.sigmobile.dawebmail.MainActivity;
 import com.sigmobile.dawebmail.R;
 import com.sigmobile.dawebmail.adapters.MailAdapter;
-import com.sigmobile.dawebmail.asyncTasks.DeleteMailListener;
+import com.sigmobile.dawebmail.asyncTasks.MultiMailAction;
+import com.sigmobile.dawebmail.asyncTasks.MultiMailActionListener;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInbox;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInboxListener;
 import com.sigmobile.dawebmail.database.EmailMessage;
@@ -51,7 +52,7 @@ import butterknife.OnClick;
  * Created by rish on 6/10/15.
  */
 
-public class InboxFragment extends Fragment implements RefreshInboxListener, DeleteMailListener, MailAdapter.DeleteSelectedListener {
+public class InboxFragment extends Fragment implements RefreshInboxListener, MultiMailActionListener, MailAdapter.MultiMailActionSelectedListener {
 
     private static final String TAG = "InboxFragment";
 
@@ -188,7 +189,7 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
 
     private void setupDeleteAndComposeFABs(boolean isDeleteVisible) {
         if (!isDeleteVisible) {
-            Animation animation = AnimationUtils.loadAnimation(getActivity(), android.support.design.R.anim.abc_slide_out_bottom);
+            final Animation animation = AnimationUtils.loadAnimation(getActivity(), android.support.design.R.anim.abc_slide_out_bottom);
             animation.setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
@@ -207,10 +208,21 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
 
                 }
             });
-            fabMenu.startAnimation(animation);
+
+            if (fabMenu.isExpanded()) {
+                fabMenu.collapse();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        fabMenu.startAnimation(animation);
+                    }
+                }, 300);
+            } else {
+                fabMenu.startAnimation(animation);
+            }
         } else {
             if (fabSend.getVisibility() == View.VISIBLE) {
-                Animation animation = AnimationUtils.loadAnimation(getActivity(), android.support.design.R.anim.abc_slide_out_bottom);
+                final Animation animation = AnimationUtils.loadAnimation(getActivity(), android.support.design.R.anim.abc_slide_out_bottom);
                 animation.setAnimationListener(new Animation.AnimationListener() {
                     @Override
                     public void onAnimationStart(Animation animation) {
@@ -317,17 +329,33 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
     }
 
     @Override
-    public void onPreDelete() {
-        progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.dialog_msg_delete));
+    public void onPreMultiMailAction() {
+        progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.dialog_msg_attempting_action));
         progressDialog.show();
     }
 
     @Override
-    public void onPostDelete(boolean success) {
-        if (!success)
-            Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_delete_unsuccessful), Snackbar.LENGTH_LONG).show();
-        else
-            Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_delete_successful), Snackbar.LENGTH_LONG).show();
+    public void onPostMultiMailAction(boolean success, String mailAction) {
+
+        if (!success) {
+            if (mailAction.equals(getString(R.string.msg_action_trash)))
+                Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_trash_unsuccessful), Snackbar.LENGTH_LONG).show();
+            else if (mailAction.equals(getString(R.string.msg_action_delete)))
+                Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_delete_unsuccessful), Snackbar.LENGTH_LONG).show();
+            else if (mailAction.equals(getString(R.string.msg_action_read)))
+                Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_read_unsuccessful), Snackbar.LENGTH_LONG).show();
+            else if (mailAction.equals(getString(R.string.msg_action_unread)))
+                Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_unread_unsuccessful), Snackbar.LENGTH_LONG).show();
+        } else {
+            if (mailAction.equals(getString(R.string.msg_action_trash)))
+                Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_trash_successful), Snackbar.LENGTH_LONG).show();
+            else if (mailAction.equals(getString(R.string.msg_action_delete)))
+                Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_delete_successful), Snackbar.LENGTH_LONG).show();
+            else if (mailAction.equals(getString(R.string.msg_action_read)))
+                Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_read_successful), Snackbar.LENGTH_LONG).show();
+            else if (mailAction.equals(getString(R.string.msg_action_unread)))
+                Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_unread_successful), Snackbar.LENGTH_LONG).show();
+        }
 
         progressDialog.dismiss();
         refreshAdapter();
@@ -346,16 +374,49 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
     }
 
     @Override
-    public void onItemClickedForDelete(final ArrayList<EmailMessage> emailsToDelete) {
+    public void onItemClickedForDelete(final ArrayList<EmailMessage> emailsMarkedForAction) {
 
-        if (emailsToDelete.size() == 0)
+        if (emailsMarkedForAction.size() == 0)
             setupDeleteAndComposeFABs(false);
         else
             setupDeleteAndComposeFABs(true);
 
         fabMenu.setEnabled(true);
-//        Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_deleting), Snackbar.LENGTH_LONG).show();
-//        new DeleteMail(currentUser, getActivity(), InboxFragment.this, emailsToDelete).execute();
 
+        fabDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_deleting), Snackbar.LENGTH_LONG).show();
+                new MultiMailAction(currentUser, getActivity(), InboxFragment.this, emailsMarkedForAction, getString(R.string.msg_action_delete)).execute();
+                setupDeleteAndComposeFABs(false);
+            }
+        });
+
+        fabTrash.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_trashing), Snackbar.LENGTH_LONG).show();
+                new MultiMailAction(currentUser, getActivity(), InboxFragment.this, emailsMarkedForAction, getString(R.string.msg_action_trash)).execute();
+                setupDeleteAndComposeFABs(false);
+            }
+        });
+
+        fabMarkRead.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_marking_read), Snackbar.LENGTH_LONG).show();
+                new MultiMailAction(currentUser, getActivity(), InboxFragment.this, emailsMarkedForAction, getString(R.string.msg_action_read)).execute();
+                setupDeleteAndComposeFABs(false);
+            }
+        });
+
+        fabMarkUnread.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_marking_unread), Snackbar.LENGTH_LONG).show();
+                new MultiMailAction(currentUser, getActivity(), InboxFragment.this, emailsMarkedForAction, getString(R.string.msg_action_unread)).execute();
+                setupDeleteAndComposeFABs(false);
+            }
+        });
     }
 }
