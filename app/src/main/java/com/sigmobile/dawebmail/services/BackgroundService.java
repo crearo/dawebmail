@@ -46,7 +46,7 @@ public class BackgroundService extends Service implements RefreshInboxListener {
         boolean dataEnabled = prefs.getBoolean(Constants.TOGGLE_MOBILEDATA, false);
 
         if (((wifiEnabled && ConnectionManager.isConnectedByWifi(this)) || (dataEnabled && ConnectionManager.isConnectedByMobileData(this)))) {
-            new RefreshInbox(user, getApplicationContext(), this, Constants.INBOX).execute();
+            new RefreshInbox(user, getApplicationContext(), this, Constants.INBOX, Constants.REFRESH_TYPE_REFRESH).execute();
         } else if ((ConnectionManager.isConnectedByWifi(this) == false && ConnectionManager.isConnectedByMobileData(this) == false)) {
         }
     }

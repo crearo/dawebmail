@@ -88,7 +88,6 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
         progressDialog = new ProgressDialog(getActivity());
 
         if (currentUser == null) {
-            // Snackbar.make(listview, getString(R.string.error_something_went_wrong), Snackbar.LENGTH_LONG).show();
             emptyLayout.setVisibility(View.VISIBLE);
             return rootView;
         }
@@ -111,7 +110,7 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
         listview.setAdapter(mailAdapter);
 
         if (allEmails.size() == 0) {
-            new RefreshInbox(currentUser, getActivity(), InboxFragment.this, Constants.INBOX).execute();
+            new RefreshInbox(currentUser, getActivity(), InboxFragment.this, Constants.INBOX, Constants.REFRESH_TYPE_LOAD_MORE).execute();
             allEmails = new ArrayList<>();
         }
     }
@@ -204,7 +203,7 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new RefreshInbox(currentUser, getActivity(), InboxFragment.this, Constants.INBOX).execute();
+                new RefreshInbox(currentUser, getActivity(), InboxFragment.this, Constants.INBOX, Constants.REFRESH_TYPE_REFRESH).execute();
             }
         });
 
@@ -251,6 +250,8 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
             return true;
         } else if (id == R.id.action_logout) {
             logout();
+        } else if (id == R.id.action_loadmore) {
+            new RefreshInbox(currentUser, getActivity(), InboxFragment.this, Constants.INBOX, Constants.REFRESH_TYPE_LOAD_MORE).execute();
         }
         return super.onOptionsItemSelected(item);
     }

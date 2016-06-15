@@ -7,6 +7,7 @@ import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
 import com.sigmobile.dawebmail.database.UserSettings;
 import com.sigmobile.dawebmail.network.RestAPI;
+import com.sigmobile.dawebmail.utils.Constants;
 
 import java.util.ArrayList;
 
@@ -18,16 +19,18 @@ public class RefreshInbox extends AsyncTask<Void, Void, Void> {
     private RefreshInboxListener listener;
     private Context context;
     private ArrayList<EmailMessage> refreshedEmails;
-    private String REFRESH_TYPE;
+    private String refreshType;
+    private String folder;
     private User user;
+    private boolean result;
 
-    public RefreshInbox(User user, Context context, RefreshInboxListener refreshInboxListener, String REFRESH_TYPE) {
+    public RefreshInbox(User user, Context context, RefreshInboxListener refreshInboxListener, String folder, String refreshType) {
         this.context = context;
         this.listener = refreshInboxListener;
-        this.REFRESH_TYPE = REFRESH_TYPE;
+        this.refreshType = refreshType;
+        this.folder = folder;
         this.user = user;
     }
-
 
     @Override
     protected void onPreExecute() {
@@ -39,7 +42,10 @@ public class RefreshInbox extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... voids) {
 
         RestAPI restAPI = new RestAPI(user, context);
-        restAPI.refresh(REFRESH_TYPE);
+        if (refreshType.equals(Constants.REFRESH_TYPE_REFRESH))
+            result = restAPI.refresh(folder);
+        else if (refreshType.equals(Constants.REFRESH_TYPE_LOAD_MORE))
+            result = restAPI.loadMore(folder, 15);
         refreshedEmails = restAPI.getNewEmails();
 
         return null;
@@ -49,15 +55,9 @@ public class RefreshInbox extends AsyncTask<Void, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
 
-        /*
-        *This should be changed! Right now every webmail that is refreshed is considered as a new refresh.
-        * Even ones that fail. I need a way to check if we were able to return successfully, and then save the last refreshed.
-         */
-        boolean complete = false;
-        if (refreshedEmails != null) {
+        if (result)
             UserSettings.setLastRefreshed(context, "" + System.currentTimeMillis());
-            complete = true;
-        }
-        listener.onPostRefresh(complete, refreshedEmails, user);
+
+        listener.onPostRefresh(result, refreshedEmails, user);
     }
 }

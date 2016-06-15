@@ -25,4 +25,8 @@ public class Constants {
     public static String NOTIFICATION_SOUND = "NOTIFICATION_SOUND";
 
     public static String BROADCAST_REFRESH_ADAPTERS = "BROADCAST_REFRESH_ADAPTERS";
+
+    public static String REFRESH_TYPE_LOAD_MORE = "REFRESH_TYPE_LOAD_MORE";
+    public static String REFRESH_TYPE_REFRESH = "REFRESH_TYPE_REFRESH";
+
 }

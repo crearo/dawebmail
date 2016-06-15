@@ -12,4 +12,9 @@
         android:orderInCategory="10"
         android:title="Log Out"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_loadmore"
+        android:orderInCategory="10"
+        android:title="Load More"
+        app:showAsAction="never" />
 </menu>

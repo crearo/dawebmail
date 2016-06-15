@@ -82,7 +82,7 @@ public class SentFragment extends Fragment implements RefreshInboxListener, Dele
         setupSwipeRefreshLayout();
         setupSearchBar();
 
-        new RefreshInbox(currentUser, getActivity(), SentFragment.this, Constants.SENT).execute();
+        new RefreshInbox(currentUser, getActivity(), SentFragment.this, Constants.SENT, Constants.REFRESH_TYPE_REFRESH).execute();
 
         swipeRefreshLayout.setVisibility(View.GONE);
         return rootView;
@@ -151,7 +151,7 @@ public class SentFragment extends Fragment implements RefreshInboxListener, Dele
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new RefreshInbox(currentUser, getActivity(), SentFragment.this, Constants.SENT).execute();
+                new RefreshInbox(currentUser, getActivity(), SentFragment.this, Constants.SENT, Constants.REFRESH_TYPE_REFRESH).execute();
             }
         });
 

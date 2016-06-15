@@ -23,12 +23,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
+
 /**
  * Created by rish on 7/1/16.
  */
 public class RestAPI {
 
-    private static final String LOGTAG = "RESTAPI";
+    private static final String TAG = "RESTAPI";
 
     private static final int TIME_OUT = 10 * 1000;
     private User user;
@@ -44,15 +45,12 @@ public class RestAPI {
         return makeLoginRequest();
     }
 
-    public boolean refresh(String TYPE) {
-        if (TYPE.equals(Constants.INBOX)) {
-            return handleRefreshRequest(Constants.INBOX);
-        } else if (TYPE.equals(Constants.SENT)) {
-            return handleRefreshRequest(Constants.SENT);
-        } else if (TYPE.equals(Constants.TRASH)) {
-            return handleRefreshRequest(Constants.TRASH);
-        }
-        return false;
+    public boolean refresh(String folder) {
+        return handleRefreshAndLoadMoreRequest(folder, Constants.REFRESH_TYPE_REFRESH);
+    }
+
+    public boolean loadMore(String folder, int lengthToLoad) {
+        return handleRefreshAndLoadMoreRequest(folder, Constants.REFRESH_TYPE_LOAD_MORE, lengthToLoad);
     }
 
     public EmailMessage fetchEmailContent(EmailMessage emailMessage) {
@@ -71,9 +69,9 @@ public class RestAPI {
             conn.setReadTimeout(TIME_OUT);
             conn.connect();
 
-            Log.d(LOGTAG, "Response Code: " + conn.getResponseCode());
+            Log.d(TAG, "Response Code: " + conn.getResponseCode());
             if (conn.getResponseCode() == 200) {
-                Log.d(LOGTAG, "Authenticated User Successfully");
+                Log.d(TAG, "Authenticated User Successfully");
                 InputStream in = new BufferedInputStream(conn.getInputStream());
                 BufferedReader r = new BufferedReader(new InputStreamReader(in));
                 StringBuilder total = new StringBuilder();
@@ -81,11 +79,11 @@ public class RestAPI {
                 while ((line = r.readLine()) != null) {
                     total.append(line);
                 }
-                Log.d(LOGTAG, "" + total.toString());
+                Log.d(TAG, "" + total.toString());
                 in.close();
                 return true;
             } else {
-                Log.d(LOGTAG, "Unable to Authenticate User");
+                Log.d(TAG, "Unable to Authenticate User");
                 return false;
             }
         } catch (Exception e) {
@@ -94,15 +92,15 @@ public class RestAPI {
         }
     }
 
-    private boolean handleRefreshRequest(String REFRESH_TYPE) {
-        allNewEmails = new ArrayList<>();
+    private ArrayList<EmailMessage> fetchMailsOfFolder(String folder) {
+        ArrayList<EmailMessage> parsedMails = new ArrayList<>();
         URL url = null;
         try {
-            if (REFRESH_TYPE.equals(Constants.INBOX))
+            if (folder.equals(Constants.INBOX))
                 url = new URL(context.getString(R.string.rest_url_inbox));
-            else if (REFRESH_TYPE.equals(Constants.SENT))
+            else if (folder.equals(Constants.SENT))
                 url = new URL(context.getString(R.string.rest_url_sent));
-            else if (REFRESH_TYPE.equals(Constants.TRASH))
+            else if (folder.equals(Constants.TRASH))
                 url = new URL(context.getString(R.string.rest_url_trash));
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -158,35 +156,85 @@ public class RestAPI {
                         }
                     }
 
-                    // TODO : Go through all webmails and delete the ones that dont exist in the inbox anymore
-
-                    if (REFRESH_TYPE.equals(Constants.INBOX)) {
-                        EmailMessage latestWebmail = EmailMessage.getLatestWebmailOfUser(user);
-                        if (latestWebmail != null && contentID == latestWebmail.contentID) {
-                            break;
-                        } else {
-                            EmailMessage emailMessage = EmailMessage.getEmailMessageFromContentID(contentID);
-                            if (emailMessage != null) {
-                                EmailMessage.updateExistingEmailMessage(user, emailMessage, contentID, fromName, fromAddress, subject, dateInMillis, readUnread, totalAttachments, important);
-                            } else {
-                                emailMessage = EmailMessage.createNewEmailMessage(user, contentID, fromName, fromAddress, subject, dateInMillis, readUnread, totalAttachments, important);
-                                allNewEmails.add(emailMessage);
-                            }
-                        }
-                    } else {
-                        EmailMessage emailMessage = new EmailMessage(user.username, contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "", totalAttachments, important);
-                        allNewEmails.add(emailMessage);
-                    }
+                    EmailMessage emailMessage = new EmailMessage(user.username, contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "", totalAttachments, important);
+                    parsedMails.add(emailMessage);
                 }
-                return true;
+                return parsedMails;
             } else {
-                Log.d(LOGTAG, "Unable to Authenticate User");
-                return false;
+                Log.d(TAG, "Unable to Authenticate User");
+                return parsedMails;
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return parsedMails;
         }
+    }
+
+    private boolean handleRefreshAndLoadMoreRequest(String folder, String refreshType, int lengthToLoad) {
+        allNewEmails = new ArrayList<>();
+
+        if (folder.equals(Constants.INBOX)) {
+            /**
+             * Traverse through all stored emails, and delete those that aren't there in fetchedList
+             */
+            ArrayList<EmailMessage> fetchedEmails = fetchMailsOfFolder(folder);
+            for (EmailMessage storedEmail : EmailMessage.getAllMailsOfUser(user)) {
+                boolean storedEmailFound = false;
+                for (EmailMessage fetchedEmail : fetchedEmails) {
+                    if (fetchedEmail.contentID == storedEmail.contentID) {
+                        storedEmailFound = true;
+                        break;
+                    }
+                }
+                if (!storedEmailFound)
+                    storedEmail.delete();
+            }
+
+            EmailMessage lastWebmail = EmailMessage.getLastWebmailOfUser(user);
+            EmailMessage latestWebmail = EmailMessage.getLatestWebmailOfUser(user);
+            int indexOfLastEmailInFetchedList = -1;
+            int indexOfLatestEmailInFetchedList = -1;
+
+            /**
+             * Find index of latest and last webmails in the fetched list
+             * All emails above latestEmails are ones to be saved in refresh
+             * lengthToLoad emails below lastEmail are ones to be saved in loadmore
+             */
+            for (int i = 0; i < fetchedEmails.size(); i++) {
+                if (fetchedEmails.get(i).contentID == lastWebmail.contentID)
+                    indexOfLastEmailInFetchedList = i;
+                if (fetchedEmails.get(i).contentID == latestWebmail.contentID)
+                    indexOfLatestEmailInFetchedList = i;
+                if (indexOfLastEmailInFetchedList != -1 && indexOfLatestEmailInFetchedList != -1)
+                    break;
+            }
+
+            /**
+             * Two cases : Refresh or Load More
+             */
+            if (refreshType.equals(Constants.REFRESH_TYPE_REFRESH)) {
+                for (int m = 0; m < indexOfLatestEmailInFetchedList; m++) {
+                    EmailMessage fetchedEmail = fetchedEmails.get(m);
+                    EmailMessage emailMessage = EmailMessage.createNewEmailMessage(user, fetchedEmail.contentID, fetchedEmail.fromName, fetchedEmail.fromAddress, fetchedEmail.subject, fetchedEmail.dateInMillis, fetchedEmail.readUnread, fetchedEmail.totalAttachments, fetchedEmail.important);
+                    allNewEmails.add(emailMessage);
+                }
+            } else if (refreshType.equals(Constants.REFRESH_TYPE_LOAD_MORE)) {
+                /* Check if fetchedEmailSize is big enough to load lengthToLoad */
+                lengthToLoad = (lengthToLoad + indexOfLastEmailInFetchedList) <= (fetchedEmails.size()) ? (lengthToLoad) : (fetchedEmails.size() - indexOfLastEmailInFetchedList);
+                for (int m = indexOfLastEmailInFetchedList; m < lengthToLoad; m++) {
+                    EmailMessage fetchedEmail = fetchedEmails.get(m);
+                    EmailMessage emailMessage = EmailMessage.createNewEmailMessage(user, fetchedEmail.contentID, fetchedEmail.fromName, fetchedEmail.fromAddress, fetchedEmail.subject, fetchedEmail.dateInMillis, fetchedEmail.readUnread, fetchedEmail.totalAttachments, fetchedEmail.important);
+                    allNewEmails.add(emailMessage);
+                }
+            }
+        } else {
+            allNewEmails.addAll(fetchMailsOfFolder(folder));
+        }
+        return false;
+    }
+
+    private boolean handleRefreshAndLoadMoreRequest(String folder, String refreshType) {
+        return handleRefreshAndLoadMoreRequest(folder, refreshType, Integer.MAX_VALUE);
     }
 
     private EmailMessage makeFetchRequest(EmailMessage emailMessage) {
@@ -220,7 +268,7 @@ public class RestAPI {
 
                 return emailMessage;
             } else {
-                Log.d(LOGTAG, "Unable to Authenticate User");
+                Log.d(TAG, "Unable to Authenticate User");
                 return null;
             }
         } catch (Exception e) {

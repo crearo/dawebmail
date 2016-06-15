@@ -89,7 +89,7 @@ public class TrashFragment extends Fragment implements RefreshInboxListener, Del
         setupSwipeRefreshLayout();
         setupSearchBar();
 
-        new RefreshInbox(currentUser, getActivity(), TrashFragment.this, Constants.TRASH).execute();
+        new RefreshInbox(currentUser, getActivity(), TrashFragment.this, Constants.TRASH, Constants.REFRESH_TYPE_REFRESH).execute();
 
         swipeRefreshLayout.setVisibility(View.GONE);
         return rootView;
@@ -158,7 +158,7 @@ public class TrashFragment extends Fragment implements RefreshInboxListener, Del
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new RefreshInbox(currentUser, getActivity(), TrashFragment.this, Constants.TRASH).execute();
+                new RefreshInbox(currentUser, getActivity(), TrashFragment.this, Constants.TRASH, Constants.REFRESH_TYPE_REFRESH).execute();
             }
         });
 

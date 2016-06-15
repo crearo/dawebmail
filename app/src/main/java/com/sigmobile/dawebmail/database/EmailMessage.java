@@ -58,14 +58,25 @@ public class EmailMessage extends SugarRecord<EmailMessage> implements Serializa
         return null;
     }
 
+    public static EmailMessage getLastWebmailOfUser(User user) {
+        List<EmailMessage> emailMessages = getAllMailsOfUser(user);
+        if (emailMessages.size() > 0)
+            return emailMessages.get(0);
+        return null;
+    }
+
     public static EmailMessage getEmailMessageFromContentID(int contentID) {
         return Select.from(EmailMessage.class).where(Condition.prop(StringUtil.toSQLName("contentID")).eq(contentID)).first();
     }
 
     public static EmailMessage createNewEmailMessage(User user, int contentID, String fromName, String fromAddress, String subject, String dateInMillis, String readUnread, int totalAttachments, boolean important) {
-        EmailMessage emailMessage = new EmailMessage(user.username, contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "", totalAttachments, important);
-        emailMessage.save();
-        return emailMessage;
+        /* Check if webmail of that content ID exists - if it does, don't save */
+        if (getEmailMessageFromContentID(contentID) == null) {
+            EmailMessage emailMessage = new EmailMessage(user.username, contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "", totalAttachments, important);
+            emailMessage.save();
+            return emailMessage;
+        }
+        return null;
     }
 
     public static void updateExistingEmailMessage(User user, EmailMessage emailMessage, int contentID, String fromName, String fromAddress, String subject, String dateInMillis, String readUnread, int totalAttachments, boolean important) {
