@@ -59,7 +59,7 @@ public class SentFragment extends Fragment implements RefreshInboxListener, Dele
     SwipeRefreshLayout swipeRefreshLayout;
     @Bind(R.id.searchET)
     EditText searchET;
-    @Bind(R.id.inbox_delete_fab)
+    @Bind(R.id.inbox_fab_menu)
     FloatingActionButton fabDelete;
 
     private MailAdapter mailAdapter;

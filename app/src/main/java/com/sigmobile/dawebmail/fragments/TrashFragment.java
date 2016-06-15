@@ -63,7 +63,7 @@ public class TrashFragment extends Fragment implements RefreshInboxListener, Del
     @Bind(R.id.searchET)
     EditText searchET;
 
-    @Bind(R.id.inbox_delete_fab)
+    @Bind(R.id.inbox_fab_menu)
     FloatingActionButton fabDelete;
 
     MailAdapter mailAdapter;

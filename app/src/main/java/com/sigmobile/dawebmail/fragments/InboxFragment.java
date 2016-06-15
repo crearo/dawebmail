@@ -27,11 +27,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.sigmobile.dawebmail.ComposeActivity;
 import com.sigmobile.dawebmail.MainActivity;
 import com.sigmobile.dawebmail.R;
 import com.sigmobile.dawebmail.adapters.MailAdapter;
-import com.sigmobile.dawebmail.asyncTasks.DeleteMail;
 import com.sigmobile.dawebmail.asyncTasks.DeleteMailListener;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInbox;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInboxListener;
@@ -63,8 +63,12 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
     SwipeRefreshLayout swipeRefreshLayout;
     @Bind(R.id.searchET)
     EditText searchET;
-    @Bind(R.id.inbox_delete_fab)
-    FloatingActionButton fabDelete;
+    @Bind(R.id.inbox_fab_menu)
+    FloatingActionsMenu fabMenu;
+    com.getbase.floatingactionbutton.FloatingActionButton fabTrash;
+    com.getbase.floatingactionbutton.FloatingActionButton fabDelete;
+    com.getbase.floatingactionbutton.FloatingActionButton fabMarkRead;
+    com.getbase.floatingactionbutton.FloatingActionButton fabMarkUnread;
     @Bind(R.id.inbox_send_fab)
     FloatingActionButton fabSend;
 
@@ -85,6 +89,11 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_inbox, container, false);
         ButterKnife.bind(InboxFragment.this, rootView);
+
+        fabTrash = ButterKnife.findById(fabMenu, R.id.fab_action_trash);
+        fabDelete = ButterKnife.findById(fabMenu, R.id.fab_action_delete);
+        fabMarkRead = ButterKnife.findById(fabMenu, R.id.fab_action_mark_read);
+        fabMarkUnread = ButterKnife.findById(fabMenu, R.id.fab_action_mark_unread);
 
         currentUser = UserSettings.getCurrentUser(getActivity());
         progressDialog = new ProgressDialog(getActivity());
@@ -179,7 +188,7 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
 
     private void setupDeleteAndComposeFABs(boolean isDeleteVisible) {
         if (!isDeleteVisible) {
-            Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_down);
+            Animation animation = AnimationUtils.loadAnimation(getActivity(), android.support.design.R.anim.abc_slide_out_bottom);
             animation.setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
@@ -188,8 +197,8 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
-                    fabDelete.setVisibility(View.GONE);
-                    fabSend.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.slide_up));
+                    fabMenu.setVisibility(View.GONE);
+                    fabSend.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.support.design.R.anim.abc_slide_in_bottom));
                     fabSend.setVisibility(View.VISIBLE);
                 }
 
@@ -198,10 +207,30 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
 
                 }
             });
-            fabDelete.startAnimation(animation);
+            fabMenu.startAnimation(animation);
         } else {
-            fabDelete.setVisibility(View.VISIBLE);
-            fabSend.setVisibility(View.GONE);
+            if (fabSend.getVisibility() == View.VISIBLE) {
+                Animation animation = AnimationUtils.loadAnimation(getActivity(), android.support.design.R.anim.abc_slide_out_bottom);
+                animation.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        fabSend.setVisibility(View.GONE);
+                        fabMenu.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.support.design.R.anim.abc_slide_in_bottom));
+                        fabMenu.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+                fabSend.startAnimation(animation);
+            }
         }
     }
 
@@ -302,7 +331,7 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
 
         progressDialog.dismiss();
         refreshAdapter();
-        fabDelete.setVisibility(View.GONE);
+        fabMenu.setVisibility(View.GONE);
     }
 
     public void refreshAdapter() {
@@ -324,12 +353,9 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Del
         else
             setupDeleteAndComposeFABs(true);
 
-        fabDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_deleting), Snackbar.LENGTH_LONG).show();
-                new DeleteMail(currentUser, getActivity(), InboxFragment.this, emailsToDelete).execute();
-            }
-        });
+        fabMenu.setEnabled(true);
+//        Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_deleting), Snackbar.LENGTH_LONG).show();
+//        new DeleteMail(currentUser, getActivity(), InboxFragment.this, emailsToDelete).execute();
+
     }
 }

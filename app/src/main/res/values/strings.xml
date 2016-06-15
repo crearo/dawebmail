@@ -78,5 +78,10 @@
     <string name="drawer_feedback">Feedback</string>
     <string name="drawer_new_account">+ Account</string>
 
+    <!-- FloatingActionButtons -->
+    <string name="fab_sent_to_trash">Trash</string>
+    <string name="fab_sent_to_delete">Delete</string>
+    <string name="fab_sent_to_mark_read">Mark Read</string>
+    <string name="fab_sent_to_mark_unread">Mark Unread</string>
 
 </resources>

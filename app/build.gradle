@@ -37,6 +37,7 @@ dependencies {
     compile('com.mikepenz:materialdrawer:5.2.1@aar') {
         transitive = true
     }
+    compile 'com.getbase:floatingactionbutton:1.10.1'
     compile files('libs/WebmailAPI.jar')
     compile files('libs/ksoap2-android-assembly-3.1.1-jar-with-dependencies.jar')
     compile files('libs/gson-1.1.jar')

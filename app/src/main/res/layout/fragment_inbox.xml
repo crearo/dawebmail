@@ -41,7 +41,6 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-
     <EditText
         android:id="@+id/searchET"
         android:layout_width="wrap_content"
@@ -55,16 +54,16 @@
         android:hint="Search by sender, content, dateInMillis"
         android:visibility="gone" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/inbox_delete_fab"
+    <include
+        android:id="@+id/inbox_fab_menu"
+        layout="@layout/element_floating_action_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_margin="24dp"
-        android:elevation="4dp"
-        android:src="@drawable/ic_action_delete" />
+        android:layout_margin="16dp"
+        android:elevation="4dp" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/inbox_send_fab"
