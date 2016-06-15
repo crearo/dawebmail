@@ -8,8 +8,8 @@
     android:layout_alignParentRight="true"
     android:layout_alignParentTop="true"
     fab:fab_addButtonColorNormal="@color/colorAccent"
-    fab:fab_addButtonColorPressed="@color/white_pressed"
-    fab:fab_addButtonPlusIconColor="@color/white"
+    fab:fab_addButtonColorPressed="@color/fabBackgroundPressed"
+    fab:fab_addButtonPlusIconColor="@color/fabTextColor"
     fab:fab_addButtonSize="normal"
     fab:fab_addButtonStrokeVisible="true"
     fab:fab_expandDirection="up"
@@ -20,8 +20,8 @@
         android:id="@+id/fab_action_mark_unread"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        fab:fab_colorNormal="@color/white"
-        fab:fab_colorPressed="@color/white_pressed"
+        fab:fab_colorNormal="@color/fabBackground"
+        fab:fab_colorPressed="@color/fabBackgroundPressed"
         fab:fab_icon="@drawable/fab_unread"
         fab:fab_size="normal"
         fab:fab_title="@string/fab_sent_to_mark_unread" />
@@ -31,8 +31,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         fab:fab_addButtonSize="normal"
-        fab:fab_colorNormal="@color/white"
-        fab:fab_colorPressed="@color/white_pressed"
+        fab:fab_colorNormal="@color/fabBackground"
+        fab:fab_colorPressed="@color/fabBackgroundPressed"
         fab:fab_icon="@drawable/fab_read"
         fab:fab_title="@string/fab_sent_to_mark_read" />
 
@@ -41,8 +41,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         fab:fab_addButtonSize="normal"
-        fab:fab_colorNormal="@color/white"
-        fab:fab_colorPressed="@color/white_pressed"
+        fab:fab_colorNormal="@color/fabBackground"
+        fab:fab_colorPressed="@color/fabBackgroundPressed"
         fab:fab_icon="@drawable/fab_delete"
         fab:fab_title="@string/fab_sent_to_delete" />
 
@@ -51,8 +51,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         fab:fab_addButtonSize="normal"
-        fab:fab_colorNormal="@color/white"
-        fab:fab_colorPressed="@color/white_pressed"
+        fab:fab_colorNormal="@color/fabBackground"
+        fab:fab_colorPressed="@color/fabBackgroundPressed"
         fab:fab_icon="@drawable/fab_trash"
         fab:fab_title="@string/fab_sent_to_trash" />
 
