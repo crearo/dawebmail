@@ -69,7 +69,7 @@ public class EmailMessage extends SugarRecord<EmailMessage> implements Serializa
         return Select.from(EmailMessage.class).where(Condition.prop(StringUtil.toSQLName("contentID")).eq(contentID)).first();
     }
 
-    public static EmailMessage createNewEmailMessage(User user, int contentID, String fromName, String fromAddress, String subject, String dateInMillis, String readUnread, int totalAttachments, boolean important) {
+    public static EmailMessage saveNewEmailMessage(User user, int contentID, String fromName, String fromAddress, String subject, String dateInMillis, String readUnread, int totalAttachments, boolean important) {
         /* Check if webmail of that content ID exists - if it does, don't save */
         if (getEmailMessageFromContentID(contentID) == null) {
             EmailMessage emailMessage = new EmailMessage(user.username, contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "", totalAttachments, important);
@@ -81,7 +81,6 @@ public class EmailMessage extends SugarRecord<EmailMessage> implements Serializa
 
     public static void updateExistingEmailMessage(User user, EmailMessage emailMessage, int contentID, String fromName, String fromAddress, String subject, String dateInMillis, String readUnread, int totalAttachments, boolean important) {
         emailMessage.userName = user.username;
-        emailMessage.contentID = contentID;
         emailMessage.fromName = fromName;
         emailMessage.fromAddress = fromAddress;
         emailMessage.subject = subject;

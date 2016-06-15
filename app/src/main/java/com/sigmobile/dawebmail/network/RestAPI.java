@@ -186,14 +186,17 @@ public class RestAPI {
                         break;
                     }
                 }
-                if (!storedEmailFound)
+                if (!storedEmailFound) {
+                    Log.d(TAG, "Not found, deleted");
                     storedEmail.delete();
+                }
             }
 
             EmailMessage lastWebmail = EmailMessage.getLastWebmailOfUser(user);
             EmailMessage latestWebmail = EmailMessage.getLatestWebmailOfUser(user);
-            int indexOfLastEmailInFetchedList = -1;
-            int indexOfLatestEmailInFetchedList = -1;
+
+            int indexOfLastEmailInFetchedList = 0;
+            int indexOfLatestEmailInFetchedList = 0;
 
             /**
              * Find index of latest and last webmails in the fetched list
@@ -201,29 +204,33 @@ public class RestAPI {
              * lengthToLoad emails below lastEmail are ones to be saved in loadmore
              */
             for (int i = 0; i < fetchedEmails.size(); i++) {
-                if (fetchedEmails.get(i).contentID == lastWebmail.contentID)
-                    indexOfLastEmailInFetchedList = i;
-                if (fetchedEmails.get(i).contentID == latestWebmail.contentID)
-                    indexOfLatestEmailInFetchedList = i;
-                if (indexOfLastEmailInFetchedList != -1 && indexOfLatestEmailInFetchedList != -1)
-                    break;
+                if (lastWebmail != null)
+                    if (fetchedEmails.get(i).contentID == lastWebmail.contentID)
+                        indexOfLastEmailInFetchedList = i;
+                if (latestWebmail != null)
+                    if (fetchedEmails.get(i).contentID == latestWebmail.contentID)
+                        indexOfLatestEmailInFetchedList = i;
             }
+
+            Log.d(TAG, "indexOfLastEmailInFetchedList" + indexOfLastEmailInFetchedList + " indexOfLatestEmailInFetchedList " + indexOfLatestEmailInFetchedList);
 
             /**
              * Two cases : Refresh or Load More
              */
             if (refreshType.equals(Constants.REFRESH_TYPE_REFRESH)) {
+                Log.d(TAG, "Type refresh");
                 for (int m = 0; m < indexOfLatestEmailInFetchedList; m++) {
                     EmailMessage fetchedEmail = fetchedEmails.get(m);
-                    EmailMessage emailMessage = EmailMessage.createNewEmailMessage(user, fetchedEmail.contentID, fetchedEmail.fromName, fetchedEmail.fromAddress, fetchedEmail.subject, fetchedEmail.dateInMillis, fetchedEmail.readUnread, fetchedEmail.totalAttachments, fetchedEmail.important);
+                    EmailMessage emailMessage = EmailMessage.saveNewEmailMessage(user, fetchedEmail.contentID, fetchedEmail.fromName, fetchedEmail.fromAddress, fetchedEmail.subject, fetchedEmail.dateInMillis, fetchedEmail.readUnread, fetchedEmail.totalAttachments, fetchedEmail.important);
                     allNewEmails.add(emailMessage);
                 }
             } else if (refreshType.equals(Constants.REFRESH_TYPE_LOAD_MORE)) {
                 /* Check if fetchedEmailSize is big enough to load lengthToLoad */
                 lengthToLoad = (lengthToLoad + indexOfLastEmailInFetchedList) <= (fetchedEmails.size()) ? (lengthToLoad) : (fetchedEmails.size() - indexOfLastEmailInFetchedList);
-                for (int m = indexOfLastEmailInFetchedList; m < lengthToLoad; m++) {
+                Log.d(TAG, "Length to load is " + lengthToLoad + " starting from  " + indexOfLastEmailInFetchedList);
+                for (int m = indexOfLastEmailInFetchedList; m < indexOfLastEmailInFetchedList + lengthToLoad; m++) {
                     EmailMessage fetchedEmail = fetchedEmails.get(m);
-                    EmailMessage emailMessage = EmailMessage.createNewEmailMessage(user, fetchedEmail.contentID, fetchedEmail.fromName, fetchedEmail.fromAddress, fetchedEmail.subject, fetchedEmail.dateInMillis, fetchedEmail.readUnread, fetchedEmail.totalAttachments, fetchedEmail.important);
+                    EmailMessage emailMessage = EmailMessage.saveNewEmailMessage(user, fetchedEmail.contentID, fetchedEmail.fromName, fetchedEmail.fromAddress, fetchedEmail.subject, fetchedEmail.dateInMillis, fetchedEmail.readUnread, fetchedEmail.totalAttachments, fetchedEmail.important);
                     allNewEmails.add(emailMessage);
                 }
             }
