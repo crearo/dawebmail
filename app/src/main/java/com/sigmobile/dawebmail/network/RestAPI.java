@@ -2,7 +2,6 @@ package com.sigmobile.dawebmail.network;
 
 import android.content.Context;
 import android.util.Base64;
-import android.util.Log;
 
 import com.sigmobile.dawebmail.R;
 import com.sigmobile.dawebmail.database.EmailMessage;
@@ -69,9 +68,7 @@ public class RestAPI {
             conn.setReadTimeout(TIME_OUT);
             conn.connect();
 
-            Log.d(TAG, "Response Code: " + conn.getResponseCode());
             if (conn.getResponseCode() == 200) {
-                Log.d(TAG, "Authenticated User Successfully");
                 InputStream in = new BufferedInputStream(conn.getInputStream());
                 BufferedReader r = new BufferedReader(new InputStreamReader(in));
                 StringBuilder total = new StringBuilder();
@@ -79,11 +76,9 @@ public class RestAPI {
                 while ((line = r.readLine()) != null) {
                     total.append(line);
                 }
-                Log.d(TAG, "" + total.toString());
                 in.close();
                 return true;
             } else {
-                Log.d(TAG, "Unable to Authenticate User");
                 return false;
             }
         } catch (Exception e) {
@@ -161,7 +156,6 @@ public class RestAPI {
                 }
                 return parsedMails;
             } else {
-                Log.d(TAG, "Unable to Authenticate User");
                 return parsedMails;
             }
         } catch (Exception e) {
@@ -187,7 +181,6 @@ public class RestAPI {
                     }
                 }
                 if (!storedEmailFound) {
-                    Log.d(TAG, "Not found, deleted");
                     storedEmail.delete();
                 }
             }
@@ -212,13 +205,10 @@ public class RestAPI {
                         indexOfLatestEmailInFetchedList = i;
             }
 
-            Log.d(TAG, "indexOfLastEmailInFetchedList" + indexOfLastEmailInFetchedList + " indexOfLatestEmailInFetchedList " + indexOfLatestEmailInFetchedList);
-
             /**
              * Two cases : Refresh or Load More
              */
             if (refreshType.equals(Constants.REFRESH_TYPE_REFRESH)) {
-                Log.d(TAG, "Type refresh");
                 for (int m = 0; m < indexOfLatestEmailInFetchedList; m++) {
                     EmailMessage fetchedEmail = fetchedEmails.get(m);
                     EmailMessage emailMessage = EmailMessage.saveNewEmailMessage(user, fetchedEmail.contentID, fetchedEmail.fromName, fetchedEmail.fromAddress, fetchedEmail.subject, fetchedEmail.dateInMillis, fetchedEmail.readUnread, fetchedEmail.totalAttachments, fetchedEmail.important);
@@ -227,7 +217,6 @@ public class RestAPI {
             } else if (refreshType.equals(Constants.REFRESH_TYPE_LOAD_MORE)) {
                 /* Check if fetchedEmailSize is big enough to load lengthToLoad */
                 lengthToLoad = (lengthToLoad + indexOfLastEmailInFetchedList) <= (fetchedEmails.size()) ? (lengthToLoad) : (fetchedEmails.size() - indexOfLastEmailInFetchedList);
-                Log.d(TAG, "Length to load is " + lengthToLoad + " starting from  " + indexOfLastEmailInFetchedList);
                 for (int m = indexOfLastEmailInFetchedList; m < indexOfLastEmailInFetchedList + lengthToLoad; m++) {
                     EmailMessage fetchedEmail = fetchedEmails.get(m);
                     EmailMessage emailMessage = EmailMessage.saveNewEmailMessage(user, fetchedEmail.contentID, fetchedEmail.fromName, fetchedEmail.fromAddress, fetchedEmail.subject, fetchedEmail.dateInMillis, fetchedEmail.readUnread, fetchedEmail.totalAttachments, fetchedEmail.important);
@@ -275,7 +264,6 @@ public class RestAPI {
 
                 return emailMessage;
             } else {
-                Log.d(TAG, "Unable to Authenticate User");
                 return null;
             }
         } catch (Exception e) {
