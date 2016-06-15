@@ -359,7 +359,6 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
 
         progressDialog.dismiss();
         refreshAdapter();
-        fabMenu.setVisibility(View.GONE);
     }
 
     public void refreshAdapter() {

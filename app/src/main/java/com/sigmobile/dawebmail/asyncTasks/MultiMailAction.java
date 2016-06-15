@@ -7,6 +7,7 @@ import com.sigmobile.dawebmail.R;
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
 import com.sigmobile.dawebmail.network.SoapAPI;
+import com.sigmobile.dawebmail.utils.Constants;
 
 import java.util.ArrayList;
 
@@ -59,8 +60,19 @@ public class MultiMailAction extends AsyncTask<Void, Void, Void> {
          */
         if (result) {
             if (msgAction.equals(context.getString(R.string.msg_action_delete)) || msgAction.equals(context.getString(R.string.msg_action_trash)))
-                for (EmailMessage emailMessage : emailsForMultiAction)
+                for (EmailMessage emailMessage : emailsForMultiAction) {
                     emailMessage.delete();
+                }
+            if (msgAction.equals(context.getString(R.string.msg_action_read)))
+                for (EmailMessage emailMessage : emailsForMultiAction) {
+                    emailMessage.readUnread = Constants.WEBMAIL_READ;
+                    emailMessage.save();
+                }
+            if (msgAction.equals(context.getString(R.string.msg_action_unread)))
+                for (EmailMessage emailMessage : emailsForMultiAction) {
+                    emailMessage.readUnread = Constants.WEBMAIL_UNREAD;
+                    emailMessage.save();
+                }
         }
         multiMailActionListener.onPostMultiMailAction(result, msgAction);
     }

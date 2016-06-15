@@ -51,15 +51,15 @@ import butterknife.ButterKnife;
 
 public class SentFragment extends Fragment implements RefreshInboxListener, MultiMailActionListener, MailAdapter.MultiMailActionSelectedListener {
 
-    @Bind(R.id.inbox_empty_view)
+    @Bind(R.id.sent_empty_view)
     LinearLayout emptyLayout;
-    @Bind(R.id.inbox_recycleView)
+    @Bind(R.id.sent_recycleView)
     RecyclerView recyclerView;
     @Bind(R.id.swipeContainer)
     SwipeRefreshLayout swipeRefreshLayout;
     @Bind(R.id.searchET)
     EditText searchET;
-    @Bind(R.id.inbox_fab_menu)
+    @Bind(R.id.sent_delete_fab)
     FloatingActionButton fabDelete;
 
     private MailAdapter mailAdapter;
@@ -72,7 +72,7 @@ public class SentFragment extends Fragment implements RefreshInboxListener, Mult
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_inbox, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_sent, container, false);
         ButterKnife.bind(SentFragment.this, rootView);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.sent));
 
@@ -181,8 +181,8 @@ public class SentFragment extends Fragment implements RefreshInboxListener, Mult
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_search) {
-            Animation slide_down = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_down);
-            Animation slide_up = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_up);
+            Animation slide_down = AnimationUtils.loadAnimation(getActivity(), android.support.design.R.anim.abc_slide_out_bottom);
+            Animation slide_up = AnimationUtils.loadAnimation(getActivity(), android.support.design.R.anim.abc_slide_in_bottom);
 
             if (searchET.getVisibility() == View.GONE) {
                 searchET.setVisibility(View.VISIBLE);

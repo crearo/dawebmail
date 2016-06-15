@@ -51,19 +51,15 @@ import butterknife.ButterKnife;
 
 public class TrashFragment extends Fragment implements RefreshInboxListener, MultiMailActionListener, MailAdapter.MultiMailActionSelectedListener {
 
-    @Bind(R.id.inbox_empty_view)
+    @Bind(R.id.sent_empty_view)
     LinearLayout emptyLayout;
-
-    @Bind(R.id.inbox_recycleView)
+    @Bind(R.id.sent_recycleView)
     RecyclerView recyclerView;
-
     @Bind(R.id.swipeContainer)
     SwipeRefreshLayout swipeRefreshLayout;
-
     @Bind(R.id.searchET)
     EditText searchET;
-
-    @Bind(R.id.inbox_fab_menu)
+    @Bind(R.id.sent_delete_fab)
     FloatingActionButton fabDelete;
 
     MailAdapter mailAdapter;
@@ -79,7 +75,7 @@ public class TrashFragment extends Fragment implements RefreshInboxListener, Mul
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_inbox, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_sent, container, false);
         ButterKnife.bind(TrashFragment.this, rootView);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.trash));
 
