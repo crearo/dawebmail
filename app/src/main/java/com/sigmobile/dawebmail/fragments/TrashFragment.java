@@ -13,6 +13,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,7 +27,6 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 
 import com.sigmobile.dawebmail.MainActivity;
 import com.sigmobile.dawebmail.R;
@@ -52,8 +54,8 @@ public class TrashFragment extends Fragment implements RefreshInboxListener, Del
     @Bind(R.id.inbox_empty_view)
     LinearLayout emptyLayout;
 
-    @Bind(R.id.inbox_listView)
-    ListView listview;
+    @Bind(R.id.inbox_recycleView)
+    RecyclerView recyclerView;
 
     @Bind(R.id.swipeContainer)
     SwipeRefreshLayout swipeRefreshLayout;
@@ -107,7 +109,10 @@ public class TrashFragment extends Fragment implements RefreshInboxListener, Del
     private void setupMailAdapter() {
         allEmails = new ArrayList<>();
         mailAdapter = new MailAdapter(allEmails, getActivity(), this, Constants.TRASH);
-        listview.setAdapter(mailAdapter);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(mailAdapter);
     }
 
     private void setupSearchBar() {
@@ -139,7 +144,7 @@ public class TrashFragment extends Fragment implements RefreshInboxListener, Del
                         }
                     }
                     mailAdapter = new MailAdapter(allEmails, getActivity(), TrashFragment.this, Constants.TRASH);
-                    listview.setAdapter(mailAdapter);
+                    recyclerView.setAdapter(mailAdapter);
                     System.out.println("SEARCHED RESULTS COUNT = " + mailAdapter.getCount());
                 } else {
                     refreshAdapter();
@@ -265,7 +270,10 @@ public class TrashFragment extends Fragment implements RefreshInboxListener, Del
 
     public void refreshAdapter() {
         mailAdapter = new MailAdapter(allEmails, getActivity(), this, Constants.TRASH);
-        listview.setAdapter(mailAdapter);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(mailAdapter);
     }
 
     public void logout() {

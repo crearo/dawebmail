@@ -10,12 +10,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ListView
-            android:id="@+id/inbox_listView"
-            style="@style/Widget.AppCompat.ListView"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/inbox_recycleView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-             />
+            android:scrollbars="vertical" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
