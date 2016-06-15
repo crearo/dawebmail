@@ -6,7 +6,6 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +49,6 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.ViewHolder> {
     public MailAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (context != null)
             this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        Log.d(TAG, "Context is null? " + (context == null));
         View view = inflater.inflate(R.layout.element_email, parent, false);
         return new ViewHolder(view);
     }

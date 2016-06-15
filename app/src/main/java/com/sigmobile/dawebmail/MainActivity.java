@@ -42,6 +42,8 @@ import me.drakeet.materialdialog.MaterialDialog;
 
 public class MainActivity extends AppCompatActivity {
 
+    private final static String TAG = "MainActivity";
+
     @Bind(R.id.main_tool_bar)
     Toolbar toolbar;
     @Bind(R.id.main_frame_layout)
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private PrimaryDrawerItem pInbox, pSmartBox, pSentBox, pTrashBox;
     private SecondaryDrawerItem sSettings, sFeedback;
 
-    private PrimaryDrawerItem selectedDrawerItem;
+    private IDrawerItem selectedDrawerItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,13 +65,17 @@ public class MainActivity extends AppCompatActivity {
         setupDrawer();
 
         selectedDrawerItem = pInbox;
-        drawer.setSelection(selectedDrawerItem);
+        setDrawerSelection(selectedDrawerItem);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         setupDrawer();
+        if (selectedDrawerItem != null) {
+            setDrawerSelection(selectedDrawerItem);
+            setToolbarTitle(selectedDrawerItem);
+        }
     }
 
     private void setupToolbar() {
@@ -111,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
                             drawer.closeDrawer();
                             if (selectedDrawerItem == null)
                                 selectedDrawerItem = pInbox;
-                            drawer.setSelection(selectedDrawerItem);
+                            setDrawerSelection(selectedDrawerItem);
                             setToolbarTitle(selectedDrawerItem);
                             return true;
                         }
@@ -182,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         if (selectedDrawerItem != null)
-            drawer.setSelection(selectedDrawerItem);
+            setDrawerSelection(selectedDrawerItem);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         drawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
@@ -245,20 +251,21 @@ public class MainActivity extends AppCompatActivity {
         } else {
             currentUserName = currentUserName.substring(0, 3);
         }
+
         String toolbarTitle = "";
-        if (drawerItem.equals(pInbox))
-            toolbarTitle = getString(R.string.drawer_inbox);
-        else if (drawerItem.equals(pSentBox))
-            toolbarTitle = getString(R.string.drawer_sent);
-        else if (drawerItem.equals(pSmartBox))
-            toolbarTitle = getString(R.string.drawer_smartbox);
-        else if (drawerItem.equals(pTrashBox))
-            toolbarTitle = getString(R.string.drawer_trash);
-        else if (drawerItem.equals(sSettings))
+        if (((PrimaryDrawerItem) drawerItem).getName().getText().equals(pInbox.getName().getText()))
+            toolbarTitle = getString(R.string.drawer_inbox) + " : " + currentUserName;
+        if (((PrimaryDrawerItem) drawerItem).getName().getText().equals(pSentBox.getName().getText()))
+            toolbarTitle = getString(R.string.drawer_sent) + " : " + currentUserName;
+        if (((PrimaryDrawerItem) drawerItem).getName().getText().equals(pSmartBox.getName().getText()))
+            toolbarTitle = getString(R.string.drawer_smartbox) + " : " + currentUserName;
+        if (((PrimaryDrawerItem) drawerItem).getName().getText().equals(pTrashBox.getName().getText()))
+            toolbarTitle = getString(R.string.drawer_trash) + " : " + currentUserName;
+        if (((PrimaryDrawerItem) drawerItem).getName().getText().equals(sSettings.getName().getText()))
             toolbarTitle = getString(R.string.drawer_settings);
-        else if (drawerItem.equals(sFeedback))
+        if (((PrimaryDrawerItem) drawerItem).getName().getText().equals(sFeedback.getName().getText()))
             toolbarTitle = getString(R.string.drawer_feedback);
-        getSupportActionBar().setTitle(toolbarTitle + " : " + currentUserName);
+        getSupportActionBar().setTitle(toolbarTitle);
     }
 
     @Override
@@ -268,5 +275,20 @@ public class MainActivity extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    private void setDrawerSelection(IDrawerItem drawerItem) {
+        if (((PrimaryDrawerItem) drawerItem).getName().getText().equals(pInbox.getName().getText()))
+            drawer.setSelection(pInbox);
+        if (((PrimaryDrawerItem) drawerItem).getName().getText().equals(pSentBox.getName().getText()))
+            drawer.setSelection(pSentBox);
+        if (((PrimaryDrawerItem) drawerItem).getName().getText().equals(pSmartBox.getName().getText()))
+            drawer.setSelection(pSmartBox);
+        if (((PrimaryDrawerItem) drawerItem).getName().getText().equals(pTrashBox.getName().getText()))
+            drawer.setSelection(pTrashBox);
+        if (((PrimaryDrawerItem) drawerItem).getName().getText().equals(sSettings.getName().getText()))
+            drawer.setSelection(sSettings);
+        if (((PrimaryDrawerItem) drawerItem).getName().getText().equals(sFeedback.getName().getText()))
+            drawer.setSelection(sFeedback);
     }
 }

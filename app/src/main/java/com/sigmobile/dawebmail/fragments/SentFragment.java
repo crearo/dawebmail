@@ -266,7 +266,7 @@ public class SentFragment extends Fragment implements RefreshInboxListener, Mult
 
     public void refreshAdapter() {
         mailAdapter = new MailAdapter(allEmails, getActivity(), this, Constants.SENT);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mailAdapter);

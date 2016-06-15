@@ -176,7 +176,7 @@ public class RestAPI {
             String userPassword = user.username + ":" + user.password;
             String encoding = Base64.encodeToString(userPassword.getBytes(), Base64.DEFAULT);
             conn.setRequestProperty("Authorization", "Basic " + encoding);
-            conn.setReadTimeout(TIME_OUT);
+            conn.setConnectTimeout(TIME_OUT);
             conn.connect();
 
             if (conn.getResponseCode() == 200) {
