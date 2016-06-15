@@ -65,8 +65,8 @@
     <string name="snackbar_trash_successful">Moved To Trash</string>
     <string name="snackbar_read_unsuccessful">Unable To Mark Read :(</string>
     <string name="snackbar_read_successful">Marked Read</string>
-    <string name="snackbar_unread_unsuccessful">Unable to Mark Unread</string>
-    <string name="snackbar_unread_successful">Marked Read</string>
+    <string name="snackbar_unread_unsuccessful">Unable to Mark Unread :(</string>
+    <string name="snackbar_unread_successful">Marked Unread</string>
     <string name="snackbar_logging_out">Logging Out!</string>
 
     <!-- Progress Dialogs -->

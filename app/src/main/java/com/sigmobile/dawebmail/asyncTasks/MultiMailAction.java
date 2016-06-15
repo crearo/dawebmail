@@ -59,20 +59,22 @@ public class MultiMailAction extends AsyncTask<Void, Void, Void> {
          * If msgAction was delete or trash, delete the email from database!
          */
         if (result) {
-            if (msgAction.equals(context.getString(R.string.msg_action_delete)) || msgAction.equals(context.getString(R.string.msg_action_trash)))
+            if (msgAction.equals(context.getString(R.string.msg_action_delete)) || msgAction.equals(context.getString(R.string.msg_action_trash))) {
                 for (EmailMessage emailMessage : emailsForMultiAction) {
                     emailMessage.delete();
                 }
-            if (msgAction.equals(context.getString(R.string.msg_action_read)))
+            } else if (msgAction.equals(context.getString(R.string.msg_action_read))) {
                 for (EmailMessage emailMessage : emailsForMultiAction) {
                     emailMessage.readUnread = Constants.WEBMAIL_READ;
                     emailMessage.save();
                 }
-            if (msgAction.equals(context.getString(R.string.msg_action_unread)))
+            } else if (msgAction.equals(context.getString(R.string.msg_action_unread))) {
                 for (EmailMessage emailMessage : emailsForMultiAction) {
                     emailMessage.readUnread = Constants.WEBMAIL_UNREAD;
                     emailMessage.save();
                 }
+            }
+            emailsForMultiAction.clear();
         }
         multiMailActionListener.onPostMultiMailAction(result, msgAction);
     }
