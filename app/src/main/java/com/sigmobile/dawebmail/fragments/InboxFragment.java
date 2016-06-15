@@ -47,6 +47,7 @@ import java.util.Collections;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import me.drakeet.materialdialog.MaterialDialog;
 
 /**
  * Created by rish on 6/10/15.
@@ -100,7 +101,6 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
         progressDialog = new ProgressDialog(getActivity());
 
         if (currentUser == null) {
-            // Snackbar.make(recyclerView, getString(R.string.error_something_went_wrong), Snackbar.LENGTH_LONG).show();
             emptyLayout.setVisibility(View.VISIBLE);
             return rootView;
         }
@@ -379,43 +379,78 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
             setupDeleteAndComposeFABs(false);
         else
             setupDeleteAndComposeFABs(true);
-
         fabMenu.setEnabled(true);
 
         fabDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_deleting), Snackbar.LENGTH_LONG).show();
-                new MultiMailAction(currentUser, getActivity(), InboxFragment.this, emailsMarkedForAction, getString(R.string.msg_action_delete)).execute();
-                setupDeleteAndComposeFABs(false);
+                showConfirmDeleteDialog(emailsMarkedForAction);
             }
         });
 
         fabTrash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_trashing), Snackbar.LENGTH_LONG).show();
-                new MultiMailAction(currentUser, getActivity(), InboxFragment.this, emailsMarkedForAction, getString(R.string.msg_action_trash)).execute();
-                setupDeleteAndComposeFABs(false);
+                performActionTrash(emailsMarkedForAction);
             }
         });
 
         fabMarkRead.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_marking_read), Snackbar.LENGTH_LONG).show();
-                new MultiMailAction(currentUser, getActivity(), InboxFragment.this, emailsMarkedForAction, getString(R.string.msg_action_read)).execute();
-                setupDeleteAndComposeFABs(false);
+                performActionRead(emailsMarkedForAction);
             }
         });
 
         fabMarkUnread.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_marking_unread), Snackbar.LENGTH_LONG).show();
-                new MultiMailAction(currentUser, getActivity(), InboxFragment.this, emailsMarkedForAction, getString(R.string.msg_action_unread)).execute();
-                setupDeleteAndComposeFABs(false);
+                performActionUnread(emailsMarkedForAction);
             }
         });
+    }
+
+    private void showConfirmDeleteDialog(final ArrayList<EmailMessage> emailsMarkedForAction) {
+        final MaterialDialog materialDialog = new MaterialDialog(getActivity());
+        materialDialog.setTitle(getString(R.string.dialog_title_permanently_delete));
+        materialDialog.setMessage(getString(R.string.dialog_msg_permanently_delete));
+        materialDialog.setPositiveButton(getString(R.string.dialog_btn_positive_permanently_delete), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                performActionDelete(emailsMarkedForAction);
+            }
+        });
+        materialDialog.setNegativeButton(getString(R.string.dialog_btn_positive_permanently_delete), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                performActionTrash(emailsMarkedForAction);
+            }
+        });
+        materialDialog.setCanceledOnTouchOutside(true);
+        materialDialog.show();
+    }
+
+    private void performActionDelete(ArrayList<EmailMessage> emailsMarkedForAction) {
+        Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_deleting), Snackbar.LENGTH_LONG).show();
+        new MultiMailAction(currentUser, getActivity(), InboxFragment.this, emailsMarkedForAction, getString(R.string.msg_action_delete)).execute();
+        setupDeleteAndComposeFABs(false);
+    }
+
+    private void performActionTrash(ArrayList<EmailMessage> emailsMarkedForAction) {
+        Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_trashing), Snackbar.LENGTH_LONG).show();
+        new MultiMailAction(currentUser, getActivity(), InboxFragment.this, emailsMarkedForAction, getString(R.string.msg_action_trash)).execute();
+        setupDeleteAndComposeFABs(false);
+    }
+
+    private void performActionRead(ArrayList<EmailMessage> emailsMarkedForAction) {
+        Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_marking_read), Snackbar.LENGTH_LONG).show();
+        new MultiMailAction(currentUser, getActivity(), InboxFragment.this, emailsMarkedForAction, getString(R.string.msg_action_read)).execute();
+        setupDeleteAndComposeFABs(false);
+    }
+
+    private void performActionUnread(ArrayList<EmailMessage> emailsMarkedForAction) {
+        Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_marking_unread), Snackbar.LENGTH_LONG).show();
+        new MultiMailAction(currentUser, getActivity(), InboxFragment.this, emailsMarkedForAction, getString(R.string.msg_action_unread)).execute();
+        setupDeleteAndComposeFABs(false);
     }
 }

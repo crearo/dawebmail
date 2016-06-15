@@ -76,7 +76,11 @@
     <string name="dialog_title_logout">Log Out?</string>
     <string name="dialog_msg_logout">If you are logged in through another account, we\'ll open you other account\'s inbox.</string>
     <string name="dialog_btn_logout">Log out</string>
-    <string name="dialog_fetching_content">Fetching Content</string>
+    <string name="dialog_msg_fetching_content">Fetching Content</string>
+    <string name="dialog_title_permanently_delete">Confirm Delete</string>
+    <string name="dialog_msg_permanently_delete">This will permanently delete your messages - they will not be moved to trash.\nPress back to cancel.</string>
+    <string name="dialog_btn_positive_permanently_delete">Delete</string>
+    <string name="dialog_btn_negative_permanently_delete">Move To Trash</string>
 
     <!-- Navigation Drawer Items -->
     <string name="drawer_inbox">Inbox</string>

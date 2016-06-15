@@ -118,7 +118,7 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
 
     @Override
     public void onPreView() {
-        progressDialog = ProgressDialog.show(ViewEmail.this, "", getString(R.string.dialog_fetching_content), true);
+        progressDialog = ProgressDialog.show(ViewEmail.this, "", getString(R.string.dialog_msg_fetching_content), true);
         progressDialog.setCancelable(false);
     }
 
