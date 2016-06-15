@@ -90,4 +90,9 @@ public class EmailMessage extends SugarRecord<EmailMessage> implements Serializa
         emailMessage.important = important;
         emailMessage.save();
     }
+
+    public static void updateReadStatus(EmailMessage emailMessage, String readStatus) {
+        emailMessage.readUnread = readStatus;
+        emailMessage.save();
+    }
 }
