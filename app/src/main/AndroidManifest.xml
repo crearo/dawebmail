@@ -33,6 +33,11 @@
 
         <activity android:name=".MainActivity" />
         <activity android:name=".ViewEmail" />
+        <activity android:name=".ContributeActivity" />
+        <activity android:name=".ComposeActivity"></activity>
+        <activity android:name=".FeedbackActivity"></activity>
+        <activity android:name=".SettingsActivity"></activity>
+
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -54,11 +59,6 @@
         <service
             android:name=".services.BackgroundService"
             android:enabled="true" />
-
-        <activity android:name=".ContributeActivity" />
-        <activity android:name=".ComposeActivity"></activity>
-        <activity android:name=".FeedbackActivity"></activity>
-        <activity android:name=".SettingsActivity"></activity>
     </application>
 
 </manifest>

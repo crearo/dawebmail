@@ -91,6 +91,9 @@ public class MainActivity extends AppCompatActivity {
         sSettings = (SecondaryDrawerItem) new SecondaryDrawerItem().withName(getString(R.string.drawer_settings)).withIcon(R.drawable.settings);
         sFeedback = (SecondaryDrawerItem) new SecondaryDrawerItem().withName(getString(R.string.drawer_feedback)).withIcon(R.drawable.feedback);
 
+        sSettings.withSelectable(false);
+        sFeedback.withSelectable(false);
+
         setupAllAccountHeaders();
         final String createAccountString = getString(R.string.drawer_new_account);
 
@@ -110,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
                             UserSettings.setCurrentUser(User.getUserFromUserName(profile.getName().getText()), getApplicationContext());
                             drawer.closeDrawer();
                             if (selectedDrawerItem == null)
+                                selectedDrawerItem = pInbox;
+                            else if (!selectedDrawerItem.isSelectable())
                                 selectedDrawerItem = pInbox;
                             setDrawerSelection(selectedDrawerItem);
                             setToolbarTitle(selectedDrawerItem);
@@ -170,11 +175,15 @@ public class MainActivity extends AppCompatActivity {
                             fragmentTag = Constants.FRAGMENT_TAG_FOLDER;
                             Snackbar.make(frameLayout, getString(R.string.drawer_trash), Snackbar.LENGTH_SHORT).show();
                         } else if (selectedDrawerItem.equals(sSettings)) {
-                            startActivity(new Intent(MainActivity.this, SettingsActivity.class));
-                            return false;
+                            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                            startActivity(intent);
+                            return true;
                         } else if (selectedDrawerItem.equals(sFeedback)) {
-                            startActivity(new Intent(MainActivity.this, FeedbackActivity.class));
-                            return false;
+                            Intent intent = new Intent(MainActivity.this, FeedbackActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                            startActivity(intent);
+                            return true;
                         }
 
                         if (fragment != null) {
@@ -304,9 +313,5 @@ public class MainActivity extends AppCompatActivity {
             drawer.setSelection(pSmartBox);
         if (((PrimaryDrawerItem) drawerItem).getName().getText().equals(pTrashBox.getName().getText()))
             drawer.setSelection(pTrashBox);
-        if (((PrimaryDrawerItem) drawerItem).getName().getText().equals(sSettings.getName().getText()))
-            drawer.setSelection(sSettings);
-        if (((PrimaryDrawerItem) drawerItem).getName().getText().equals(sFeedback.getName().getText()))
-            drawer.setSelection(sFeedback);
     }
 }

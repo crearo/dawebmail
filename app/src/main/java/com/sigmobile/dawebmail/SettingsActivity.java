@@ -28,13 +28,10 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Bind(R.id.settings_networkcell_switch)
     Switch switch_mobile;
-
     @Bind(R.id.settings_sound_tv)
     TextView soundURI;
-
     @Bind(R.id.settings_toolbar)
     Toolbar toolbar;
-
     @Bind(R.id.settings_networkwifi_switch)
     Switch switch_wifi;
 
