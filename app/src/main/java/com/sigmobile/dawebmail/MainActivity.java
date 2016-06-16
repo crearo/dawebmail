@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (selectedDrawerItem != null) {
-            setDrawerSelection(selectedDrawerItem);
             setToolbarTitle(selectedDrawerItem);
         }
     }
@@ -196,9 +195,6 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .build();
 
-        if (selectedDrawerItem != null)
-            setDrawerSelection(selectedDrawerItem);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         drawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
     }
@@ -207,7 +203,8 @@ public class MainActivity extends AppCompatActivity {
         final MaterialDialog materialDialog = new MaterialDialog(this);
         materialDialog.setCanceledOnTouchOutside(true);
         materialDialog.setTitle(getString(R.string.dialog_title_logout));
-        materialDialog.setMessage(getString(R.string.dialog_msg_logout));
+        if (User.getUsersCount() >= 2)
+            materialDialog.setMessage(getString(R.string.dialog_msg_logout));
         materialDialog.setNegativeButton("", new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -337,19 +337,32 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
     public void onPostRefresh(boolean success, final ArrayList<EmailMessage> refreshedEmails, User user) {
         allEmails = new ArrayList<>(refreshedEmails);
         /**
+         * ToDo : This is ugly code. Please modify.
          * This is done for maintaining the fragment lifecycle.
          * Check if the fragment is attached to the activity
          *       if it isn't, then set bundle stating that a refresh is required.
          */
-        FolderFragment thisFragment = (FolderFragment) getFragmentManager().findFragmentByTag(Constants.FRAGMENT_TAG_FOLDER);
-        if (!thisFragment.isAdded()) {
+        if (getFragmentManager() != null) {
+            InboxFragment thisFragment = (InboxFragment) getFragmentManager().findFragmentByTag(Constants.FRAGMENT_TAG_INBOX);
             if (thisFragment != null) {
-                Bundle bundle = new Bundle();
-                bundle.putInt(Constants.BUNDLE_ON_POST_REFRESH_EMAILS_SIZE, refreshedEmails.size());
-                thisFragment.setArguments(bundle);
+                if (!thisFragment.isAdded()) {
+                    if (thisFragment != null) {
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(Constants.BUNDLE_ON_POST_REFRESH_EMAILS_SIZE, refreshedEmails.size());
+                        thisFragment.setArguments(bundle);
+                    }
+                } else {
+                    onPostRefresh(refreshedEmails.size());
+                }
+            } else {
+                refreshAdapter();
+                progressDialog2.dismiss();
+                swipeRefreshLayout.setRefreshing(false);
             }
         } else {
-            onPostRefresh(refreshedEmails.size());
+            refreshAdapter();
+            progressDialog2.dismiss();
+            swipeRefreshLayout.setRefreshing(false);
         }
     }
 

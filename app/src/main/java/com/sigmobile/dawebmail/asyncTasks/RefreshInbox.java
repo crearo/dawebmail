@@ -2,6 +2,7 @@ package com.sigmobile.dawebmail.asyncTasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
@@ -15,6 +16,8 @@ import java.util.ArrayList;
  * Created by rish on 6/10/15.
  */
 public class RefreshInbox extends AsyncTask<Void, Void, Void> {
+
+    private static final String TAG = "RefreshInbox";
 
     private RefreshInboxListener listener;
     private Context context;
@@ -30,6 +33,7 @@ public class RefreshInbox extends AsyncTask<Void, Void, Void> {
         this.refreshType = refreshType;
         this.folder = folder;
         this.user = user;
+        Log.d(TAG, "Request to refresh inbox " + folder + " " + refreshType);
     }
 
     @Override

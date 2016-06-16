@@ -23,13 +23,15 @@ public class BasePath {
         return dir.getAbsolutePath();
     }
 
+    // ToDo ; Add permissions here.
     public static ArrayList<String> getAttachmentsPaths(Context context, int contentID) {
         ArrayList<String> attachments = new ArrayList<>();
-        for (File file : new File(getBasePath(context)).listFiles()) {
-            if (file.getName().split("-")[0].toString().equals("" + contentID)) {
-                attachments.add(file.getAbsolutePath());
+        if (new File(getBasePath(context)).listFiles() != null)
+            for (File file : new File(getBasePath(context)).listFiles()) {
+                if (file.getName().split("-")[0].toString().equals("" + contentID)) {
+                    attachments.add(file.getAbsolutePath());
+                }
             }
-        }
         return attachments;
     }
 }
