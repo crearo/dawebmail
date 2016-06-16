@@ -96,6 +96,10 @@ public class RestAPI {
              * Also update those that have changed read/unread status
              */
             ArrayList<EmailMessage> fetchedEmails = fetchMailsOfFolder(folder);
+
+            if (fetchedEmails == null)
+                return false;
+
             for (EmailMessage storedEmail : EmailMessage.getAllMailsOfUser(user)) {
                 boolean storedEmailFound = false;
                 for (EmailMessage fetchedEmail : fetchedEmails) {
@@ -107,7 +111,7 @@ public class RestAPI {
                     }
                 }
                 if (!storedEmailFound) {
-                    storedEmail.delete();
+                    EmailMessage.deleteEmailMessage(storedEmail);
                 }
             }
 
@@ -150,7 +154,9 @@ public class RestAPI {
                 }
             }
         } else {
-            allNewEmails.addAll(fetchMailsOfFolder(folder));
+            ArrayList allEmailsOfFolder = fetchMailsOfFolder(folder);
+            if (allEmailsOfFolder != null)
+                allNewEmails.addAll(allEmailsOfFolder);
         }
         return false;
     }
@@ -160,7 +166,7 @@ public class RestAPI {
     }
 
     private ArrayList<EmailMessage> fetchMailsOfFolder(String folder) {
-        ArrayList<EmailMessage> parsedMails = new ArrayList<>();
+        ArrayList<EmailMessage> parsedMails = null;
         URL url = null;
         try {
             if (folder.equals(Constants.INBOX))
@@ -180,6 +186,7 @@ public class RestAPI {
             conn.connect();
 
             if (conn.getResponseCode() == 200) {
+                parsedMails = new ArrayList<>();
                 InputStream in = new BufferedInputStream(conn.getInputStream());
                 BufferedReader r = new BufferedReader(new InputStreamReader(in));
                 StringBuilder total = new StringBuilder();

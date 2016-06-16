@@ -11,7 +11,7 @@ import java.util.List;
 public class EmailMessage extends SugarRecord<EmailMessage> implements Serializable {
 
     public String fromName = "";
-    public String fromAddress = ""; // new
+    public String fromAddress = "";
     public String subject = "";
     public String dateInMillis = "";
     public int contentID = -1;
@@ -77,6 +77,10 @@ public class EmailMessage extends SugarRecord<EmailMessage> implements Serializa
             return emailMessage;
         }
         return null;
+    }
+
+    public static void deleteEmailMessage(EmailMessage emailMessage) {
+        emailMessage.delete();
     }
 
     public static void updateExistingEmailMessage(User user, EmailMessage emailMessage, int contentID, String fromName, String fromAddress, String subject, String dateInMillis, String readUnread, int totalAttachments, boolean important) {

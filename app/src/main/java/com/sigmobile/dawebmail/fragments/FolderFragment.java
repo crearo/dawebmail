@@ -274,7 +274,7 @@ public class FolderFragment extends Fragment implements RefreshInboxListener, Mu
                     swipeRefreshLayout.setVisibility(View.VISIBLE);
                 } else {
                     emptyLayout.setVisibility(View.VISIBLE);
-                    swipeRefreshLayout.setVisibility(View.GONE);
+                    swipeRefreshLayout.setVisibility(View.VISIBLE);
                 }
 
             }

@@ -335,7 +335,7 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
 
     @Override
     public void onPostRefresh(boolean success, final ArrayList<EmailMessage> refreshedEmails, User user) {
-        allEmails = new ArrayList<>(refreshedEmails);
+        allEmails.addAll(refreshedEmails);
         /**
          * ToDo : This is ugly code. Please modify.
          * This is done for maintaining the fragment lifecycle.

@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
             setToolbarTitle(selectedDrawerItem);
         }
         setSelectedAccountHeader(true);
+        // ToDO : Send false herre, but make sure account is selected correctly.
     }
 
     private void setupToolbar() {
