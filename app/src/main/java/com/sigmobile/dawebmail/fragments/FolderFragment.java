@@ -97,6 +97,20 @@ public class FolderFragment extends Fragment implements RefreshInboxListener, Mu
         return rootView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        /**
+         * This is done for maintaining the fragment lifecycle. Read onPostRefresh comment.
+         **/
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            if (bundle.getInt(Constants.BUNDLE_ON_POST_REFRESH, -1) != -1) {
+                onPostRefresh(bundle.getInt(Constants.BUNDLE_ON_POST_REFRESH));
+            }
+        }
+    }
+
     private void registerInternalBroadcastReceivers() {
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(new BroadcastReceiver() {
             @Override
@@ -223,20 +237,36 @@ public class FolderFragment extends Fragment implements RefreshInboxListener, Mu
 
     @Override
     public void onPostRefresh(boolean success, final ArrayList<EmailMessage> refreshedEmails, User user) {
+
+        allEmails = new ArrayList<>(refreshedEmails);
+        /**
+         * This is done for maintaining the fragment lifecycle.
+         * Check if the fragment is attached to the activity
+         *       if it isn't, then set bundle stating that a refresh is required.
+         */
+        FolderFragment thisFragment = (FolderFragment) getFragmentManager().findFragmentByTag(Constants.FRAGMENT_TAG_FOLDER);
+        if (!thisFragment.isAdded()) {
+            if (thisFragment != null) {
+                Bundle bundle = new Bundle();
+                bundle.putInt(Constants.BUNDLE_ON_POST_REFRESH, refreshedEmails.size());
+                thisFragment.setArguments(bundle);
+            }
+        } else {
+            onPostRefresh(refreshedEmails.size());
+        }
+    }
+
+    private void onPostRefresh(final int refreshedEmailsSize) {
         new Handler().post(new Runnable() {
             @Override
             public void run() {
-
-                allEmails = new ArrayList<>(refreshedEmails);
                 refreshAdapter();
-//                if (refreshedEmails.size() == 0)
-//                    Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_new_webmail_zero), Snackbar.LENGTH_LONG).show();
-//                else if (refreshedEmails.size() == 1)
-//                    Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_new_webmail_one), Snackbar.LENGTH_LONG).show();
-//                else
-//                    Snackbar.make(swipeRefreshLayout, refreshedEmails.size() + getString(R.string.snackbar_new_webmail_many), Snackbar.LENGTH_LONG).show();
-                progressDialog2.dismiss();
-
+                if (refreshedEmailsSize == 0)
+                    Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_new_webmail_zero), Snackbar.LENGTH_LONG).show();
+                else if (refreshedEmailsSize == 1)
+                    Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_new_webmail_one), Snackbar.LENGTH_LONG).show();
+                else
+                    Snackbar.make(swipeRefreshLayout, refreshedEmailsSize + getString(R.string.snackbar_new_webmail_many), Snackbar.LENGTH_LONG).show();
                 progressDialog2.dismiss();
 
                 if (allEmails.size() != 0) {

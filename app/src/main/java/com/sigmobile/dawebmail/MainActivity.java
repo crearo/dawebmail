@@ -149,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                         Fragment fragment = null;
                         Bundle bundle = null;
+                        String fragmentTag = "";
                         drawer.closeDrawer();
                         if (drawerItem == null)
                             drawerItem = pInbox;
@@ -158,20 +159,24 @@ public class MainActivity extends AppCompatActivity {
                         if (selectedDrawerItem.equals(pInbox)) {
                             fragment = new InboxFragment();
                             Snackbar.make(frameLayout, getString(R.string.drawer_inbox), Snackbar.LENGTH_SHORT).show();
+                            fragmentTag = Constants.FRAGMENT_TAG_INBOX;
                         } else if (selectedDrawerItem.equals(pSmartBox)) {
                             fragment = new SmartBoxFragment();
                             Snackbar.make(frameLayout, getString(R.string.drawer_smartbox), Snackbar.LENGTH_SHORT).show();
+                            fragmentTag = Constants.FRAGMENT_TAG_SMARTBOX;
                         } else if (selectedDrawerItem.equals(pSentBox)) {
                             fragment = new FolderFragment();
                             bundle = new Bundle();
                             bundle.putString(Constants.FOLDER, Constants.SENT);
                             fragment.setArguments(bundle);
+                            fragmentTag = Constants.FRAGMENT_TAG_FOLDER;
                             Snackbar.make(frameLayout, getString(R.string.drawer_sent), Snackbar.LENGTH_SHORT).show();
                         } else if (selectedDrawerItem.equals(pTrashBox)) {
                             fragment = new FolderFragment();
                             bundle = new Bundle();
                             bundle.putString(Constants.FOLDER, Constants.TRASH);
                             fragment.setArguments(bundle);
+                            fragmentTag = Constants.FRAGMENT_TAG_FOLDER;
                             Snackbar.make(frameLayout, getString(R.string.drawer_trash), Snackbar.LENGTH_SHORT).show();
                         } else if (selectedDrawerItem.equals(sSettings)) {
                             startActivity(new Intent(MainActivity.this, SettingsActivity.class));
@@ -183,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
 
                         if (fragment != null) {
                             FragmentManager fragmentManager = getSupportFragmentManager();
-                            fragmentManager.beginTransaction().replace(R.id.main_frame_layout, fragment).commit();
+                            fragmentManager.beginTransaction().replace(R.id.main_frame_layout, fragment, fragmentTag).commit();
                             fragmentManager.popBackStack();
                         }
                         return false;
