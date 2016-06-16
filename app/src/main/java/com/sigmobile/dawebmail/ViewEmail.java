@@ -90,8 +90,8 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendRefreshBroadcast();
-                finish();
+                onBackPressed();
+
             }
         });
         getSupportActionBar().setTitle("@" + currentEmail.fromName);
@@ -111,9 +111,8 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         sendRefreshBroadcast();
-        finish();
+        super.onBackPressed();
     }
 
     @Override

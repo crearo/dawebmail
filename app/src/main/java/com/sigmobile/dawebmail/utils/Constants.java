@@ -5,6 +5,7 @@ package com.sigmobile.dawebmail.utils;
  */
 public class Constants {
 
+    public static String FOLDER = "FOLDER";
     public static String INBOX = "INBOX";
     public static String SENT = "SENT";
     public static String TRASH = "TRASH";

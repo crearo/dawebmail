@@ -49,32 +49,39 @@ import butterknife.ButterKnife;
  * Created by rish on 6/10/15.
  */
 
-public class SentFragment extends Fragment implements RefreshInboxListener, MultiMailActionListener, MailAdapter.MultiMailActionSelectedListener {
+public class FolderFragment extends Fragment implements RefreshInboxListener, MultiMailActionListener, MailAdapter.MultiMailActionSelectedListener {
 
-    @Bind(R.id.sent_empty_view)
+    @Bind(R.id.folder_empty_view)
     LinearLayout emptyLayout;
-    @Bind(R.id.sent_recycleView)
+    @Bind(R.id.folder_recycleView)
     RecyclerView recyclerView;
     @Bind(R.id.swipeContainer)
     SwipeRefreshLayout swipeRefreshLayout;
     @Bind(R.id.searchET)
     EditText searchET;
-    @Bind(R.id.sent_delete_fab)
+    @Bind(R.id.folder_delete_fab)
     FloatingActionButton fabDelete;
 
     private MailAdapter mailAdapter;
     private ProgressDialog progressDialog, progressDialog2;
     private ArrayList<EmailMessage> allEmails;
     private User currentUser;
+    private String folder;
 
-    public SentFragment() {
+    public FolderFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_sent, container, false);
-        ButterKnife.bind(SentFragment.this, rootView);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.sent));
+        View rootView = inflater.inflate(R.layout.fragment_folder, container, false);
+        ButterKnife.bind(FolderFragment.this, rootView);
+        Bundle args = getArguments();
+        folder = args.getString(Constants.FOLDER, Constants.SENT);
+
+        if (folder.equals(Constants.SENT))
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.sent));
+        else if (folder.equals(Constants.TRASH))
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.trash));
 
         currentUser = UserSettings.getCurrentUser(getActivity());
         progressDialog = new ProgressDialog(getActivity());
@@ -84,7 +91,7 @@ public class SentFragment extends Fragment implements RefreshInboxListener, Mult
         setupSwipeRefreshLayout();
         setupSearchBar();
 
-        new RefreshInbox(currentUser, getActivity(), SentFragment.this, Constants.SENT, Constants.REFRESH_TYPE_REFRESH).execute();
+        new RefreshInbox(currentUser, getActivity(), FolderFragment.this, folder, Constants.REFRESH_TYPE_REFRESH).execute();
 
         swipeRefreshLayout.setVisibility(View.GONE);
         return rootView;
@@ -101,7 +108,7 @@ public class SentFragment extends Fragment implements RefreshInboxListener, Mult
 
     private void setupMailAdapter() {
         allEmails = new ArrayList<>();
-        mailAdapter = new MailAdapter(allEmails, getActivity(), this, Constants.SENT);
+        mailAdapter = new MailAdapter(allEmails, getActivity(), this, folder);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -156,7 +163,7 @@ public class SentFragment extends Fragment implements RefreshInboxListener, Mult
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new RefreshInbox(currentUser, getActivity(), SentFragment.this, Constants.SENT, Constants.REFRESH_TYPE_REFRESH).execute();
+                new RefreshInbox(currentUser, getActivity(), FolderFragment.this, folder, Constants.REFRESH_TYPE_REFRESH).execute();
             }
         });
 
@@ -220,15 +227,14 @@ public class SentFragment extends Fragment implements RefreshInboxListener, Mult
             @Override
             public void run() {
 
-                allEmails = new ArrayList<EmailMessage>(refreshedEmails);
+                allEmails = new ArrayList<>(refreshedEmails);
                 refreshAdapter();
-
-                if (refreshedEmails.size() == 0)
-                    Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_new_webmail_zero), Snackbar.LENGTH_LONG).show();
-                else if (refreshedEmails.size() == 1)
-                    Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_new_webmail_one), Snackbar.LENGTH_LONG).show();
-                else
-                    Snackbar.make(swipeRefreshLayout, refreshedEmails.size() + getString(R.string.snackbar_new_webmail_many), Snackbar.LENGTH_LONG).show();
+//                if (refreshedEmails.size() == 0)
+//                    Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_new_webmail_zero), Snackbar.LENGTH_LONG).show();
+//                else if (refreshedEmails.size() == 1)
+//                    Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_new_webmail_one), Snackbar.LENGTH_LONG).show();
+//                else
+//                    Snackbar.make(swipeRefreshLayout, refreshedEmails.size() + getString(R.string.snackbar_new_webmail_many), Snackbar.LENGTH_LONG).show();
                 progressDialog2.dismiss();
 
                 progressDialog2.dismiss();
@@ -265,7 +271,7 @@ public class SentFragment extends Fragment implements RefreshInboxListener, Mult
     }
 
     public void refreshAdapter() {
-        mailAdapter = new MailAdapter(allEmails, getActivity(), this, Constants.SENT);
+        mailAdapter = new MailAdapter(allEmails, getActivity(), this, folder);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -283,7 +289,7 @@ public class SentFragment extends Fragment implements RefreshInboxListener, Mult
             @Override
             public void onClick(View view) {
                 Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_deleting), Snackbar.LENGTH_LONG).show();
-                new MultiMailAction(currentUser, getActivity(), SentFragment.this, emailsMarkedForAction, getString(R.string.msg_action_trash)).execute();
+                new MultiMailAction(currentUser, getActivity(), FolderFragment.this, emailsMarkedForAction, getString(R.string.msg_action_trash)).execute();
             }
         });
 

@@ -28,9 +28,8 @@ import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
 import com.sigmobile.dawebmail.database.UserSettings;
 import com.sigmobile.dawebmail.fragments.InboxFragment;
-import com.sigmobile.dawebmail.fragments.SentFragment;
+import com.sigmobile.dawebmail.fragments.FolderFragment;
 import com.sigmobile.dawebmail.fragments.SmartBoxFragment;
-import com.sigmobile.dawebmail.fragments.TrashFragment;
 import com.sigmobile.dawebmail.services.NotificationMaker;
 import com.sigmobile.dawebmail.utils.Constants;
 
@@ -71,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        setupDrawer();
         if (selectedDrawerItem != null) {
             setDrawerSelection(selectedDrawerItem);
             setToolbarTitle(selectedDrawerItem);
@@ -150,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                         Fragment fragment = null;
-
+                        Bundle bundle = null;
                         drawer.closeDrawer();
                         if (drawerItem == null)
                             drawerItem = pInbox;
@@ -164,10 +162,16 @@ public class MainActivity extends AppCompatActivity {
                             fragment = new SmartBoxFragment();
                             Snackbar.make(frameLayout, getString(R.string.drawer_smartbox), Snackbar.LENGTH_SHORT).show();
                         } else if (selectedDrawerItem.equals(pSentBox)) {
-                            fragment = new SentFragment();
+                            fragment = new FolderFragment();
+                            bundle = new Bundle();
+                            bundle.putString(Constants.FOLDER, Constants.SENT);
+                            fragment.setArguments(bundle);
                             Snackbar.make(frameLayout, getString(R.string.drawer_sent), Snackbar.LENGTH_SHORT).show();
                         } else if (selectedDrawerItem.equals(pTrashBox)) {
-                            fragment = new TrashFragment();
+                            fragment = new FolderFragment();
+                            bundle = new Bundle();
+                            bundle.putString(Constants.FOLDER, Constants.TRASH);
+                            fragment.setArguments(bundle);
                             Snackbar.make(frameLayout, getString(R.string.drawer_trash), Snackbar.LENGTH_SHORT).show();
                         } else if (selectedDrawerItem.equals(sSettings)) {
                             startActivity(new Intent(MainActivity.this, SettingsActivity.class));
