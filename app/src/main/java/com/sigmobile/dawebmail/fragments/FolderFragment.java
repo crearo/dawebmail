@@ -105,8 +105,8 @@ public class FolderFragment extends Fragment implements RefreshInboxListener, Mu
          **/
         Bundle bundle = getArguments();
         if (bundle != null) {
-            if (bundle.getInt(Constants.BUNDLE_ON_POST_REFRESH, -1) != -1) {
-                onPostRefresh(bundle.getInt(Constants.BUNDLE_ON_POST_REFRESH));
+            if (bundle.getInt(Constants.BUNDLE_ON_POST_REFRESH_EMAILS_SIZE, -1) != -1) {
+                onPostRefresh(bundle.getInt(Constants.BUNDLE_ON_POST_REFRESH_EMAILS_SIZE));
             }
         }
     }
@@ -248,7 +248,7 @@ public class FolderFragment extends Fragment implements RefreshInboxListener, Mu
         if (!thisFragment.isAdded()) {
             if (thisFragment != null) {
                 Bundle bundle = new Bundle();
-                bundle.putInt(Constants.BUNDLE_ON_POST_REFRESH, refreshedEmails.size());
+                bundle.putInt(Constants.BUNDLE_ON_POST_REFRESH_EMAILS_SIZE, refreshedEmails.size());
                 thisFragment.setArguments(bundle);
             }
         } else {

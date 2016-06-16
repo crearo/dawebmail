@@ -120,6 +120,15 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
     public void onResume() {
         super.onResume();
         setupDeleteAndComposeFABs(false);
+        /**
+         * This is done for maintaining the fragment lifecycle. Read onPostRefresh comment.
+         **/
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            if (bundle.getInt(Constants.BUNDLE_ON_POST_REFRESH_EMAILS_SIZE, -1) != -1) {
+                onPostRefresh(bundle.getInt(Constants.BUNDLE_ON_POST_REFRESH_EMAILS_SIZE));
+            }
+        }
     }
 
     private void setupMailAdapter() {
@@ -326,19 +335,33 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
 
     @Override
     public void onPostRefresh(boolean success, final ArrayList<EmailMessage> refreshedEmails, User user) {
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                refreshAdapter();
-                if (refreshedEmails.size() == 0)
-                    Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_webmail_zero), Snackbar.LENGTH_LONG).show();
-                else if (refreshedEmails.size() == 1)
-                    Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_webmail_one), Snackbar.LENGTH_LONG).show();
-                else
-                    Snackbar.make(swipeRefreshLayout, refreshedEmails.size() + getString(R.string.snackbar_webmail_many), Snackbar.LENGTH_LONG).show();
-                progressDialog2.dismiss();
+        allEmails = new ArrayList<>(refreshedEmails);
+        /**
+         * This is done for maintaining the fragment lifecycle.
+         * Check if the fragment is attached to the activity
+         *       if it isn't, then set bundle stating that a refresh is required.
+         */
+        FolderFragment thisFragment = (FolderFragment) getFragmentManager().findFragmentByTag(Constants.FRAGMENT_TAG_FOLDER);
+        if (!thisFragment.isAdded()) {
+            if (thisFragment != null) {
+                Bundle bundle = new Bundle();
+                bundle.putInt(Constants.BUNDLE_ON_POST_REFRESH_EMAILS_SIZE, refreshedEmails.size());
+                thisFragment.setArguments(bundle);
             }
-        });
+        } else {
+            onPostRefresh(refreshedEmails.size());
+        }
+    }
+
+    private void onPostRefresh(int size) {
+        refreshAdapter();
+        if (size == 0)
+            Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_webmail_zero), Snackbar.LENGTH_LONG).show();
+        else if (size == 1)
+            Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_webmail_one), Snackbar.LENGTH_LONG).show();
+        else
+            Snackbar.make(swipeRefreshLayout, size + getString(R.string.snackbar_webmail_many), Snackbar.LENGTH_LONG).show();
+        progressDialog2.dismiss();
         swipeRefreshLayout.setRefreshing(false);
     }
 
