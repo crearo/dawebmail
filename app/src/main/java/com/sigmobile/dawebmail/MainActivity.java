@@ -27,8 +27,8 @@ import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
 import com.sigmobile.dawebmail.database.UserSettings;
-import com.sigmobile.dawebmail.fragments.InboxFragment;
 import com.sigmobile.dawebmail.fragments.FolderFragment;
+import com.sigmobile.dawebmail.fragments.InboxFragment;
 import com.sigmobile.dawebmail.fragments.SmartBoxFragment;
 import com.sigmobile.dawebmail.services.NotificationMaker;
 import com.sigmobile.dawebmail.utils.Constants;
@@ -49,8 +49,10 @@ public class MainActivity extends AppCompatActivity {
     FrameLayout frameLayout;
 
     private Drawer drawer;
+    private AccountHeader accountHeader;
     private PrimaryDrawerItem pInbox, pSmartBox, pSentBox, pTrashBox;
     private SecondaryDrawerItem sSettings, sFeedback;
+    private ArrayList<IProfile> allAccountHeaders;
 
     private IDrawerItem selectedDrawerItem;
 
@@ -64,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
         setupDrawer();
 
         selectedDrawerItem = pInbox;
-        setDrawerSelection(selectedDrawerItem);
     }
 
     @Override
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         if (selectedDrawerItem != null) {
             setToolbarTitle(selectedDrawerItem);
         }
+        setSelectedAccountHeader(true);
     }
 
     private void setupToolbar() {
@@ -89,22 +91,17 @@ public class MainActivity extends AppCompatActivity {
         sSettings = (SecondaryDrawerItem) new SecondaryDrawerItem().withName(getString(R.string.drawer_settings)).withIcon(R.drawable.settings);
         sFeedback = (SecondaryDrawerItem) new SecondaryDrawerItem().withName(getString(R.string.drawer_feedback)).withIcon(R.drawable.feedback);
 
-        ArrayList<IProfile> profileDrawerItems = new ArrayList<>();
-        for (User user : User.getAllUsers()) {
-            profileDrawerItems.add(new ProfileDrawerItem().withName(user.username).withIcon(getResources().getDrawable(R.drawable.git_user)));
-        }
+        setupAllAccountHeaders();
+        final String createAccountString = getString(R.string.drawer_new_account);
 
-        final String createAccount = getString(R.string.drawer_new_account);
-        profileDrawerItems.add(new ProfileDrawerItem().withName(createAccount).withIcon(getResources().getDrawable(R.drawable.plus)));
-
-        AccountHeader accountHeader = new AccountHeaderBuilder()
+        accountHeader = new AccountHeaderBuilder()
                 .withActivity(this)
-                .withProfiles(profileDrawerItems)
+                .withProfiles(allAccountHeaders)
                 .withHeaderBackground(new ColorDrawable(getResources().getColor(R.color.primary_dark)))
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
                     public boolean onProfileChanged(View view, IProfile profile, boolean current) {
-                        if (profile.getName().getText().equals(createAccount)) {
+                        if (profile.getName().getText().equals(createAccountString)) {
                             UserSettings.setCurrentUser(null, getApplicationContext());
                             startActivity(new Intent(MainActivity.this, LoginActivity.class));
                             drawer.closeDrawer();
@@ -121,11 +118,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 })
                 .build();
-
-        for (int i = 0; i < profileDrawerItems.size(); i++) {
-            if (profileDrawerItems.get(i).getName().equals(UserSettings.getCurrentUser(this).username))
-                accountHeader.setActiveProfile(profileDrawerItems.get(i));
-        }
 
         drawer = new DrawerBuilder()
                 .withActivity(this)
@@ -199,12 +191,32 @@ public class MainActivity extends AppCompatActivity {
         drawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
     }
 
+    private void setSelectedAccountHeader(boolean shouldClick) {
+        String currentUsername = UserSettings.getCurrentUser(this).username;
+        for (int i = 0; i < allAccountHeaders.size(); i++) {
+            if (allAccountHeaders.get(i).getName().getText().equals(currentUsername))
+                accountHeader.setActiveProfile(allAccountHeaders.get(i), shouldClick);
+        }
+    }
+
+    private void setupAllAccountHeaders() {
+        allAccountHeaders = new ArrayList<>();
+        for (User user : User.getAllUsers()) {
+            allAccountHeaders.add(new ProfileDrawerItem().withName(user.username).withIcon(getResources().getDrawable(R.drawable.git_user)));
+        }
+
+        final String createAccount = getString(R.string.drawer_new_account);
+        allAccountHeaders.add(new ProfileDrawerItem().withName(createAccount).withIcon(getResources().getDrawable(R.drawable.plus)));
+    }
+
     public void showLogoutDialog(final User currentUser) {
         final MaterialDialog materialDialog = new MaterialDialog(this);
         materialDialog.setCanceledOnTouchOutside(true);
         materialDialog.setTitle(getString(R.string.dialog_title_logout));
         if (User.getUsersCount() >= 2)
-            materialDialog.setMessage(getString(R.string.dialog_msg_logout));
+            materialDialog.setMessage(getString(R.string.dialog_msg_logout_multi));
+        else
+            materialDialog.setMessage(getString(R.string.dialog_msg_logout_single));
         materialDialog.setNegativeButton("", new View.OnClickListener() {
             @Override
             public void onClick(View view) {

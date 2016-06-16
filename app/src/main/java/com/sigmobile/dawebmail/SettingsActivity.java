@@ -102,6 +102,12 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
+    @Override
     public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
         if (resultCode == Activity.RESULT_OK && requestCode == 5) {
             Uri uri = intent.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);

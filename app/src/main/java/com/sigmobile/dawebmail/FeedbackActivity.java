@@ -113,4 +113,10 @@ public class FeedbackActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), " unable to rate :(", Toast.LENGTH_LONG).show();
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }

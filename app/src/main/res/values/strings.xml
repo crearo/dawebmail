@@ -74,7 +74,8 @@
     <string name="dialog_msg_loading">Please wait while we load your content</string>
     <string name="dialog_msg_attempting_action">Requesting Action</string>
     <string name="dialog_title_logout">Log Out?</string>
-    <string name="dialog_msg_logout">If you are logged in through another account, we\'ll open you other account\'s inbox.</string>
+    <string name="dialog_msg_logout_multi">If you are logged in through another account, we\'ll open you other account\'s inbox.</string>
+    <string name="dialog_msg_logout_single">#kthxbye</string>
     <string name="dialog_btn_logout">Log out</string>
     <string name="dialog_msg_fetching_content">Fetching Content</string>
     <string name="dialog_title_permanently_delete">Confirm Delete</string>
