@@ -11,5 +11,4 @@
         android:icon="@drawable/ic_action_attach"
         android:title="Send"
         app:showAsAction="ifRoom" />
-
 </menu>

@@ -14,6 +14,7 @@
     <string name="inbox">Inbox</string>
     <string name="sent">Sent</string>
     <string name="trash">Trash</string>
+    <string name="compose">Compose</string>
 
     <!-- Error Strings -->
     <string name="error_connect_to_view_email"><html><head></head><body>Connect to the Internet to download content</body></html></string>
@@ -68,6 +69,7 @@
     <string name="snackbar_unread_unsuccessful">Unable to Mark Unread :(</string>
     <string name="snackbar_unread_successful">Marked Unread</string>
     <string name="snackbar_logging_out">Logging Out!</string>
+    <string name="snackbar_search_pressed">Yet to implement - Help &amp; contribute on Github!</string>
 
     <!-- Progress Dialogs -->
     <string name="dialog_msg_logging_in">Logging In</string>
@@ -82,6 +84,10 @@
     <string name="dialog_msg_permanently_delete">This will permanently delete your messages - they will not be moved to trash.\nPress back to cancel.</string>
     <string name="dialog_btn_positive_permanently_delete">Delete</string>
     <string name="dialog_btn_negative_permanently_delete">Move To Trash</string>
+    <string name="dialog_title_toggle_data">Confirm Disable?</string>
+    <string name="dialog_msg_toggle_data">You will not receive notifications.\nRecommended : Keep Enabled.</string>
+    <string name="dialog_btn_positive_toggle_data">Disable</string>
+    <string name="dialog_btn_negative_toggle_data">Cancel</string>
 
     <!-- Navigation Drawer Items -->
     <string name="drawer_inbox">Inbox</string>

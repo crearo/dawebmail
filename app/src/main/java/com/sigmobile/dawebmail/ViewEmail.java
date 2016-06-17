@@ -85,6 +85,7 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
     }
 
     private void setupToolbar() {
+        toolbar.setTitleTextColor(getResources().getColor(R.color.toolbarText));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {

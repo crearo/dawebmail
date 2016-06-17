@@ -25,13 +25,10 @@ public class FeedbackActivity extends AppCompatActivity {
 
     @Bind(R.id.feedback_send)
     ImageView send;
-
     @Bind(R.id.feedback_et)
     EditText textbox;
-
     @Bind(R.id.feedback_rate)
     LinearLayout rate;
-
     @Bind(R.id.feedback_toolbar)
     Toolbar toolbar;
 
@@ -45,6 +42,13 @@ public class FeedbackActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setTitle("Feedback");
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+
+            }
+        });
 
         send.setVisibility(View.GONE);
 

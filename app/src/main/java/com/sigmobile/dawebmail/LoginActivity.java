@@ -89,6 +89,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
 
     private void setupToolbar() {
         toolbar.setTitle(getString(R.string.app_name));
+        toolbar.setTitleTextColor(getResources().getColor(R.color.toolbarText));
         setSupportActionBar(toolbar);
     }
 

@@ -58,7 +58,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:text="Want to save mobile data?"
+                            android:text="Disable to save mobile data"
                             android:textSize="14sp"
                             android:textStyle="normal" />
 

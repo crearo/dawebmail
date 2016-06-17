@@ -67,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
         setupDrawer();
 
         selectedDrawerItem = pInbox;
+
+        setSelectedAccountHeader(true);
     }
 
     @Override
@@ -75,16 +77,16 @@ public class MainActivity extends AppCompatActivity {
         if (selectedDrawerItem != null) {
             setToolbarTitle(selectedDrawerItem);
         }
-        setSelectedAccountHeader(true);
+        setSelectedAccountHeader(false);
         // ToDO : Send false here, but make sure account is selected correctly. This still isnt working as expected
     }
 
     private void setupToolbar() {
+        toolbar.setTitleTextColor(getResources().getColor(R.color.toolbarText));
         setSupportActionBar(toolbar);
     }
 
     private void setupDrawer() {
-
         pInbox = new PrimaryDrawerItem().withName(getString(R.string.drawer_inbox)).withIcon(R.drawable.inbox);
         pSmartBox = new PrimaryDrawerItem().withName(getString(R.string.drawer_smartbox)).withIcon(R.drawable.fire_element);
         pSentBox = new PrimaryDrawerItem().withName(getString(R.string.drawer_sent)).withIcon(R.drawable.sent);
@@ -219,11 +221,11 @@ public class MainActivity extends AppCompatActivity {
              * A fun image for each profile drawer
              */
             if (i % 3 == 0)
-                profileDrawerItem.withIcon(getResources().getDrawable(R.drawable.user_plain));
+                profileDrawerItem.withIcon(getResources().getDrawable(R.drawable.user_white));
             if (i % 3 == 1)
-                profileDrawerItem.withIcon(getResources().getDrawable(R.drawable.user_cool));
+                profileDrawerItem.withIcon(getResources().getDrawable(R.drawable.user_blue));
             if (i % 3 == 2)
-                profileDrawerItem.withIcon(getResources().getDrawable(R.drawable.user_oldschool));
+                profileDrawerItem.withIcon(getResources().getDrawable(R.drawable.user_grey));
             allAccountHeaders.add(profileDrawerItem);
         }
 

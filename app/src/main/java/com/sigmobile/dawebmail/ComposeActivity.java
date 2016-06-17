@@ -32,43 +32,28 @@ public class ComposeActivity extends AppCompatActivity implements SendMailListen
 
     @Bind(R.id.compose_toolbar)
     Toolbar toolbar;
-
     @Bind(R.id.compose_main_rl)
     RelativeLayout relativeLayout;
-
     @Bind(R.id.compose_to_id)
     EditText et_to;
-
     @Bind(R.id.compose_subject)
     EditText et_subject;
-
     @Bind(R.id.compose_content)
     EditText et_content;
-
     @Bind(R.id.compose_imp_checkbox)
     CheckBox checkBox_imp;
 
-    User currentUser;
+    private User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compose);
-
         ButterKnife.bind(this);
 
         currentUser = UserSettings.getCurrentUser(getApplicationContext());
 
-        toolbar.setTitle("Compose");
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        setupToolbar();
 
         et_to.addTextChangedListener(new TextWatcher() {
             @Override
@@ -86,6 +71,20 @@ public class ComposeActivity extends AppCompatActivity implements SendMailListen
             @Override
             public void afterTextChanged(Editable editable) {
 
+            }
+        });
+    }
+
+    private void setupToolbar() {
+        toolbar.setTitleTextColor(getResources().getColor(R.color.toolbarText));
+        toolbar.setTitle(getString(R.string.compose));
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }

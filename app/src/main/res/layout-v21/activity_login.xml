@@ -29,7 +29,7 @@
                 android:layout_height="36dp"
                 android:layout_marginLeft="24dp"
                 android:layout_marginRight="24dp"
-                android:src="@drawable/person" />
+                android:src="@drawable/ic_login_person" />
 
             <EditText
                 android:id="@+id/login_username"
@@ -53,7 +53,7 @@
                 android:layout_marginLeft="24dp"
                 android:layout_marginRight="24dp"
                 android:padding="4dp"
-                android:src="@drawable/key" />
+                android:src="@drawable/ic_login_key" />
 
             <EditText
                 android:id="@+id/login_password"

@@ -23,8 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
@@ -63,8 +61,6 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
     RecyclerView recyclerView;
     @Bind(R.id.swipeContainer)
     SwipeRefreshLayout swipeRefreshLayout;
-    @Bind(R.id.searchET)
-    EditText searchET;
     @Bind(R.id.inbox_fab_menu)
     FloatingActionsMenu fabMenu;
     com.getbase.floatingactionbutton.FloatingActionButton fabTrash;
@@ -164,50 +160,7 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
     }
 
     private void setupSearchBar() {
-        /*
-        searchET.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i0, int i1, int i2) {
-                if (charSequence.length() >= 2) {
-                    allEmails = (ArrayList<EmailMessage>) EmailMessage.listAll(EmailMessage.class);
-                    Collections.reverse(allEmails);
-
-                    for (int i = 0; i < allEmails.size(); i++) {
-                        EmailMessage email = allEmails.get(i);
-                        if (email.fromName.toLowerCase()
-                                .contains(charSequence.toString().toLowerCase())
-                                || email.fromAddress.toLowerCase()
-                                .contains(charSequence.toString().toLowerCase())
-                                || email.subject.toLowerCase()
-                                .contains(charSequence.toString().toLowerCase())
-                                || email.dateInMillis.toLowerCase()
-                                .contains(charSequence.toString().toLowerCase())
-                                || email.content.toLowerCase()
-                                .contains(charSequence.toString().toLowerCase())) {
-                        } else {
-                            allEmails.remove(email);
-                            i--;
-                        }
-                    }
-                    mailAdapter = new MailAdapter(allEmails, getActivity(), InboxFragment.this, Constants.INBOX);
-                    recyclerView.setAdapter(mailAdapter);
-                    System.out.println("SEARCHED RESULTS COUNT = " + mailAdapter.getCount());
-                } else {
-                    refreshAdapter();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-        */
     }
 
     private void setupDeleteAndComposeFABs(boolean isDeleteVisible) {
@@ -298,25 +251,7 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_search) {
-            Animation slide_down = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_down);
-            Animation slide_up = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_up);
-
-            if (searchET.getVisibility() == View.GONE) {
-                searchET.setVisibility(View.VISIBLE);
-                searchET.startAnimation(slide_up);
-                searchET.requestFocus();
-                item.setIcon(R.drawable.ic_action_close);
-                ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(searchET, InputMethodManager.SHOW_FORCED);
-            } else {
-                item.setIcon(R.drawable.ic_action_search);
-                View view = getActivity().getCurrentFocus();
-                if (view != null) {
-                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                }
-                searchET.startAnimation(slide_down);
-                searchET.setVisibility(View.GONE);
-            }
+            Snackbar.make(recyclerView, getString(R.string.snackbar_search_pressed), Snackbar.LENGTH_LONG).show();
             return true;
         } else if (id == R.id.action_logout) {
             logout();
