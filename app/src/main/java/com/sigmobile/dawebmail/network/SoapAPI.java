@@ -180,19 +180,19 @@ public class SoapAPI {
 
         AccountSelector accountSelector = new AccountSelector();
         accountSelector.setBy(AccountBy.OPT5_NAME);
-        accountSelector.setValue(user.username);
+        accountSelector.setValue(user.getUsername());
 
         AuthRequest authRequest = new AuthRequest();
         authRequest.setAccount(accountSelector);
         authRequest.setCsrfTokenSecured(true);
         authRequest.setPersistAuthTokenCookie(true);
-        authRequest.setPassword(user.password);
+        authRequest.setPassword(user.getPassword());
 
         try {
             AuthResponse authResponse = zcsService.authRequest(authRequest, null);
 
             HeaderAccountInfo headerAccountInfo = new HeaderAccountInfo();
-            headerAccountInfo.setValue(user.username);
+            headerAccountInfo.setValue(user.getUsername());
             headerAccountInfo.setBy("name");
 
             HeaderContext headerContext = new HeaderContext();

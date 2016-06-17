@@ -57,12 +57,12 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.ViewHolder> {
     public void onBindViewHolder(MailAdapter.ViewHolder holder, final int position) {
         final EmailMessage currentEmail = emails.get(position);
 
-        if (currentEmail.readUnread.equals(Constants.WEBMAIL_UNREAD)) {
+        if (currentEmail.getReadUnread().equals(Constants.WEBMAIL_UNREAD)) {
             holder.msgFrom.setTypeface(null, Typeface.BOLD);
             if (!clickedForDelete[position]) {
-                if (currentEmail.totalAttachments >= 1)
+                if (currentEmail.getTotalAttachments() >= 1)
                     holder.msgIcon.setImageResource(R.drawable.msg_unread_att);
-                else if (currentEmail.important)
+                else if (currentEmail.isImportant())
                     holder.msgIcon.setImageResource(R.drawable.msg_unread_imp);
                 else
                     holder.msgIcon.setImageResource(R.drawable.msg_unread);
@@ -73,9 +73,9 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.ViewHolder> {
         } else {
             holder.msgFrom.setTypeface(null, Typeface.NORMAL);
             if (!clickedForDelete[position]) {
-                if (currentEmail.totalAttachments >= 1)
+                if (currentEmail.getTotalAttachments() >= 1)
                     holder.msgIcon.setImageResource(R.drawable.msg_read_att);
-                else if (currentEmail.important)
+                else if (currentEmail.isImportant())
                     holder.msgIcon.setImageResource(R.drawable.msg_read_imp);
                 else
                     holder.msgIcon.setImageResource(R.drawable.msg_read);
@@ -85,9 +85,9 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.ViewHolder> {
             }
         }
 
-        holder.msgFrom.setText(currentEmail.fromName);
-        holder.msgDateRecv.setText(DateUtils.getDate(context, Long.parseLong(currentEmail.dateInMillis)));
-        holder.msgSubject.setText(currentEmail.subject);
+        holder.msgFrom.setText(currentEmail.getFromName());
+        holder.msgDateRecv.setText(DateUtils.getDate(context, Long.parseLong(currentEmail.getDateInMillis())));
+        holder.msgSubject.setText(currentEmail.getSubject());
 
         holder.msgContainer.setOnLongClickListener(new View.OnLongClickListener() {
             @Override

@@ -71,7 +71,7 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
     }
 
     private void showEmailContent() {
-        if (currentEmail.content.equals("") || currentEmail.content == null) {
+        if (currentEmail.getContent().equals("") || currentEmail.getContent() == null) {
             setEmailContent(getString(R.string.error_connect_to_view_email));
             /*
             *since we dont have to sendMsg in to view the webmail anymore
@@ -80,7 +80,7 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
              */
             new ViewMailManager(currentUser, getApplicationContext(), ViewEmail.this, currentEmail).execute();
         } else {
-            setEmailContent(currentEmail.content);
+            setEmailContent(currentEmail.getContent());
         }
     }
 
@@ -94,7 +94,7 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
 
             }
         });
-        getSupportActionBar().setTitle("@" + currentEmail.fromName);
+        getSupportActionBar().setTitle("@" + currentEmail.getFromName());
     }
 
     private void setupBundleReceivers() {
@@ -125,11 +125,11 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
     public void onPostView(EmailMessage emailMessage) {
         if (emailMessage != null) {
 
-            if (currentEmail.readUnread.equals(Constants.WEBMAIL_UNREAD))
+            if (currentEmail.getReadUnread().equals(Constants.WEBMAIL_UNREAD))
                 markWebmailAsRead();
 
-            setEmailContent(emailMessage.content);
-            emailMessage.readUnread = Constants.WEBMAIL_READ;
+            setEmailContent(emailMessage.getContent());
+            emailMessage.setReadUnread(Constants.WEBMAIL_READ);
             if (EMAIL_TYPE.equals(Constants.INBOX)) {
                 emailMessage.save();
             }
@@ -148,12 +148,12 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
         contentContainer.getSettings().setJavaScriptEnabled(true);
         contentContainer.loadDataWithBaseURL(null, html, mime, encoding, null);
 
-        senderName.setText(currentEmail.fromAddress);
-        subject.setText(currentEmail.subject);
-        senderNameBottom.setText(currentEmail.fromName);
-        dateBottom.setText(DateUtils.getDate(getApplicationContext(), Long.parseLong(currentEmail.dateInMillis)));
+        senderName.setText(currentEmail.getFromAddress());
+        subject.setText(currentEmail.getSubject());
+        senderNameBottom.setText(currentEmail.getFromName());
+        dateBottom.setText(DateUtils.getDate(getApplicationContext(), Long.parseLong(currentEmail.getDateInMillis())));
 
-        final ArrayList<String> attachmentsList = BasePath.getAttachmentsPaths(getApplicationContext(), currentEmail.contentID);
+        final ArrayList<String> attachmentsList = BasePath.getAttachmentsPaths(getApplicationContext(), currentEmail.getContentID());
         for (int i = 0; i < attachmentsList.size(); i++) {
             TextView textView = new TextView(this);
             ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -178,7 +178,7 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
     }
 
     private void markWebmailAsRead() {
-        new MailAction(getApplicationContext(), currentUser, getString(R.string.msg_action_read), "" + currentEmail.contentID, new MailActionListener() {
+        new MailAction(getApplicationContext(), currentUser, getString(R.string.msg_action_read), "" + currentEmail.getContentID(), new MailActionListener() {
             @Override
             public void onPreMailAction() {
 

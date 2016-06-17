@@ -30,31 +30,22 @@ import butterknife.ButterKnife;
  */
 public class SmartBoxFragment extends Fragment {
 
-
     @Bind(R.id.smart_total_avg_length)
     TextView smart_total_avg_length;
-
     @Bind(R.id.smart_total_longest_length)
     TextView smart_total_longest_length;
-
     @Bind(R.id.smart_total_emails)
     TextView smart_total_emails;
-
     @Bind(R.id.smart_total_last_refresh)
     TextView smart_total_last_refresh;
-
     @Bind(R.id.smart_total_max_sender1)
     TextView smart_total_max_sender1;
-
     @Bind(R.id.smart_total_max_sender2)
     TextView smart_total_max_sender2;
-
     @Bind(R.id.smart_total_max_sender3)
     TextView smart_total_max_sender3;
-
     @Bind(R.id.smart_total_no_of_opened)
     TextView smart_total_no_of_opened;
-
     @Bind(R.id.smart_total_per_att)
     TextView smart_total_per_att;
 
@@ -80,7 +71,7 @@ public class SmartBoxFragment extends Fragment {
         int openedWithApp = 0;
         int readEmails = 0;
         for (int i = 0; i < emails.size(); i++) {
-            String subject = emails.get(i).subject;
+            String subject = emails.get(i).getSubject();
             if (subject.contains(" ")) {
                 int currentLength = subject.split(" ").length;
                 totalLength += currentLength;
@@ -90,18 +81,18 @@ public class SmartBoxFragment extends Fragment {
                 }
             } else
                 totalLength++;
-            if (emails.get(i).totalAttachments >= 1)
+            if (emails.get(i).getTotalAttachments() >= 1)
                 emailsWithAttachment++;
 
-            if (emails.get(i).readUnread.equals(Constants.WEBMAIL_READ)) {
+            if (emails.get(i).getReadUnread().equals(Constants.WEBMAIL_READ)) {
                 readEmails++;
             }
-            if (senderCount.containsKey(emails.get(i).fromName)) {
-                int count = (senderCount.get(emails.get(i).fromName) + 1);
-                senderCount.remove(emails.get(i).fromName);
-                senderCount.put(emails.get(i).fromName, count);
+            if (senderCount.containsKey(emails.get(i).getFromName())) {
+                int count = (senderCount.get(emails.get(i).getFromName()) + 1);
+                senderCount.remove(emails.get(i).getFromName());
+                senderCount.put(emails.get(i).getFromName(), count);
             } else
-                senderCount.put(emails.get(i).fromName, 1);
+                senderCount.put(emails.get(i).getFromName(), 1);
         }
 
         smart_total_emails.setText("" + emails.size());

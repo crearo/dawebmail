@@ -79,8 +79,8 @@ public class NotificationMaker {
             notification = new Notification.InboxStyle(mBuilder);
 
             for (int i = 0; i < numberToShow; i++) {
-                String emailFrom = newEmails.get(newEmails.size() - 1 - i).fromName;
-                String emailSubject = newEmails.get(newEmails.size() - 1 - i).subject;
+                String emailFrom = newEmails.get(newEmails.size() - 1 - i).getFromName();
+                String emailSubject = newEmails.get(newEmails.size() - 1 - i).getSubject();
                 String htmlText = "<b>" + emailFrom + "</b> " + emailSubject;
                 notification.addLine(Html.fromHtml(htmlText));
             }

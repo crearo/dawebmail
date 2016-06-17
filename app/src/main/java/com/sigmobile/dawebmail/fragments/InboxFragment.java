@@ -395,12 +395,12 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
                 }
             } else if (msgAction.equals(getString(R.string.msg_action_read))) {
                 for (EmailMessage emailMessage : emailsForMultiAction) {
-                    emailMessage.readUnread = Constants.WEBMAIL_READ;
+                    emailMessage.setReadUnread(Constants.WEBMAIL_READ);
                     emailMessage.save();
                 }
             } else if (msgAction.equals(getString(R.string.msg_action_unread))) {
                 for (EmailMessage emailMessage : emailsForMultiAction) {
-                    emailMessage.readUnread = Constants.WEBMAIL_UNREAD;
+                    emailMessage.setReadUnread(Constants.WEBMAIL_UNREAD);
                     emailMessage.save();
                 }
             }

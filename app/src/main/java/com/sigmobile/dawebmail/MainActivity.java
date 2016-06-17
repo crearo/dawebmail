@@ -282,7 +282,7 @@ public class MainActivity extends AppCompatActivity {
     private void setToolbarTitle(IDrawerItem drawerItem) {
         String currentUserName = "NaN";
         if (UserSettings.getCurrentUser(getApplicationContext()) != null)
-            currentUserName = UserSettings.getCurrentUser(getApplicationContext()).username;
+            currentUserName = UserSettings.getCurrentUser(getApplicationContext()).getUsername();
         if (currentUserName.startsWith("20")) {
             currentUserName = currentUserName.substring(0, currentUserName.indexOf("@"));
             if (currentUserName.length() > 3)

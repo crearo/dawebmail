@@ -103,10 +103,10 @@ public class RestAPI {
             for (EmailMessage storedEmail : EmailMessage.getAllMailsOfUser(user)) {
                 boolean storedEmailFound = false;
                 for (EmailMessage fetchedEmail : fetchedEmails) {
-                    if (fetchedEmail.contentID == storedEmail.contentID) {
+                    if (fetchedEmail.getContentID() == storedEmail.getContentID()) {
                         storedEmailFound = true;
-                        if (!fetchedEmail.readUnread.equals(storedEmail.readUnread)) {
-                            EmailMessage.updateReadStatus(storedEmail, fetchedEmail.readUnread);
+                        if (!fetchedEmail.getReadUnread().equals(storedEmail.getReadUnread())) {
+                            EmailMessage.updateReadStatus(storedEmail, fetchedEmail.getReadUnread());
                         }
                     }
                 }
@@ -128,10 +128,10 @@ public class RestAPI {
              */
             for (int i = 0; i < fetchedEmails.size(); i++) {
                 if (lastWebmail != null)
-                    if (fetchedEmails.get(i).contentID == lastWebmail.contentID)
+                    if (fetchedEmails.get(i).getContentID() == lastWebmail.getContentID())
                         indexOfLastEmailInFetchedList = i;
                 if (latestWebmail != null)
-                    if (fetchedEmails.get(i).contentID == latestWebmail.contentID)
+                    if (fetchedEmails.get(i).getContentID() == latestWebmail.getContentID())
                         indexOfLatestEmailInFetchedList = i;
             }
 
@@ -141,7 +141,7 @@ public class RestAPI {
             if (refreshType.equals(Constants.REFRESH_TYPE_REFRESH)) {
                 for (int m = 0; m < indexOfLatestEmailInFetchedList; m++) {
                     EmailMessage fetchedEmail = fetchedEmails.get(m);
-                    EmailMessage emailMessage = EmailMessage.saveNewEmailMessage(user, fetchedEmail.contentID, fetchedEmail.fromName, fetchedEmail.fromAddress, fetchedEmail.subject, fetchedEmail.dateInMillis, fetchedEmail.readUnread, fetchedEmail.totalAttachments, fetchedEmail.important);
+                    EmailMessage emailMessage = EmailMessage.saveNewEmailMessage(user, fetchedEmail.getContentID(), fetchedEmail.getFromName(), fetchedEmail.getFromAddress(), fetchedEmail.getSubject(), fetchedEmail.getDateInMillis(), fetchedEmail.getReadUnread(), fetchedEmail.getTotalAttachments(), fetchedEmail.isImportant());
                     allNewEmails.add(emailMessage);
                 }
             } else if (refreshType.equals(Constants.REFRESH_TYPE_LOAD_MORE)) {
@@ -149,7 +149,7 @@ public class RestAPI {
                 lengthToLoad = (lengthToLoad + indexOfLastEmailInFetchedList) <= (fetchedEmails.size()) ? (lengthToLoad) : (fetchedEmails.size() - indexOfLastEmailInFetchedList);
                 for (int m = indexOfLastEmailInFetchedList; m < indexOfLastEmailInFetchedList + lengthToLoad; m++) {
                     EmailMessage fetchedEmail = fetchedEmails.get(m);
-                    EmailMessage emailMessage = EmailMessage.saveNewEmailMessage(user, fetchedEmail.contentID, fetchedEmail.fromName, fetchedEmail.fromAddress, fetchedEmail.subject, fetchedEmail.dateInMillis, fetchedEmail.readUnread, fetchedEmail.totalAttachments, fetchedEmail.important);
+                    EmailMessage emailMessage = EmailMessage.saveNewEmailMessage(user, fetchedEmail.getContentID(), fetchedEmail.getFromName(), fetchedEmail.getFromAddress(), fetchedEmail.getSubject(), fetchedEmail.getDateInMillis(), fetchedEmail.getReadUnread(), fetchedEmail.getTotalAttachments(), fetchedEmail.isImportant());
                     allNewEmails.add(emailMessage);
                 }
             }
@@ -245,7 +245,7 @@ public class RestAPI {
 
     private EmailMessage makeFetchContentRequest(EmailMessage emailMessage) {
         try {
-            URL url = new URL(context.getString(R.string.rest_url_view_webmail) + emailMessage.contentID);
+            URL url = new URL(context.getString(R.string.rest_url_view_webmail) + emailMessage.getContentID());
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
 
@@ -268,9 +268,9 @@ public class RestAPI {
                 writeStringAsFile(context, total.toString());
 
                 MailParser mailParser = new MailParser();
-                mailParser.newMailParser(context, emailMessage.contentID, total.toString());
-                emailMessage.content = mailParser.getContentHTML();
-                emailMessage.totalAttachments = mailParser.getTotalAttachments();
+                mailParser.newMailParser(context, emailMessage.getContentID(), total.toString());
+                emailMessage.setContent(mailParser.getContentHTML());
+                emailMessage.setTotalAttachments(mailParser.getTotalAttachments());
 
                 return emailMessage;
             } else {

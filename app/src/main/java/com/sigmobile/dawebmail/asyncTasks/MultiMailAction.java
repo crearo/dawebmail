@@ -43,7 +43,7 @@ public class MultiMailAction extends AsyncTask<Void, Void, Void> {
          * If any of them is unsuccessful, return false
          */
         for (EmailMessage emailMessage : emailsForMultiAction) {
-            result = soapAPI.performMailAction(context, currentUser, msgAction, String.valueOf(emailMessage.contentID));
+            result = soapAPI.performMailAction(context, currentUser, msgAction, String.valueOf(emailMessage.getContentID()));
             if (!result)
                 return null;
         }
