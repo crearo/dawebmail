@@ -41,7 +41,7 @@ public class EmailMessage extends SugarRecord<EmailMessage> implements Serializa
 
 
     public static List<EmailMessage> getAllMailsOfUser(User user) {
-        List<EmailMessage> emailMessages = Select.from(EmailMessage.class).where(Condition.prop(StringUtil.toSQLName("userName")).eq(user.username)).orderBy(StringUtil.toSQLName("contentID")).list();
+        List<EmailMessage> emailMessages = Select.from(EmailMessage.class).where(Condition.prop(StringUtil.toSQLName("userName")).eq(user.getUsername())).orderBy(StringUtil.toSQLName("contentID")).list();
         return emailMessages;
     }
 
@@ -72,7 +72,7 @@ public class EmailMessage extends SugarRecord<EmailMessage> implements Serializa
     public static EmailMessage saveNewEmailMessage(User user, int contentID, String fromName, String fromAddress, String subject, String dateInMillis, String readUnread, int totalAttachments, boolean important) {
         /* Check if webmail of that content ID exists - if it does, don't save */
         if (getEmailMessageFromContentID(contentID) == null) {
-            EmailMessage emailMessage = new EmailMessage(user.username, contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "", totalAttachments, important);
+            EmailMessage emailMessage = new EmailMessage(user.getUsername(), contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "", totalAttachments, important);
             emailMessage.save();
             return emailMessage;
         }
@@ -84,7 +84,7 @@ public class EmailMessage extends SugarRecord<EmailMessage> implements Serializa
     }
 
     public static void updateExistingEmailMessage(User user, EmailMessage emailMessage, int contentID, String fromName, String fromAddress, String subject, String dateInMillis, String readUnread, int totalAttachments, boolean important) {
-        emailMessage.userName = user.username;
+        emailMessage.userName = user.getUsername();
         emailMessage.fromName = fromName;
         emailMessage.fromAddress = fromAddress;
         emailMessage.subject = subject;

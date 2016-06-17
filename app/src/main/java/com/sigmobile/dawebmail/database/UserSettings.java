@@ -26,7 +26,7 @@ public class UserSettings {
         if (currentUser == null) {
             editor.putString(Constants.CURRENT_USERNAME, null);
         } else {
-            editor.putString(Constants.CURRENT_USERNAME, currentUser.username);
+            editor.putString(Constants.CURRENT_USERNAME, currentUser.getUsername());
         }
         editor.apply();
         editor.commit();

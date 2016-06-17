@@ -42,12 +42,12 @@ public class BackgroundService extends Service implements RefreshInboxListener {
     public void refreshInboxInBackground(User user) {
         SharedPreferences prefs = getSharedPreferences(Constants.USER_PREFERENCES, MODE_PRIVATE);
 
-        boolean wifiEnabled = prefs.getBoolean(Constants.TOGGLE_WIFI, true);
         boolean dataEnabled = prefs.getBoolean(Constants.TOGGLE_MOBILEDATA, false);
 
-        if (((wifiEnabled && ConnectionManager.isConnectedByWifi(this)) || (dataEnabled && ConnectionManager.isConnectedByMobileData(this)))) {
+        if ((ConnectionManager.isConnectedByWifi(this) || (dataEnabled && ConnectionManager.isConnectedByMobileData(this)))) {
+            // ToDo : Add data saving if check here.
+            // It should not keep refreshing at night if connected to wifi
             new RefreshInbox(user, getApplicationContext(), this, Constants.INBOX, Constants.REFRESH_TYPE_REFRESH).execute();
-        } else if ((ConnectionManager.isConnectedByWifi(this) == false && ConnectionManager.isConnectedByMobileData(this) == false)) {
         }
     }
 

@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setSelectedAccountHeader(boolean shouldClick) {
-        String currentUsername = UserSettings.getCurrentUser(this).username;
+        String currentUsername = UserSettings.getCurrentUser(this).getUsername();
         for (int i = 0; i < allAccountHeaders.size(); i++) {
             if (allAccountHeaders.get(i).getName().getText().equals(currentUsername))
                 accountHeader.setActiveProfile(allAccountHeaders.get(i), shouldClick);
@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
         allAccountHeaders = new ArrayList<>();
         List<User> users = User.getAllUsers();
         for (int i = 0; i < users.size(); i++) {
-            ProfileDrawerItem profileDrawerItem = new ProfileDrawerItem().withName(users.get(i).username);
+            ProfileDrawerItem profileDrawerItem = new ProfileDrawerItem().withName(users.get(i).getUsername());
             /**
              * A fun image for each profile drawer
              */
@@ -252,7 +252,6 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = prefs.edit();
 
                 editor.putBoolean(Constants.TOGGLE_MOBILEDATA, false);
-                editor.putBoolean(Constants.TOGGLE_WIFI, false);
 
                 EmailMessage.deleteAllMailsOfUser(currentUser);
 

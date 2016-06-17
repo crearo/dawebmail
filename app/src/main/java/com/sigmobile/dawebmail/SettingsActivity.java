@@ -38,11 +38,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         SharedPreferences prefs = getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);
         toggleMobileData = prefs.getBoolean(Constants.TOGGLE_MOBILEDATA, true);
-        toggleWifi = prefs.getBoolean(Constants.TOGGLE_WIFI, true);
 
         switch_mobile.setChecked(toggleMobileData);
         switch_mobile.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SharedPreferences prefs = getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);

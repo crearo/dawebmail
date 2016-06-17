@@ -25,7 +25,6 @@ public class Constants {
     public static String CURRENT_USERNAME = "CURRENT_USER";
     public static String LAST_REFRESHED = "LAST_REFRESHED";
     public static String TOGGLE_MOBILEDATA = "toggle_mobiledata";
-    public static String TOGGLE_WIFI = "toggle_wifi";
     public static String ALERT_SHOWN = "ALERT_SHOWN_UPDATE_2";
     public static String NOTIFICATION_SOUND = "NOTIFICATION_SOUND";
 

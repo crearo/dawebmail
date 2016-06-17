@@ -27,7 +27,7 @@ public class NotificationMaker {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
         mBuilder.setSmallIcon(R.drawable.msg_notification);
         mBuilder.setTicker(context.getString(R.string.notification_ticker_new_webmail));
-        String username = user.username;
+        String username = user.getUsername();
         if (User.getUsersCount() > 1) {
             if (username.indexOf("@") != -1)
                 mBuilder.setContentTitle(fromName + " to " + username.substring(0, username.indexOf("@")));
@@ -68,7 +68,7 @@ public class NotificationMaker {
                     .setSmallIcon(R.drawable.msg_notification);
 
             if (User.getUsersCount() > 1) {
-                String username = user.username;
+                String username = user.getUsername();
                 if (username.indexOf("@") != -1)
                     mBuilder.setContentTitle(context.getString(R.string.notification_ticker_new_webmails) + " for " + username.substring(0, username.indexOf("@")));
                 else

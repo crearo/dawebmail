@@ -62,7 +62,7 @@ public class RestAPI {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
 
-            String userPassword = user.username + ":" + user.password;
+            String userPassword = user.getUsername() + ":" + user.getPassword();
             String encoding = Base64.encodeToString(userPassword.getBytes(), Base64.DEFAULT);
             conn.setRequestProperty("Authorization", "Basic " + encoding);
             conn.setReadTimeout(TIME_OUT);
@@ -179,7 +179,7 @@ public class RestAPI {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
 
-            String userPassword = user.username + ":" + user.password;
+            String userPassword = user.getUsername() + ":" + user.getPassword();
             String encoding = Base64.encodeToString(userPassword.getBytes(), Base64.DEFAULT);
             conn.setRequestProperty("Authorization", "Basic " + encoding);
             conn.setConnectTimeout(TIME_OUT);
@@ -230,7 +230,7 @@ public class RestAPI {
                         }
                     }
 
-                    EmailMessage emailMessage = new EmailMessage(user.username, contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "", totalAttachments, important);
+                    EmailMessage emailMessage = new EmailMessage(user.getUsername(), contentID, fromName, fromAddress, subject, dateInMillis, readUnread, "", totalAttachments, important);
                     parsedMails.add(emailMessage);
                 }
                 return parsedMails;
@@ -249,7 +249,7 @@ public class RestAPI {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
 
-            String userPassword = user.username + ":" + user.password;
+            String userPassword = user.getUsername() + ":" + user.getPassword();
             String encoding = Base64.encodeToString(userPassword.getBytes(), Base64.DEFAULT);
             conn.setRequestProperty("Authorization", "Basic " + encoding);
             conn.setReadTimeout(TIME_OUT);
