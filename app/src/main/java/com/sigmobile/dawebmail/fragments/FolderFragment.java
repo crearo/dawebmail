@@ -319,7 +319,7 @@ public class FolderFragment extends Fragment implements RefreshInboxListener, Mu
             @Override
             public void onClick(View view) {
                 Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_deleting), Snackbar.LENGTH_LONG).show();
-                new MultiMailAction(currentUser, getActivity(), FolderFragment.this, emailsMarkedForAction, getString(R.string.msg_action_trash)).execute();
+                new MultiMailAction(currentUser, getActivity(), FolderFragment.this, emailsMarkedForAction, getString(R.string.msg_action_delete)).execute();
             }
         });
 

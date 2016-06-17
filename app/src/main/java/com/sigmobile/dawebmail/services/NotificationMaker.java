@@ -25,7 +25,7 @@ public class NotificationMaker {
 
     public static void showNotification(Context context, User user, String fromName, String subject) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
-        mBuilder.setSmallIcon(R.drawable.envelope_m);
+        mBuilder.setSmallIcon(R.drawable.msg_notification);
         mBuilder.setTicker(context.getString(R.string.notification_ticker_new_webmail));
         String username = user.username;
         if (User.getUsersCount() > 1) {
@@ -65,7 +65,7 @@ public class NotificationMaker {
                     .setTicker(context.getString(R.string.notification_ticker_new_webmails))
                     .setContentText(context.getString(R.string.notification_swipe_to_view))
                     .setAutoCancel(true)
-                    .setSmallIcon(R.drawable.envelope_m);
+                    .setSmallIcon(R.drawable.msg_notification);
 
             if (User.getUsersCount() > 1) {
                 String username = user.username;

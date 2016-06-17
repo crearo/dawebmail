@@ -34,6 +34,7 @@ import com.sigmobile.dawebmail.services.NotificationMaker;
 import com.sigmobile.dawebmail.utils.Constants;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
             setToolbarTitle(selectedDrawerItem);
         }
         setSelectedAccountHeader(true);
-        // ToDO : Send false herre, but make sure account is selected correctly.
+        // ToDO : Send false here, but make sure account is selected correctly. This still isnt working as expected
     }
 
     private void setupToolbar() {
@@ -211,8 +212,19 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupAllAccountHeaders() {
         allAccountHeaders = new ArrayList<>();
-        for (User user : User.getAllUsers()) {
-            allAccountHeaders.add(new ProfileDrawerItem().withName(user.username).withIcon(getResources().getDrawable(R.drawable.git_user)));
+        List<User> users = User.getAllUsers();
+        for (int i = 0; i < users.size(); i++) {
+            ProfileDrawerItem profileDrawerItem = new ProfileDrawerItem().withName(users.get(i).username);
+            /**
+             * A fun image for each profile drawer
+             */
+            if (i % 3 == 0)
+                profileDrawerItem.withIcon(getResources().getDrawable(R.drawable.user_plain));
+            if (i % 3 == 1)
+                profileDrawerItem.withIcon(getResources().getDrawable(R.drawable.user_cool));
+            if (i % 3 == 2)
+                profileDrawerItem.withIcon(getResources().getDrawable(R.drawable.user_oldschool));
+            allAccountHeaders.add(profileDrawerItem);
         }
 
         final String createAccount = getString(R.string.drawer_new_account);
