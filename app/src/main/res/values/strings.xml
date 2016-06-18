@@ -73,7 +73,7 @@
     <string name="snackbar_attachment_pressed">Yet to implement - Help &amp; contribute on Github!</string>
     <string name="snackbar_sending">Sending...</string>
     <string name="snackbar_sending_successful">Sent Successfully</string>
-    <string name="snackbar_sending_unsuccesful">Unable to send. Make Sure you are connected to the net</string>
+    <string name="snackbar_sending_unsuccesful">Unable to send. Make Sure you are connected to the net, and have written a valid sender ID</string>
 
     <!-- Progress Dialogs -->
     <string name="dialog_msg_logging_in">Logging In</string>

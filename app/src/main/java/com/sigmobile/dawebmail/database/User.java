@@ -89,6 +89,20 @@ public class User extends SugarRecord<User> implements Serializable {
 
     }
 
+    public static String getUserThreeLetterName(User user) {
+        String currentUserName = "NaN";
+        if (user != null)
+            currentUserName = user.getUsername();
+        if (currentUserName.startsWith("20")) {
+            currentUserName = currentUserName.substring(0, currentUserName.indexOf("@"));
+            if (currentUserName.length() > 3)
+                currentUserName = currentUserName.substring(currentUserName.length() - 3);
+        } else {
+            currentUserName = currentUserName.substring(0, 3);
+        }
+        return currentUserName;
+    }
+
     @Override
     public int hashCode() {
         int result = username.hashCode();

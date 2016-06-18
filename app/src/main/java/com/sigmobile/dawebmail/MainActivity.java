@@ -282,17 +282,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setToolbarTitle(IDrawerItem drawerItem) {
-        String currentUserName = "NaN";
-        if (UserSettings.getCurrentUser(getApplicationContext()) != null)
-            currentUserName = UserSettings.getCurrentUser(getApplicationContext()).getUsername();
-        if (currentUserName.startsWith("20")) {
-            currentUserName = currentUserName.substring(0, currentUserName.indexOf("@"));
-            if (currentUserName.length() > 3)
-                currentUserName = currentUserName.substring(currentUserName.length() - 3);
-        } else {
-            currentUserName = currentUserName.substring(0, 3);
-        }
-
+        String currentUserName = User.getUserThreeLetterName(UserSettings.getCurrentUser(this));
         String toolbarTitle = "";
         if (((PrimaryDrawerItem) drawerItem).getName().getText().equals(pInbox.getName().getText()))
             toolbarTitle = getString(R.string.drawer_inbox) + " : " + currentUserName;
@@ -302,10 +292,6 @@ public class MainActivity extends AppCompatActivity {
             toolbarTitle = getString(R.string.drawer_smartbox) + " : " + currentUserName;
         if (((PrimaryDrawerItem) drawerItem).getName().getText().equals(pTrashBox.getName().getText()))
             toolbarTitle = getString(R.string.drawer_trash) + " : " + currentUserName;
-        if (((PrimaryDrawerItem) drawerItem).getName().getText().equals(sSettings.getName().getText()))
-            toolbarTitle = getString(R.string.drawer_settings);
-        if (((PrimaryDrawerItem) drawerItem).getName().getText().equals(sFeedback.getName().getText()))
-            toolbarTitle = getString(R.string.drawer_feedback);
         getSupportActionBar().setTitle(toolbarTitle);
     }
 

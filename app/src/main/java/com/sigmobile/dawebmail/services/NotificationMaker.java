@@ -27,15 +27,7 @@ public class NotificationMaker {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
         mBuilder.setSmallIcon(R.drawable.msg_notification);
         mBuilder.setTicker(context.getString(R.string.notification_ticker_new_webmail));
-        String username = user.getUsername();
-        if (User.getUsersCount() > 1) {
-            if (username.indexOf("@") != -1)
-                mBuilder.setContentTitle(fromName + " to " + username.substring(0, username.indexOf("@")));
-            else
-                mBuilder.setContentTitle(fromName + " to " + username);
-        } else {
-            mBuilder.setContentTitle(fromName + " to " + username);
-        }
+        mBuilder.setContentTitle(fromName + " to " + User.getUserThreeLetterName(user));
         mBuilder.setContentText(subject);
         mBuilder.setSound(Uri.parse(UserSettings.getNotificationSound(context)));
         mBuilder.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE);
@@ -68,12 +60,9 @@ public class NotificationMaker {
                     .setSmallIcon(R.drawable.msg_notification);
 
             if (User.getUsersCount() > 1) {
-                String username = user.getUsername();
-                if (username.indexOf("@") != -1)
-                    mBuilder.setContentTitle(context.getString(R.string.notification_ticker_new_webmails) + " for " + username.substring(0, username.indexOf("@")));
-                else
-                    mBuilder.setContentTitle(context.getString(R.string.notification_ticker_new_webmails) + " for " + username);
-            }
+                mBuilder.setContentTitle(context.getString(R.string.notification_ticker_new_webmails) + " for " + User.getUserThreeLetterName(user));
+            } else
+                mBuilder.setContentTitle(context.getString(R.string.notification_ticker_new_webmails));
 
             Notification.InboxStyle notification = null;
             notification = new Notification.InboxStyle(mBuilder);
