@@ -16,21 +16,12 @@ public class ContributeActivity extends AppCompatActivity {
     @Bind(R.id.contri_email)
     ImageView email;
 
-    @Bind(R.id.contri_blog)
-    TextView blog;
-
     @Bind(R.id.contri_github)
     TextView github;
 
     @OnClick(R.id.contri_email)
     public void emailClick() {
         sendEmail();
-    }
-
-    @OnClick(R.id.contri_blog)
-    public void blogClick() {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(blog.getText().toString()));
-        startActivity(browserIntent);
     }
 
     @OnClick(R.id.contri_github)

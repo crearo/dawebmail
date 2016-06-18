@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:padding="10dp"
-            android:text="@string/contribute"
+            android:text="@string/contribute_2"
             android:textStyle="bold" />
 
 
@@ -43,9 +43,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:text="To start contributing, go through the github repo, and also read the documentation."
+            android:text="To start contributing, go through the github repo, and also read the documentation - I've written up a very nice README.md :)"
             android:textStyle="bold" />
-
 
         <TextView
             android:layout_width="wrap_content"
@@ -69,23 +68,7 @@
             android:paddingBottom="10dp"
             android:paddingLeft="10dp"
             android:text="(Remember to star!)"
-            android:textStyle="normal" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="A walk through of the code : (Do read)"
             android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/contri_blog"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="@string/blog_link"
-            android:textColor="@color/lite_blue"
-            android:textStyle="normal" />
 
         <LinearLayout
             android:layout_width="match_parent"

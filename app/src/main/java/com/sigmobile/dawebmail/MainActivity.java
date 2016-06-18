@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private Drawer drawer;
     private AccountHeader accountHeader;
     private PrimaryDrawerItem pInbox, pSmartBox, pSentBox, pTrashBox;
-    private SecondaryDrawerItem sSettings, sFeedback;
+    private SecondaryDrawerItem sSettings, sFeedback, sContribute;
     private ArrayList<IProfile> allAccountHeaders;
 
     private IDrawerItem selectedDrawerItem;
@@ -94,9 +94,11 @@ public class MainActivity extends AppCompatActivity {
 
         sSettings = (SecondaryDrawerItem) new SecondaryDrawerItem().withName(getString(R.string.drawer_settings)).withIcon(R.drawable.settings);
         sFeedback = (SecondaryDrawerItem) new SecondaryDrawerItem().withName(getString(R.string.drawer_feedback)).withIcon(R.drawable.feedback);
+        sContribute = (SecondaryDrawerItem) new SecondaryDrawerItem().withName(getString(R.string.drawer_contribute)).withIcon(R.drawable.github_drawer);
 
         sSettings.withSelectable(false);
         sFeedback.withSelectable(false);
+        sContribute.withSelectable(false);
 
         setupAllAccountHeaders();
         final String createAccountString = getString(R.string.drawer_new_account);
@@ -141,7 +143,8 @@ public class MainActivity extends AppCompatActivity {
                         pSmartBox,
                         new DividerDrawerItem(),
                         sSettings,
-                        sFeedback
+                        sFeedback,
+                        sContribute
                 ).withDelayOnDrawerClose(200)
                 .withCloseOnClick(true)
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
@@ -188,8 +191,12 @@ public class MainActivity extends AppCompatActivity {
                             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             startActivity(intent);
                             return true;
+                        } else if (selectedDrawerItem.equals(sContribute)) {
+                            Intent intent = new Intent(MainActivity.this, ContributeActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                            startActivity(intent);
+                            return true;
                         }
-
                         if (fragment != null) {
                             FragmentManager fragmentManager = getSupportFragmentManager();
                             fragmentManager.beginTransaction().replace(R.id.main_frame_layout, fragment, fragmentTag).commit();
