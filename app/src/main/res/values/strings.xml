@@ -4,7 +4,7 @@
     <string name="developer_email">bhardwaj.rish@gmail.com</string>
 
     <string name="release_notes_1">We\'ve changed the entire structure of the application. Material UI + you\'ll receive notifications, smoother than ever! I\'m really thankful to all those that contributed. Send, and delete will show up soon too. :D</string>
-    <string name="release_notes_2">Send, Delete, Multiple Accounts. UI overhaul. DAWebmail. It\'s never been better.</string>
+    <string name="release_notes_2">Send\nDelete\nMultiple Accounts\nUI overhaul.\nDAWebmail. It\'s never been better.</string>
 
     <string name="contribute">DAWebmail needs you! This is a risky step I am willing to take. DAWebmail may lose most of its downloads. But please do stick around if you have found this application useful so far!\n\nWith the new Webmail version in place, the script I wrote to scrape webmails does not work. I\'d love all the Android developers in DA to contribute, and fix the scraping issue, and possibly contribute further! \n\nBonus. The entire interface now follows Material Design guidelines!</string>
     <string name="github_repo">https://github.com/CreaRo/DAWebmail</string>
@@ -70,14 +70,18 @@
     <string name="snackbar_unread_successful">Marked Unread</string>
     <string name="snackbar_logging_out">Logging Out!</string>
     <string name="snackbar_search_pressed">Yet to implement - Help &amp; contribute on Github!</string>
+    <string name="snackbar_attachment_pressed">Yet to implement - Help &amp; contribute on Github!</string>
+    <string name="snackbar_sending">Sending...</string>
+    <string name="snackbar_sending_successful">Sent Successfully</string>
+    <string name="snackbar_sending_unsuccesful">Unable to send. Make Sure you are connected to the net</string>
 
     <!-- Progress Dialogs -->
     <string name="dialog_msg_logging_in">Logging In</string>
     <string name="dialog_msg_loading">Please wait while we load your content</string>
     <string name="dialog_msg_attempting_action">Requesting Action</string>
     <string name="dialog_title_logout">Log Out?</string>
-    <string name="dialog_msg_logout_multi">If you are logged in through another account, we\'ll open you other account\'s inbox.</string>
-    <string name="dialog_msg_logout_single">#kthxbye</string>
+    <string name="dialog_msg_logout_multi">Since you are logged in through another account, we\'ll open you other account\'s inbox.</string>
+    <string name="dialog_msg_logout_single">KThxBye</string>
     <string name="dialog_btn_logout">Log out</string>
     <string name="dialog_msg_fetching_content">Fetching Content</string>
     <string name="dialog_title_permanently_delete">Confirm Delete</string>
@@ -87,7 +91,15 @@
     <string name="dialog_title_toggle_data">Confirm Disable?</string>
     <string name="dialog_msg_toggle_data">You will not receive notifications.\nRecommended : Keep Enabled.</string>
     <string name="dialog_btn_positive_toggle_data">Disable</string>
-    <string name="dialog_btn_negative_toggle_data">Cancel</string>
+    <string name="dialog_btn_negative_toggle_data">Enable</string>
+    <string name="dialog_title_confirm_send">Confirm Send</string>
+    <string name="dialog_msg_confirm_send">Sending an important webmail?\nWe highly recommend you to use the desktop version to send important webmails.</string>
+    <string name="dialog_btn_positive_confirm_send">Send</string>
+    <string name="dialog_btn_negative_confirm_send">Cancel</string>
+    <string name="dialog_title_save_draft">Hold On!</string>
+    <string name="dialog_msg_save_draft">We don\'t save messages as drafts yet. Are you sure you want to go back?</string>
+    <string name="dialog_btn_positive_save_draft">Go Back</string>
+    <string name="dialog_btn_negative_save_draft">Cancel</string>
 
     <!-- Navigation Drawer Items -->
     <string name="drawer_inbox">Inbox</string>

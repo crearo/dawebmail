@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -27,6 +26,7 @@ import com.sigmobile.dawebmail.database.UserSettings;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import me.drakeet.materialdialog.MaterialDialog;
 
 public class ComposeActivity extends AppCompatActivity implements SendMailListener, AutoCompleteListener {
 
@@ -45,6 +45,8 @@ public class ComposeActivity extends AppCompatActivity implements SendMailListen
 
     private User currentUser;
 
+    private boolean onBackPressed = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +54,6 @@ public class ComposeActivity extends AppCompatActivity implements SendMailListen
         ButterKnife.bind(this);
 
         currentUser = UserSettings.getCurrentUser(getApplicationContext());
-
         setupToolbar();
 
         et_to.addTextChangedListener(new TextWatcher() {
@@ -63,9 +64,7 @@ public class ComposeActivity extends AppCompatActivity implements SendMailListen
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.length() >= 3) {
-//                    fetchContacts(charSequence.toString());
-                }
+                
             }
 
             @Override
@@ -73,6 +72,15 @@ public class ComposeActivity extends AppCompatActivity implements SendMailListen
 
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (onBackPressed)
+            super.onBackPressed();
+        else {
+            showBackDialog();
+        }
     }
 
     private void setupToolbar() {
@@ -102,12 +110,12 @@ public class ComposeActivity extends AppCompatActivity implements SendMailListen
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         switch (item.getItemId()) {
             case R.id.menu_send:
-                sendWebmail();
+                showConfirmSendMessage();
                 return true;
             case R.id.menu_attach:
+                Snackbar.make(toolbar, getString(R.string.snackbar_attachment_pressed), Snackbar.LENGTH_LONG).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -120,7 +128,7 @@ public class ComposeActivity extends AppCompatActivity implements SendMailListen
 
     @Override
     public void onPreSend() {
-        Snackbar.make(et_content, "Sending...", Snackbar.LENGTH_LONG).show();
+        Snackbar.make(et_content, getString(R.string.snackbar_sending), Snackbar.LENGTH_LONG).show();
         InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         mgr.hideSoftInputFromWindow(et_content.getWindowToken(), 0);
         mgr.hideSoftInputFromWindow(et_subject.getWindowToken(), 0);
@@ -130,7 +138,7 @@ public class ComposeActivity extends AppCompatActivity implements SendMailListen
     @Override
     public void onPostSend(boolean success) {
         if (success) {
-            Snackbar.make(relativeLayout, "Sent Successfully", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(relativeLayout, getString(R.string.snackbar_sending_successful), Snackbar.LENGTH_LONG).show();
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -138,7 +146,7 @@ public class ComposeActivity extends AppCompatActivity implements SendMailListen
                 }
             }, 1000);
         } else {
-            Snackbar.make(relativeLayout, "Unable to send. Make Sure you are connected to the net.", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(relativeLayout, getString(R.string.snackbar_sending_unsuccesful), Snackbar.LENGTH_LONG).show();
         }
     }
 
@@ -149,7 +157,49 @@ public class ComposeActivity extends AppCompatActivity implements SendMailListen
             for (String s : addressBook) {
                 if (i++ > 10)
                     break;
-                Log.d("Ad", s);
             }
+    }
+
+    private void showConfirmSendMessage() {
+        final MaterialDialog materialDialog = new MaterialDialog(this);
+        materialDialog.setTitle(getString(R.string.dialog_title_confirm_send))
+                .setMessage(getString(R.string.dialog_msg_confirm_send))
+                .setPositiveButton(getString(R.string.dialog_btn_positive_confirm_send), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        sendWebmail();
+                        materialDialog.dismiss();
+                    }
+                })
+                .setNegativeButton(getString(R.string.dialog_btn_negative_confirm_send), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        materialDialog.dismiss();
+                    }
+                })
+                .setCanceledOnTouchOutside(true);
+        materialDialog.show();
+    }
+
+    private void showBackDialog() {
+        final MaterialDialog materialDialog = new MaterialDialog(this);
+        materialDialog.setTitle(getString(R.string.dialog_title_save_draft))
+                .setMessage(getString(R.string.dialog_msg_save_draft))
+                .setPositiveButton(getString(R.string.dialog_btn_positive_save_draft), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onBackPressed = true;
+                        onBackPressed();
+                        materialDialog.dismiss();
+                    }
+                })
+                .setNegativeButton(getString(R.string.dialog_btn_negative_save_draft), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        materialDialog.dismiss();
+                    }
+                })
+                .setCanceledOnTouchOutside(true);
+        materialDialog.show();
     }
 }

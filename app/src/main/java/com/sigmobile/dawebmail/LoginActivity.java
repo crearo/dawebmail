@@ -164,14 +164,14 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
             final MaterialDialog materialDialog = new MaterialDialog(LoginActivity.this);
             materialDialog.setTitle(getString(R.string.app_name));
             materialDialog.setMessage(getString(R.string.release_notes_2));
-            materialDialog.show();
-            materialDialog.setCanceledOnTouchOutside(true);
-            materialDialog.setPositiveButton("Alright!", new View.OnClickListener() {
+            materialDialog.setCanceledOnTouchOutside(false);
+            materialDialog.setPositiveButton("Lets Go!", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     materialDialog.dismiss();
                 }
             });
+            materialDialog.show();
             UserSettings.setAlertShown(getApplicationContext(), true);
         }
     }

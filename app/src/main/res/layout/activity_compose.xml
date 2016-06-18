@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/compose_toolbar"
-        android:layout_margin="10dp"
+        android:layout_margin="8dp"
         android:orientation="horizontal">
 
         <TextView
@@ -24,21 +24,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="To"
-            android:textSize="20sp"
+            android:textSize="@dimen/text_size_large"
             android:textStyle="normal" />
 
         <EditText
             android:id="@+id/compose_to_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="8dp"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:inputType="textEmailAddress"
             android:lines="8"
             android:minLines="6"
-            android:padding="10dp"
-            android:scrollbars="vertical" />
+            android:padding="8dp"
+            android:scrollbars="vertical"
+            android:textSize="@dimen/text_size_large" />
     </LinearLayout>
 
     <include
@@ -53,12 +54,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/compose_divider_1"
-        android:layout_margin="10dp"
+        android:layout_margin="8dp"
         android:background="@android:color/transparent"
         android:hint="Subject"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp"
-        android:textSize="20sp" />
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        android:textSize="@dimen/text_size_large" />
 
     <include
         android:id="@+id/compose_divider_2"
@@ -72,19 +73,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/compose_divider_2"
-        android:layout_margin="10dp"
+        android:layout_margin="8dp"
         android:background="@android:color/transparent"
+        android:gravity="top"
         android:hint="Compose Webmail"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp"
-        android:textSize="18sp" />
+        android:minHeight="300dp"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        android:textSize="@dimen/text_size_large" />
 
     <CheckBox
         android:id="@+id/compose_imp_checkbox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_margin="10dp"
+        android:layout_below="@+id/compose_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:text="Mark Webmail As Important"
         android:textStyle="normal" />
 

@@ -33,18 +33,7 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
 
-        toolbar.setTitleTextColor(getResources().getColor(R.color.toolbarText));
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setTitle("Settings");
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-
-            }
-        });
+        setupToolbar();
 
         SharedPreferences prefs = getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);
         toggleMobileData = prefs.getBoolean(Constants.TOGGLE_MOBILEDATA, true);
@@ -55,6 +44,24 @@ public class SettingsActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isChecked)
                     showConfirmToggleDataDialog();
+                else {
+                    saveMobileDataSettings();
+                }
+            }
+        });
+    }
+
+    private void setupToolbar() {
+        toolbar.setTitleTextColor(getResources().getColor(R.color.toolbarText));
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setTitle("Settings");
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+
             }
         });
     }
