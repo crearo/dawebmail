@@ -64,8 +64,8 @@ public class ComposeActivity extends AppCompatActivity implements SendMailListen
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.charAt(charSequence.length() - 1) == '@')
-                    et_to.setText(charSequence + getString(R.string.webmail_domain));
+                // if (charSequence.charAt(charSequence.length() - 1) == '@')
+                // et_to.setText(charSequence + getString(R.string.webmail_domain));
             }
 
             @Override

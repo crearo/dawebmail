@@ -39,7 +39,11 @@
                 android:layout_gravity="center"
                 android:gravity="left"
                 android:hint="DA-IICT ID"
+                android:imeOptions="actionNext"
                 android:inputType="textEmailAddress"
+                android:lines="1"
+                android:maxLines="1"
+                android:singleLine="true"
                 android:textSize="@dimen/text_size_large" />
         </LinearLayout>
 

@@ -43,9 +43,7 @@ public class NotificationMaker {
         mBuilder.setContentIntent(resultPendingIntent);
 
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
         mNotificationManager.notify((int) (System.currentTimeMillis()), mBuilder.build());
-
         UserSettings.setCurrentUser(user, context);
     }
 
@@ -86,7 +84,6 @@ public class NotificationMaker {
             mBuilder.setSound(Uri.parse(UserSettings.getNotificationSound(context)));
             mBuilder.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE);
             NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
             mNotificationManager.notify((int) System.currentTimeMillis(), mBuilder.build());
 
             UserSettings.setCurrentUser(user, context);
