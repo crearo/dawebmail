@@ -133,9 +133,13 @@ public class SmartBoxFragment extends Fragment {
     }
 
     private String getDateFromMillis(String millis) {
-        long milliSeconds = Long.parseLong(millis);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(milliSeconds);
-        return DateFormat.getDateTimeInstance().format(calendar.getTime());
+        try {
+            long milliSeconds = Long.parseLong(millis);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(milliSeconds);
+            return DateFormat.getDateTimeInstance().format(calendar.getTime());
+        } catch (Exception e) {
+            return "-";
+        }
     }
 }
