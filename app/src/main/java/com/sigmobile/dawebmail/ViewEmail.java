@@ -19,7 +19,7 @@ import com.sigmobile.dawebmail.asyncTasks.ViewMailListener;
 import com.sigmobile.dawebmail.asyncTasks.ViewMailManager;
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
-import com.sigmobile.dawebmail.database.UserSettings;
+import com.sigmobile.dawebmail.database.CurrentUser;
 import com.sigmobile.dawebmail.utils.BasePath;
 import com.sigmobile.dawebmail.utils.Constants;
 import com.sigmobile.dawebmail.utils.DateUtils;
@@ -61,7 +61,7 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
         setContentView(R.layout.activity_view_email);
         ButterKnife.bind(this);
 
-        currentUser = UserSettings.getCurrentUser(this);
+        currentUser = CurrentUser.getCurrentUser(this);
         progressDialog = new ProgressDialog(ViewEmail.this);
 
         setupBundleReceivers();

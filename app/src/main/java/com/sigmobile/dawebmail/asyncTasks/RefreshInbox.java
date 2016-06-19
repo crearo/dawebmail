@@ -2,13 +2,12 @@ package com.sigmobile.dawebmail.asyncTasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
-import com.sigmobile.dawebmail.database.UserSettings;
 import com.sigmobile.dawebmail.network.RestAPI;
 import com.sigmobile.dawebmail.utils.Constants;
+import com.sigmobile.dawebmail.utils.Settings;
 
 import java.util.ArrayList;
 
@@ -26,6 +25,7 @@ public class RefreshInbox extends AsyncTask<Void, Void, Void> {
     private String folder;
     private User user;
     private boolean result;
+    private Settings settings;
 
     public RefreshInbox(User user, Context context, RefreshInboxListener refreshInboxListener, String folder, String refreshType) {
         this.context = context;
@@ -33,7 +33,7 @@ public class RefreshInbox extends AsyncTask<Void, Void, Void> {
         this.refreshType = refreshType;
         this.folder = folder;
         this.user = user;
-        Log.d(TAG, "Request to refresh inbox " + folder + " " + refreshType);
+        settings = new Settings(context);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class RefreshInbox extends AsyncTask<Void, Void, Void> {
         super.onPostExecute(aVoid);
 
         if (result)
-            UserSettings.setLastRefreshed(context, "" + System.currentTimeMillis());
+            settings.save(Settings.KEY_LAST_REFRESHED, "" + System.currentTimeMillis());
 
         listener.onPostRefresh(result, refreshedEmails, user);
     }

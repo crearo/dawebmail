@@ -19,7 +19,8 @@ import android.widget.TextView;
 import com.sigmobile.dawebmail.asyncTasks.Login;
 import com.sigmobile.dawebmail.asyncTasks.LoginListener;
 import com.sigmobile.dawebmail.database.User;
-import com.sigmobile.dawebmail.database.UserSettings;
+import com.sigmobile.dawebmail.database.CurrentUser;
+import com.sigmobile.dawebmail.utils.Settings;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -40,14 +41,16 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
     private String enteredPassword = "";
     private ProgressDialog progressDialog;
     private User currentUser;
+    private Settings settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+        settings = new Settings(getApplicationContext());
 
-        currentUser = UserSettings.getCurrentUser(this);
+        currentUser = CurrentUser.getCurrentUser(this);
 
         showUpdateDialog();
         setupToolbar();
@@ -71,7 +74,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                UserSettings.setCurrentUser(User.getUserFromUserName(enteredUsername), getApplicationContext());
+                                CurrentUser.setCurrentUser(User.getUserFromUserName(enteredUsername), getApplicationContext());
                                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                 finish();
                             }
@@ -124,9 +127,9 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
 
     @Override
     public void onBackPressed() {
-        if (UserSettings.getCurrentUser(this) == null) {
+        if (CurrentUser.getCurrentUser(this) == null) {
             if (User.getAllUsers().size() > 0)
-                UserSettings.setCurrentUser(User.getAllUsers().get(0), getApplicationContext());
+                CurrentUser.setCurrentUser(User.getAllUsers().get(0), getApplicationContext());
         } else {
             finish();
         }
@@ -154,7 +157,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
         } else {
             Snackbar.make(loginButtonContainer, getString(R.string.snackbar_login_successful), Snackbar.LENGTH_LONG).show();
             user = User.createNewUser(user);
-            UserSettings.setCurrentUser(user, getApplicationContext());
+            CurrentUser.setCurrentUser(user, getApplicationContext());
             startActivity(new Intent(this, MainActivity.class));
             finish();
             usernameField.setText("");
@@ -163,7 +166,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
     }
 
     private void showUpdateDialog() {
-        if (!UserSettings.getAlertShown(getApplicationContext())) {
+        if (!settings.getBoolean(Settings.KEY_ALERT_SHOWN)) {
             final MaterialDialog materialDialog = new MaterialDialog(LoginActivity.this);
             materialDialog.setTitle(getString(R.string.app_name));
             materialDialog.setMessage(getString(R.string.release_notes_2));
@@ -175,7 +178,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
                 }
             });
             materialDialog.show();
-            UserSettings.setAlertShown(getApplicationContext(), true);
+            settings.save(Settings.KEY_ALERT_SHOWN, true);
         }
     }
 }

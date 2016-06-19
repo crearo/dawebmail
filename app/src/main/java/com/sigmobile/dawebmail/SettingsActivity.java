@@ -1,7 +1,5 @@
 package com.sigmobile.dawebmail;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -9,7 +7,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
-import com.sigmobile.dawebmail.utils.Constants;
+import com.sigmobile.dawebmail.utils.Settings;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -25,18 +23,19 @@ public class SettingsActivity extends AppCompatActivity {
     @Bind(R.id.settings_toolbar)
     Toolbar toolbar;
 
-    boolean toggleMobileData = true;
+    private boolean toggleMobileData = true;
+    private Settings settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
+        settings = new Settings(getApplicationContext());
 
         setupToolbar();
 
-        SharedPreferences prefs = getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);
-        toggleMobileData = prefs.getBoolean(Constants.TOGGLE_MOBILEDATA, true);
+        toggleMobileData = settings.getBoolean(Settings.KEY_MOBILE_DATA);
 
         switch_mobile.setChecked(toggleMobileData);
         switch_mobile.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -90,9 +89,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void saveMobileDataSettings() {
-        SharedPreferences prefs = getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean(Constants.TOGGLE_MOBILEDATA, switch_mobile.isChecked()).commit();
+        settings.save(Settings.KEY_MOBILE_DATA, switch_mobile.isChecked());
     }
 
     @Override

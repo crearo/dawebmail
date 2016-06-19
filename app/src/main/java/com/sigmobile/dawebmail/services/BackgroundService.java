@@ -2,20 +2,22 @@ package com.sigmobile.dawebmail.services;
 
 import android.app.Service;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.IBinder;
 
 import com.sigmobile.dawebmail.asyncTasks.RefreshInbox;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInboxListener;
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
-import com.sigmobile.dawebmail.database.UserSettings;
+import com.sigmobile.dawebmail.database.CurrentUser;
 import com.sigmobile.dawebmail.utils.ConnectionManager;
 import com.sigmobile.dawebmail.utils.Constants;
+import com.sigmobile.dawebmail.utils.Settings;
 
 import java.util.ArrayList;
 
 public class BackgroundService extends Service implements RefreshInboxListener {
+
+    private Settings settings;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -29,6 +31,7 @@ public class BackgroundService extends Service implements RefreshInboxListener {
 
     @Override
     public void onStart(Intent intent, int startId) {
+        settings = new Settings(getApplicationContext());
         for (User user : User.getAllUsers()) {
             refreshInboxInBackground(user);
         }
@@ -40,9 +43,8 @@ public class BackgroundService extends Service implements RefreshInboxListener {
     }
 
     public void refreshInboxInBackground(User user) {
-        SharedPreferences prefs = getSharedPreferences(Constants.USER_PREFERENCES, MODE_PRIVATE);
 
-        boolean dataEnabled = prefs.getBoolean(Constants.TOGGLE_MOBILEDATA, false);
+        boolean dataEnabled = settings.getBoolean(Settings.KEY_MOBILE_DATA);
 
         if ((ConnectionManager.isConnectedByWifi(this) || (dataEnabled && ConnectionManager.isConnectedByMobileData(this)))) {
             // ToDo : Add data saving if check here.
@@ -60,11 +62,11 @@ public class BackgroundService extends Service implements RefreshInboxListener {
         if (refreshedEmails.size() == 0) {
         } else if (refreshedEmails.size() == 1) {
             NotificationMaker.showNotification(this, user, refreshedEmails.get(0).getFromName(), refreshedEmails.get(0).getSubject());
-            UserSettings.setCurrentUser(user, getApplicationContext());
+            CurrentUser.setCurrentUser(user, getApplicationContext());
         } else {
             int numberToShow = (refreshedEmails.size() >= 5) ? 5 : refreshedEmails.size();
             NotificationMaker.sendInboxNotification(numberToShow, user, this, refreshedEmails);
-            UserSettings.setCurrentUser(user, getApplicationContext());
+            CurrentUser.setCurrentUser(user, getApplicationContext());
         }
     }
 }

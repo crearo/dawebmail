@@ -21,13 +21,6 @@ public class Constants {
     public static String CURRENT_EMAIL_TYPE = "CURRENT_EMAIL_TYPE";
     public static String CURRENT_EMAIL_ID = "CURRENT_EMAIL_ID";
 
-    public static String USER_PREFERENCES = "USER_PREFERENCES";
-    public static String CURRENT_USERNAME = "CURRENT_USER";
-    public static String LAST_REFRESHED = "LAST_REFRESHED";
-    public static String TOGGLE_MOBILEDATA = "toggle_mobiledata";
-    public static String ALERT_SHOWN = "ALERT_SHOWN_UPDATE_2";
-    public static String NOTIFICATION_SOUND = "NOTIFICATION_SOUND";
-
     public static String BROADCAST_REFRESH_ADAPTERS = "BROADCAST_REFRESH_ADAPTERS";
     public static String BUNDLE_ON_POST_REFRESH_EMAILS_SIZE = "BUNDLE_ON_POST_REFRESH_EMAILS_SIZE";
 

@@ -36,7 +36,7 @@ import com.sigmobile.dawebmail.asyncTasks.RefreshInbox;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInboxListener;
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
-import com.sigmobile.dawebmail.database.UserSettings;
+import com.sigmobile.dawebmail.database.CurrentUser;
 import com.sigmobile.dawebmail.utils.Constants;
 
 import java.util.ArrayList;
@@ -93,7 +93,7 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
         fabMarkRead = ButterKnife.findById(fabMenu, R.id.fab_action_mark_read);
         fabMarkUnread = ButterKnife.findById(fabMenu, R.id.fab_action_mark_unread);
 
-        currentUser = UserSettings.getCurrentUser(getActivity());
+        currentUser = CurrentUser.getCurrentUser(getActivity());
         progressDialog = new ProgressDialog(getActivity());
 
         if (currentUser == null) {

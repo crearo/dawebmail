@@ -34,7 +34,7 @@ import com.sigmobile.dawebmail.asyncTasks.RefreshInbox;
 import com.sigmobile.dawebmail.asyncTasks.RefreshInboxListener;
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
-import com.sigmobile.dawebmail.database.UserSettings;
+import com.sigmobile.dawebmail.database.CurrentUser;
 import com.sigmobile.dawebmail.utils.Constants;
 
 import java.util.ArrayList;
@@ -78,7 +78,7 @@ public class FolderFragment extends Fragment implements RefreshInboxListener, Mu
         else if (folder.equals(Constants.TRASH))
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.trash));
 
-        currentUser = UserSettings.getCurrentUser(getActivity());
+        currentUser = CurrentUser.getCurrentUser(getActivity());
         progressDialog = new ProgressDialog(getActivity());
 
         registerInternalBroadcastReceivers();

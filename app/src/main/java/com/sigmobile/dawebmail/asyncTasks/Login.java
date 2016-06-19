@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.sigmobile.dawebmail.database.User;
-import com.sigmobile.dawebmail.database.UserSettings;
 import com.sigmobile.dawebmail.network.RestAPI;
 
 /**
@@ -41,8 +40,6 @@ public class Login extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        if (loggedIn)
-            UserSettings.setLastRefreshed(context, "" + System.currentTimeMillis());
         finalTime = System.currentTimeMillis();
         loginListener.onPostLogin(loggedIn, "" + (finalTime - initTime), user);
     }

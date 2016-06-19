@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import com.sigmobile.dawebmail.R;
 import com.sigmobile.dawebmail.database.EmailMessage;
-import com.sigmobile.dawebmail.database.UserSettings;
 import com.sigmobile.dawebmail.utils.Constants;
+import com.sigmobile.dawebmail.utils.Settings;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -49,15 +49,16 @@ public class SmartBoxFragment extends Fragment {
     @Bind(R.id.smart_total_per_att)
     TextView smart_total_per_att;
 
-    public SmartBoxFragment() {
+    private Settings settings;
 
+    public SmartBoxFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_smartbox, container, false);
-
         ButterKnife.bind(this, rootView);
+        settings = new Settings(getContext());
 
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("SmartBox");
 
@@ -102,7 +103,7 @@ public class SmartBoxFragment extends Fragment {
         smart_total_per_att.setText("" + (100 * emailsWithAttachment) / emails.size() + " %");
         smart_total_no_of_opened.setText("" + ((100 * readEmails) / emails.size()) + " %");
 
-        String date = getDateFromMillis(UserSettings.getLastRefreshed(getActivity()));
+        String date = getDateFromMillis(settings.getString(Settings.KEY_LAST_REFRESHED));
         smart_total_last_refresh.setText("Last refreshed - " + date);
 
         sortHashMap(senderCount);

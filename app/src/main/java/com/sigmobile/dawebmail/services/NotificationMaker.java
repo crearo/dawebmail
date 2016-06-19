@@ -14,7 +14,8 @@ import com.sigmobile.dawebmail.LoginActivity;
 import com.sigmobile.dawebmail.R;
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
-import com.sigmobile.dawebmail.database.UserSettings;
+import com.sigmobile.dawebmail.database.CurrentUser;
+import com.sigmobile.dawebmail.utils.Settings;
 
 import java.util.ArrayList;
 
@@ -24,12 +25,14 @@ import java.util.ArrayList;
 public class NotificationMaker {
 
     public static void showNotification(Context context, User user, String fromName, String subject) {
+        Settings settings = new Settings(context);
+
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
         mBuilder.setSmallIcon(R.drawable.msg_notification);
         mBuilder.setTicker(context.getString(R.string.notification_ticker_new_webmail));
         mBuilder.setContentTitle(fromName + " to " + User.getUserThreeLetterName(user));
         mBuilder.setContentText(subject);
-        mBuilder.setSound(Uri.parse(UserSettings.getNotificationSound(context)));
+        mBuilder.setSound(Uri.parse(settings.getString(Settings.KEY_NOTIFICATION_SOUND)));
         mBuilder.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE);
         mBuilder.setAutoCancel(true);
 
@@ -44,10 +47,12 @@ public class NotificationMaker {
 
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify((int) (System.currentTimeMillis()), mBuilder.build());
-        UserSettings.setCurrentUser(user, context);
+        CurrentUser.setCurrentUser(user, context);
     }
 
     public static void sendInboxNotification(int numberToShow, User user, Context context, ArrayList<EmailMessage> newEmails) {
+        Settings settings = new Settings(context);
+
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
             PendingIntent pi = PendingIntent.getActivity(context, 0, new Intent(context, LoginActivity.class), 0);
             Notification.Builder mBuilder = new Notification.Builder(context)
@@ -81,12 +86,12 @@ public class NotificationMaker {
             PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
             mBuilder.setContentIntent(resultPendingIntent);
-            mBuilder.setSound(Uri.parse(UserSettings.getNotificationSound(context)));
+            mBuilder.setSound(Uri.parse(settings.getString(Settings.KEY_NOTIFICATION_SOUND)));
             mBuilder.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE);
             NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             mNotificationManager.notify((int) System.currentTimeMillis(), mBuilder.build());
 
-            UserSettings.setCurrentUser(user, context);
+            CurrentUser.setCurrentUser(user, context);
         }
     }
 

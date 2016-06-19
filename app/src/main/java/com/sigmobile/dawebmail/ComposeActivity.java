@@ -22,7 +22,7 @@ import com.sigmobile.dawebmail.asyncTasks.AutoCompleteRequest;
 import com.sigmobile.dawebmail.asyncTasks.SendMail;
 import com.sigmobile.dawebmail.asyncTasks.SendMailListener;
 import com.sigmobile.dawebmail.database.User;
-import com.sigmobile.dawebmail.database.UserSettings;
+import com.sigmobile.dawebmail.database.CurrentUser;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -53,7 +53,7 @@ public class ComposeActivity extends AppCompatActivity implements SendMailListen
         setContentView(R.layout.activity_compose);
         ButterKnife.bind(this);
 
-        currentUser = UserSettings.getCurrentUser(getApplicationContext());
+        currentUser = CurrentUser.getCurrentUser(getApplicationContext());
         setupToolbar();
 
         et_to.addTextChangedListener(new TextWatcher() {

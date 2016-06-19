@@ -1,8 +1,6 @@
 package com.sigmobile.dawebmail;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,12 +24,13 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
-import com.sigmobile.dawebmail.database.UserSettings;
+import com.sigmobile.dawebmail.database.CurrentUser;
 import com.sigmobile.dawebmail.fragments.FolderFragment;
 import com.sigmobile.dawebmail.fragments.InboxFragment;
 import com.sigmobile.dawebmail.fragments.SmartBoxFragment;
 import com.sigmobile.dawebmail.services.NotificationMaker;
 import com.sigmobile.dawebmail.utils.Constants;
+import com.sigmobile.dawebmail.utils.Settings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,14 +53,15 @@ public class MainActivity extends AppCompatActivity {
     private PrimaryDrawerItem pInbox, pSmartBox, pSentBox, pTrashBox;
     private SecondaryDrawerItem sSettings, sFeedback, sContribute;
     private ArrayList<IProfile> allAccountHeaders;
-
     private IDrawerItem selectedDrawerItem;
+    private Settings settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        settings = new Settings(getApplicationContext());
 
         setupToolbar();
         setupDrawer();
@@ -111,12 +111,12 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public boolean onProfileChanged(View view, IProfile profile, boolean current) {
                         if (profile.getName().getText().equals(createAccountString)) {
-                            UserSettings.setCurrentUser(null, getApplicationContext());
+                            CurrentUser.setCurrentUser(null, getApplicationContext());
                             startActivity(new Intent(MainActivity.this, LoginActivity.class));
                             drawer.closeDrawer();
                             return true;
                         } else {
-                            UserSettings.setCurrentUser(User.getUserFromUserName(profile.getName().getText()), getApplicationContext());
+                            CurrentUser.setCurrentUser(User.getUserFromUserName(profile.getName().getText()), getApplicationContext());
                             drawer.closeDrawer();
                             if (selectedDrawerItem == null)
                                 selectedDrawerItem = pInbox;
@@ -212,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setSelectedAccountHeader(boolean shouldClick) {
-        String currentUsername = UserSettings.getCurrentUser(this).getUsername();
+        String currentUsername = CurrentUser.getCurrentUser(this).getUsername();
         for (int i = 0; i < allAccountHeaders.size(); i++) {
             if (allAccountHeaders.get(i).getName().getText().equals(currentUsername))
                 accountHeader.setActiveProfile(allAccountHeaders.get(i), shouldClick);
@@ -257,10 +257,8 @@ public class MainActivity extends AppCompatActivity {
         materialDialog.setPositiveButton(getString(R.string.dialog_btn_logout), new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences prefs = getSharedPreferences(Constants.USER_PREFERENCES, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = prefs.edit();
 
-                editor.putBoolean(Constants.TOGGLE_MOBILEDATA, false);
+                settings.save(Settings.KEY_MOBILE_DATA, false);
 
                 EmailMessage.deleteAllMailsOfUser(currentUser);
 
@@ -273,9 +271,9 @@ public class MainActivity extends AppCompatActivity {
                  */
                 User.deleteUser(currentUser);
                 if (User.getAllUsers().size() != 0)
-                    UserSettings.setCurrentUser(User.getAllUsers().get(0), getApplicationContext());
+                    CurrentUser.setCurrentUser(User.getAllUsers().get(0), getApplicationContext());
                 else
-                    UserSettings.setCurrentUser(null, getApplicationContext());
+                    CurrentUser.setCurrentUser(null, getApplicationContext());
 
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -289,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setToolbarTitle(IDrawerItem drawerItem) {
-        String currentUserName = User.getUserThreeLetterName(UserSettings.getCurrentUser(this));
+        String currentUserName = User.getUserThreeLetterName(CurrentUser.getCurrentUser(this));
         String toolbarTitle = "";
         if (((PrimaryDrawerItem) drawerItem).getName().getText().equals(pInbox.getName().getText()))
             toolbarTitle = getString(R.string.drawer_inbox) + " : " + currentUserName;
