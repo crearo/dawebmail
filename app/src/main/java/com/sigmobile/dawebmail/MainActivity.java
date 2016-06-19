@@ -67,8 +67,9 @@ public class MainActivity extends AppCompatActivity {
         setupDrawer();
 
         selectedDrawerItem = pInbox;
-
         setSelectedAccountHeader(true);
+
+        showUpdatesDialog();
     }
 
     @Override
@@ -78,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
             setToolbarTitle(selectedDrawerItem);
         }
         setSelectedAccountHeader(false);
-        // ToDO : Send false here, but make sure account is selected correctly. This still isnt working as expected
     }
 
     private void setupToolbar() {
@@ -318,5 +318,24 @@ public class MainActivity extends AppCompatActivity {
             drawer.setSelection(pSmartBox);
         if (((PrimaryDrawerItem) drawerItem).getName().getText().equals(pTrashBox.getName().getText()))
             drawer.setSelection(pTrashBox);
+    }
+
+    private void showUpdatesDialog() {
+        if (!settings.getBoolean(Settings.KEY_UPDATE_SHOWN)) {
+            final MaterialDialog materialDialog = new MaterialDialog(getApplicationContext());
+            materialDialog
+                    .setTitle(getString(R.string.dialog_title_updates_1))
+                    .setMessage(getString(R.string.dialog_msg_updates_1))
+                    .setPositiveButton(getString(R.string.dialog_btn_positive_updates_1), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            settings.save(Settings.KEY_UPDATE_SHOWN, true);
+                            drawer.openDrawer();
+                            materialDialog.dismiss();
+                        }
+                    })
+                    .setCanceledOnTouchOutside(false);
+            materialDialog.show();
+        }
     }
 }

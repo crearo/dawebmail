@@ -101,6 +101,9 @@
     <string name="dialog_msg_save_draft">We don\'t save messages as drafts yet. Are you sure you want to go back?</string>
     <string name="dialog_btn_positive_save_draft">Go Back</string>
     <string name="dialog_btn_negative_save_draft">Cancel</string>
+    <string name="dialog_title_updates_1">In a club or committee?</string>
+    <string name="dialog_msg_updates_1">Keep your webmail synced. Create multiple accounts by clicking the \'+\' in the navigation drawer.</string>
+    <string name="dialog_btn_positive_updates_1">Got It!</string>
 
     <!-- Navigation Drawer Items -->
     <string name="drawer_inbox">Inbox</string>

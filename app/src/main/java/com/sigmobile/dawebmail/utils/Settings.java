@@ -18,6 +18,7 @@ public class Settings {
     public final static String KEY_NOTIFICATION_SOUND = "KEY_NOTIFICATION_SOUND";
     public final static String KEY_LAST_REFRESHED = "KEY_LAST_REFRESHED";
     public final static String KEY_ALERT_SHOWN = "KEY_ALERT_SHOWN_2";
+    public final static String KEY_UPDATE_SHOWN = "KEY_UPDATE_SHOWN_2";
 
     public Settings(Context context) {
         this.context = context;
@@ -43,6 +44,8 @@ public class Settings {
             return sharedPreferences().getBoolean(KEY_MOBILE_DATA, true);
         else if (name.equals(KEY_ALERT_SHOWN))
             return sharedPreferences().getBoolean(KEY_ALERT_SHOWN, false);
+        else if (name.equals(KEY_UPDATE_SHOWN))
+            return sharedPreferences().getBoolean(KEY_UPDATE_SHOWN, false);
         else
             return false;
     }
