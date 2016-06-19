@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.sigmobile.dawebmail.R;
+import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
 import com.zimbra.wsdl.zimbraservice_wsdl.ZcsService;
 
@@ -22,9 +23,12 @@ import zimbraaccount.AuthResponse;
 import zimbramail.ActionSelector;
 import zimbramail.CalTZInfo;
 import zimbramail.EmailAddrInfo;
+import zimbramail.GetMsgRequest;
+import zimbramail.GetMsgResponse;
 import zimbramail.MimePartInfo;
 import zimbramail.MsgActionRequest;
 import zimbramail.MsgActionResponse;
+import zimbramail.MsgSpec;
 import zimbramail.MsgToSend;
 import zimbramail.SearchRequest;
 import zimbramail.SearchResponse;
@@ -42,13 +46,16 @@ public class SoapAPI {
     private ZcsService zcsService;
     private User zcsServiceOfUser;
     private zimbra.Context zcsServiceContext;
+    private Context context;
+    private User user;
 
-    public SoapAPI() {
-
+    public SoapAPI(Context context, User user) {
+        this.user = user;
+        this.context = context;
     }
 
-    public boolean performMailAction(Context context, User user, String mailAction, String contentID) {
-        setupZcsServiceForUser(context, user);
+    public boolean performMailAction(String mailAction, String contentID) {
+        setupZcsServiceForUser();
 
         MsgActionRequest msgActionRequest = new MsgActionRequest();
         ActionSelector actionSelector = new ActionSelector();
@@ -70,9 +77,9 @@ public class SoapAPI {
         }
     }
 
-    public boolean sendMail(Context context, User user, String mailToAddress, String mailSubject, String mailContent, boolean important) {
+    public boolean sendMail(String mailToAddress, String mailSubject, String mailContent, boolean important) {
 
-        setupZcsServiceForUser(context, user);
+        setupZcsServiceForUser();
 
         /* When replying or forwarding
          * For value of rt choose r when replying and w when forwarding
@@ -130,10 +137,39 @@ public class SoapAPI {
         }
     }
 
-    public boolean fetchEmailsFromTime(Context context, User user, long timeInMillis) {
+    /**
+     * The following function doesnt work sadly :(
+     *
+     * @param emailMessage
+     * @return
+     */
+    public boolean fetchEmailContent(EmailMessage emailMessage) {
 
-        setupZcsServiceForUser(context, user);
+        setupZcsServiceForUser();
 
+        GetMsgRequest getMsgRequest = new GetMsgRequest();
+        MsgSpec msgSpec = new MsgSpec();
+        msgSpec.setId(String.valueOf(emailMessage.getContentID()));
+        msgSpec.setHtml(true);
+        getMsgRequest.setM(msgSpec);
+
+        try {
+            GetMsgResponse getMsgResponse = zcsService.getMsgRequest(getMsgRequest, zcsServiceContext);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * The following function doesnt work sadly :(
+     *
+     * @param timeInMillis
+     * @return
+     */
+    public boolean fetchEmailsFromTime(long timeInMillis) {
+
+        setupZcsServiceForUser();
         SearchRequest searchRequest = new SearchRequest();
         CalTZInfo calTZInfo = new CalTZInfo();
         calTZInfo.setId("Asia/Kolkata");
@@ -164,7 +200,7 @@ public class SoapAPI {
         }
     }
 
-    private void setupZcsServiceForUser(Context context, User user) {
+    private void setupZcsServiceForUser() {
 
         /**
          * This is similar to setting up auth for a user.

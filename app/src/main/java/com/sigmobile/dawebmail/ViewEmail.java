@@ -17,9 +17,9 @@ import com.sigmobile.dawebmail.asyncTasks.MailAction;
 import com.sigmobile.dawebmail.asyncTasks.MailActionListener;
 import com.sigmobile.dawebmail.asyncTasks.ViewMailListener;
 import com.sigmobile.dawebmail.asyncTasks.ViewMailManager;
+import com.sigmobile.dawebmail.database.CurrentUser;
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
-import com.sigmobile.dawebmail.database.CurrentUser;
 import com.sigmobile.dawebmail.utils.BasePath;
 import com.sigmobile.dawebmail.utils.Constants;
 import com.sigmobile.dawebmail.utils.DateUtils;
@@ -125,7 +125,6 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
     @Override
     public void onPostView(EmailMessage emailMessage) {
         if (emailMessage != null) {
-
             if (currentEmail.getReadUnread().equals(Constants.WEBMAIL_UNREAD))
                 markWebmailAsRead();
 

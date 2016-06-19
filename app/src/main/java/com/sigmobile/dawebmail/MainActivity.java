@@ -157,41 +157,44 @@ public class MainActivity extends AppCompatActivity {
                         if (drawerItem == null)
                             drawerItem = pInbox;
 
-                        selectedDrawerItem = (PrimaryDrawerItem) drawerItem;
-                        setToolbarTitle(selectedDrawerItem);
-                        if (selectedDrawerItem.equals(pInbox)) {
+                        setToolbarTitle(drawerItem);
+                        if (drawerItem.equals(pInbox)) {
+                            selectedDrawerItem = (PrimaryDrawerItem) drawerItem;
                             fragment = new InboxFragment();
                             Snackbar.make(frameLayout, getString(R.string.drawer_inbox), Snackbar.LENGTH_SHORT).show();
                             fragmentTag = Constants.FRAGMENT_TAG_INBOX;
-                        } else if (selectedDrawerItem.equals(pSmartBox)) {
+                        } else if (drawerItem.equals(pSmartBox)) {
+                            selectedDrawerItem = (PrimaryDrawerItem) drawerItem;
                             fragment = new SmartBoxFragment();
                             Snackbar.make(frameLayout, getString(R.string.drawer_smartbox), Snackbar.LENGTH_SHORT).show();
                             fragmentTag = Constants.FRAGMENT_TAG_SMARTBOX;
-                        } else if (selectedDrawerItem.equals(pSentBox)) {
+                        } else if (drawerItem.equals(pSentBox)) {
+                            selectedDrawerItem = (PrimaryDrawerItem) drawerItem;
                             fragment = new FolderFragment();
                             bundle = new Bundle();
                             bundle.putString(Constants.FOLDER, Constants.SENT);
                             fragment.setArguments(bundle);
                             fragmentTag = Constants.FRAGMENT_TAG_FOLDER;
                             Snackbar.make(frameLayout, getString(R.string.drawer_sent), Snackbar.LENGTH_SHORT).show();
-                        } else if (selectedDrawerItem.equals(pTrashBox)) {
+                        } else if (drawerItem.equals(pTrashBox)) {
+                            selectedDrawerItem = (PrimaryDrawerItem) drawerItem;
                             fragment = new FolderFragment();
                             bundle = new Bundle();
                             bundle.putString(Constants.FOLDER, Constants.TRASH);
                             fragment.setArguments(bundle);
                             fragmentTag = Constants.FRAGMENT_TAG_FOLDER;
                             Snackbar.make(frameLayout, getString(R.string.drawer_trash), Snackbar.LENGTH_SHORT).show();
-                        } else if (selectedDrawerItem.equals(sSettings)) {
+                        } else if (drawerItem.equals(sSettings)) {
                             Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             startActivity(intent);
                             return true;
-                        } else if (selectedDrawerItem.equals(sFeedback)) {
+                        } else if (drawerItem.equals(sFeedback)) {
                             Intent intent = new Intent(MainActivity.this, FeedbackActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             startActivity(intent);
                             return true;
-                        } else if (selectedDrawerItem.equals(sContribute)) {
+                        } else if (drawerItem.equals(sContribute)) {
                             Intent intent = new Intent(MainActivity.this, ContributeActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             startActivity(intent);
@@ -322,7 +325,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void showUpdatesDialog() {
         if (!settings.getBoolean(Settings.KEY_UPDATE_SHOWN)) {
-            final MaterialDialog materialDialog = new MaterialDialog(getApplicationContext());
+            final MaterialDialog materialDialog = new MaterialDialog(MainActivity.this);
             materialDialog
                     .setTitle(getString(R.string.dialog_title_updates_1))
                     .setMessage(getString(R.string.dialog_msg_updates_1))

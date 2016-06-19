@@ -21,7 +21,7 @@ import javax.mail.internet.MimeMultipart;
  */
 public class MailParser {
 
-    private static final String LOGTAG = "MailParser";
+    private static final String TAG = "MailParser";
     private String contentHTML = "";
     private int totalAttachments = 0;
 
@@ -62,10 +62,10 @@ public class MailParser {
                         if (part.getContent() instanceof MimeMultipart) {
 //                        System.out.println(((MimeMultipart) (part.getContent())).getBodyPart(1).getContentType());
                             parseMime((MimeMultipart) part.getContent());
-                            Log.d(LOGTAG, "IS instanceof Mimemultipart");
+                            Log.d(TAG, "IS instanceof Mimemultipart");
                         } else {
                             contentHTML = part.getContent().toString();
-                            Log.d(LOGTAG, "ISNT instanceof Mimemultipart");
+                            Log.d(TAG, "ISNT instanceof Mimemultipart");
                         }
                     }
                 }
@@ -88,7 +88,7 @@ public class MailParser {
                 contentHTML = contentHTML.replace("background-color: #ffffff;", "");
 
         } catch (Exception e) {
-            Log.d(LOGTAG, "Error in parsing email");
+            Log.d(TAG, "Error in parsing email");
             e.printStackTrace();
         }
     }
@@ -105,15 +105,15 @@ public class MailParser {
 //            MimeMultipart multipart = new MimeMultipart(ds);
 //
 //            if (message.getContentType().contains("multipart")) {
-//                Log.d(LOGTAG, "IS MULTIPART");
+//                Log.d(TAG, "IS MULTIPART");
 //                parseMime(multipart);
 //            } else {
-//                Log.d(LOGTAG, "IS NOT MULTIPART" + message.getContent());
+//                Log.d(TAG, "IS NOT MULTIPART" + message.getContent());
 //                contentHTML = "" + message.getContent();
 //            }
 //
 //        } catch (Exception e) {
-//            Log.d(LOGTAG, "Error in parsingMail");
+//            Log.d(TAG, "Error in parsingMail");
 //            e.printStackTrace();
 //        }
 //    }
@@ -131,7 +131,7 @@ public class MailParser {
                     } else if (multiPartType.contains("text/plain")) {
                         contentHTML = multiPartContent;
                     } else {
-                        Log.d(LOGTAG, multiPartContent + "\nis not defined yet");
+                        Log.d(TAG, multiPartContent + "\nis not defined yet");
                     }
                 }
             }
@@ -141,6 +141,7 @@ public class MailParser {
     }
 
     public String getContentHTML() {
+        Log.d(TAG, "Returning html content " + contentHTML);
         return contentHTML;
     }
 

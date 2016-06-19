@@ -2,6 +2,7 @@ package com.sigmobile.dawebmail.network;
 
 import android.content.Context;
 import android.util.Base64;
+import android.util.Log;
 
 import com.sigmobile.dawebmail.R;
 import com.sigmobile.dawebmail.database.EmailMessage;
@@ -21,6 +22,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 
 /**
@@ -30,14 +36,19 @@ public class RestAPI {
 
     private static final String TAG = "RESTAPI";
 
-    private static final int TIME_OUT = 10 * 1000;
     private User user;
     private Context context;
     private ArrayList<EmailMessage> allNewEmails = new ArrayList<>();
+    private OkHttpClient okHttpClient;
 
     public RestAPI(User user, Context context) {
         this.user = user;
         this.context = context;
+        okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
     }
 
     public boolean logIn() {
@@ -56,31 +67,20 @@ public class RestAPI {
         return makeFetchContentRequest(emailMessage);
     }
 
+    private String getAuthHeader() {
+        return okhttp3.Credentials.basic(user.getUsername(), user.getPassword());
+    }
+
     private boolean makeLoginRequest() {
         try {
-            URL url = new URL(context.getString(R.string.rest_url_login));
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
+            Request request = new Request.Builder()
+                    .url(context.getString(R.string.rest_url_login))
+                    .header("Authorization", getAuthHeader())
+                    .build();
 
-            String userPassword = user.getUsername() + ":" + user.getPassword();
-            String encoding = Base64.encodeToString(userPassword.getBytes(), Base64.DEFAULT);
-            conn.setRequestProperty("Authorization", "Basic " + encoding);
-            conn.setReadTimeout(TIME_OUT);
-            conn.connect();
+            Response response = okHttpClient.newCall(request).execute();
 
-            if (conn.getResponseCode() == 200) {
-                InputStream in = new BufferedInputStream(conn.getInputStream());
-                BufferedReader r = new BufferedReader(new InputStreamReader(in));
-                StringBuilder total = new StringBuilder();
-                String line;
-                while ((line = r.readLine()) != null) {
-                    total.append(line);
-                }
-                in.close();
-                return true;
-            } else {
-                return false;
-            }
+            return response.isSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -176,27 +176,17 @@ public class RestAPI {
             else if (folder.equals(Constants.TRASH))
                 url = new URL(context.getString(R.string.rest_url_trash));
 
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
+            Request request = new Request.Builder()
+                    .url(url)
+                    .header("Authorization", getAuthHeader())
+                    .build();
 
-            String userPassword = user.getUsername() + ":" + user.getPassword();
-            String encoding = Base64.encodeToString(userPassword.getBytes(), Base64.DEFAULT);
-            conn.setRequestProperty("Authorization", "Basic " + encoding);
-            conn.setConnectTimeout(TIME_OUT);
-            conn.connect();
+            Response response = okHttpClient.newCall(request).execute();
 
-            if (conn.getResponseCode() == 200) {
+            if (response.code() == 200) {
                 parsedMails = new ArrayList<>();
-                InputStream in = new BufferedInputStream(conn.getInputStream());
-                BufferedReader r = new BufferedReader(new InputStreamReader(in));
-                StringBuilder total = new StringBuilder();
-                String line;
-                while ((line = r.readLine()) != null) {
-                    total.append(line);
-                }
-                in.close();
 
-                JSONObject responseObject = new JSONObject(total.toString());
+                JSONObject responseObject = new JSONObject(response.body().string());
 
                 for (int i = 0; i < responseObject.getJSONArray("m").length(); i++) {
                     JSONObject webmailObject = (JSONObject) responseObject.getJSONArray("m").get(i);
@@ -245,6 +235,9 @@ public class RestAPI {
 
     private EmailMessage makeFetchContentRequest(EmailMessage emailMessage) {
         try {
+            /**
+             * ToDo : Change this ugly code to OkHTTP
+             */
             URL url = new URL(context.getString(R.string.rest_url_view_webmail) + emailMessage.getContentID());
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
@@ -252,7 +245,6 @@ public class RestAPI {
             String userPassword = user.getUsername() + ":" + user.getPassword();
             String encoding = Base64.encodeToString(userPassword.getBytes(), Base64.DEFAULT);
             conn.setRequestProperty("Authorization", "Basic " + encoding);
-            conn.setReadTimeout(TIME_OUT);
             conn.connect();
 
             if (conn.getResponseCode() == 200) {
@@ -274,6 +266,7 @@ public class RestAPI {
 
                 return emailMessage;
             } else {
+                Log.d(TAG, "Resp not successful");
                 return null;
             }
         } catch (Exception e) {

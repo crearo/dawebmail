@@ -34,6 +34,7 @@ public class ViewMailManager extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... voids) {
         RestAPI restAPI = new RestAPI(user, context);
         emailMessage = restAPI.fetchEmailContent(emailMessage);
+
         return null;
     }
 

@@ -37,13 +37,13 @@ public class MultiMailAction extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... voids) {
-        SoapAPI soapAPI = new SoapAPI();
+        SoapAPI soapAPI = new SoapAPI(context, currentUser);
         /**
          * Traverse through all emailsToBeDeleted
          * If any of them is unsuccessful, return false
          */
         for (EmailMessage emailMessage : emailsForMultiAction) {
-            result = soapAPI.performMailAction(context, currentUser, msgAction, String.valueOf(emailMessage.getContentID()));
+            result = soapAPI.performMailAction(msgAction, String.valueOf(emailMessage.getContentID()));
             if (!result)
                 return null;
         }

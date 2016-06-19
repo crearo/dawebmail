@@ -38,7 +38,7 @@ public class SendMail extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... voids) {
-        result = new SoapAPI().sendMail(context, currentUser, mailToAddress, mailSubject, mailContent, important);
+        result = new SoapAPI(context, currentUser).sendMail(mailToAddress, mailSubject, mailContent, important);
         return null;
     }
 
