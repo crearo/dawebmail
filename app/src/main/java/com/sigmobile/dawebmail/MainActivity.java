@@ -1,14 +1,19 @@
 package com.sigmobile.dawebmail;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -55,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<IProfile> allAccountHeaders;
     private IDrawerItem selectedDrawerItem;
     private Settings settings;
+    private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 108;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         setSelectedAccountHeader(true);
 
         showUpdatesDialog();
+        checkPermission();
     }
 
     @Override
@@ -339,6 +346,66 @@ public class MainActivity extends AppCompatActivity {
                     })
                     .setCanceledOnTouchOutside(false);
             materialDialog.show();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_WRITE_STORAGE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Snackbar.make(frameLayout, "Great! You can now save images to gallery", Snackbar.LENGTH_LONG).show();
+                    android.os.Process.killProcess(android.os.Process.myPid());
+                } else {
+                    final MaterialDialog materialDialog = new MaterialDialog(MainActivity.this);
+                    materialDialog.setTitle("STORAGE PERMISSION")
+                            .setMessage("If you disable this, you won't be able to download attachments! Are you sure?")
+                            .setCanceledOnTouchOutside(false)
+                            .setPositiveButton("Enable", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    checkPermission();
+                                    materialDialog.dismiss();
+                                }
+                            })
+                            .setNegativeButton("Disable, I'm Sure", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    materialDialog.dismiss();
+                                    Snackbar.make(frameLayout, "You shall not be able to save attachments", Snackbar.LENGTH_LONG).show();
+                                }
+                            });
+                    materialDialog.show();
+                }
+                return;
+            }
+        }
+    }
+
+    private void checkPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "Not Granted. Unable to download Image.");
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                Log.d(TAG, "Showing shouldShowRequestPermissionRationale");
+                final MaterialDialog materialDialog = new MaterialDialog(this);
+                materialDialog
+                        .setTitle("STORAGE PERMISSION")
+                        .setMessage("We need this to save attachments.")
+                        .setCanceledOnTouchOutside(false)
+                        .setPositiveButton("Got It!", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                materialDialog.dismiss();
+                                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
+                            }
+                        });
+                materialDialog.show();
+            } else {
+                Log.d(TAG, "Requesting Permission");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
+            }
+        } else {
+            Log.d(TAG, "Already Granted");
         }
     }
 }

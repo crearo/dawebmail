@@ -231,6 +231,8 @@ public class FolderFragment extends Fragment implements RefreshInboxListener, Mu
         progressDialog.dismiss();
         refreshAdapter();
         fabDelete.setVisibility(View.GONE);
+
+        new RefreshInbox(currentUser, getActivity(), FolderFragment.this, folder, Constants.REFRESH_TYPE_REFRESH).execute();
     }
 
     public void refreshAdapter() {

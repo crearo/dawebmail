@@ -4,7 +4,7 @@
     <string name="developer_email">bhardwaj.rish@gmail.com</string>
 
     <string name="release_notes_1">We\'ve changed the entire structure of the application. Material UI + you\'ll receive notifications, smoother than ever! I\'m really thankful to all those that contributed. Send, and delete will show up soon too. :D</string>
-    <string name="release_notes_2">Send\nDelete\nMultiple Accounts\nUI overhaul.\nDAWebmail. It\'s never been better.</string>
+    <string name="release_notes_2">Send\nDelete\nMultiple Accounts\nUI overhaul.\nDAWebmail.\nIt\'s never been better.</string>
 
     <string name="contribute_1">DAWebmail needs you! This is a risky step I am willing to take. DAWebmail may lose most of its downloads. But please do stick around if you have found this application useful so far!\n\nWith the new Webmail version in place, the script I wrote to scrape webmails does not work. I\'d love all the Android developers in DA to contribute, and fix the scraping issue, and possibly contribute further! \n\nBonus. The entire interface now follows Material Design guidelines!</string>
     <string name="contribute_2">DAWebmail needs you!\nThe app is now better than ever. I\'ve put in a lot of effort in cleaning the code, making it as modular and readable as possible. All class and variables names are self explanatory, and you will find code under packages you\'d expect them to be.\n\nToDos\nThe issues page on the Github repo contains a list of ToDos under the label feature-request. A short list is:\n\n-Search Bar\n-Send to multiple users\n-Auto Delete/Trash\n-Share Webmails\n-Write unit tests!\n-Better UI?</string>
@@ -81,7 +81,7 @@
     <string name="dialog_msg_loading">Please wait while we load your content</string>
     <string name="dialog_msg_attempting_action">Requesting Action</string>
     <string name="dialog_title_logout">Log Out?</string>
-    <string name="dialog_msg_logout_multi">Since you are logged in through another account, we\'ll open you other account\'s inbox.</string>
+    <string name="dialog_msg_logout_multi">Since you are logged in through another account, we\'ll open your other account\'s inbox.</string>
     <string name="dialog_msg_logout_single">KThxBye</string>
     <string name="dialog_btn_logout">Log out</string>
     <string name="dialog_msg_fetching_content">Fetching Content</string>
