@@ -6,7 +6,7 @@ An open source Android client for Zimbra Webmail.
 
 ## Overview
 
-DAWebmail is an application developed Zimbra Webmail users. This is the first exclusive Zimbra Webmail client for Android - Zimbra doesn't have an application of its own.
+DAWebmail is an application developed for Zimbra Webmail users. This is the first exclusive Zimbra Webmail client for Android - Zimbra doesn't have an application of its own.
 
 DAWebmail is currently being tested and used extensively in [DA-IICT](https://webmail.daiict.ac.in/). The application has 1000 active users within the university. The application can be used by any organization that uses Zimbra as their email service, by changing a minimal number of Strings and URLs in the app configuration files.
 
@@ -21,8 +21,8 @@ DAWebmail is currently being tested and used extensively in [DA-IICT](https://we
 
 [DAWebmail on Google Play](https://play.google.com/store/apps/details?id=com.sigmobile.dawebmail)
 
-![alt text](https://raw.githubusercontent.com/CreaRo/DAWebmail/master/Screenshots/inbox1.png "Inbox")
-![alt text](https://raw.githubusercontent.com/CreaRo/DAWebmail/master/Screenshots/smartbox1.png "Smartbox")
+![alt text](https://raw.githubusercontent.com/CreaRo/DAWebmail/master/Screenshots/v5_activities_1_s.png "Activities-1")
+![alt text](https://raw.githubusercontent.com/CreaRo/DAWebmail/master/Screenshots/v5_activities_2_s.png "Activities-2")
 
 ## Contributing
 
@@ -39,7 +39,7 @@ DAWebmail is currently being tested and used extensively in [DA-IICT](https://we
 ### Code
 
 ##### Network APIs
-**Android volley**
+**OkHTTP**
 The network requests used are a mixture of both Zimbra's REST and Soap APIs. This shall later be converted entirely to SOAP based architecture as webmail has complete support for SOAP API.
 
 ##### Database 
