@@ -19,6 +19,7 @@ public class Settings {
     public final static String KEY_LAST_REFRESHED = "KEY_LAST_REFRESHED";
     public final static String KEY_ALERT_SHOWN = "KEY_ALERT_SHOWN_2";
     public final static String KEY_UPDATE_SHOWN = "KEY_UPDATE_SHOWN_2";
+    public final static String KEY_DATABASE_CREATED = "KEY_DATABASE_CREATED";
 
     public Settings(Context context) {
         this.context = context;
@@ -46,6 +47,8 @@ public class Settings {
             return sharedPreferences().getBoolean(KEY_ALERT_SHOWN, false);
         else if (name.equals(KEY_UPDATE_SHOWN))
             return sharedPreferences().getBoolean(KEY_UPDATE_SHOWN, false);
+        else if (name.equals(KEY_DATABASE_CREATED))
+            return sharedPreferences().getBoolean(KEY_DATABASE_CREATED, false);
         else
             return false;
     }

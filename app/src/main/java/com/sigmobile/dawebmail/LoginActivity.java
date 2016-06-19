@@ -18,8 +18,8 @@ import android.widget.TextView;
 
 import com.sigmobile.dawebmail.asyncTasks.Login;
 import com.sigmobile.dawebmail.asyncTasks.LoginListener;
-import com.sigmobile.dawebmail.database.User;
 import com.sigmobile.dawebmail.database.CurrentUser;
+import com.sigmobile.dawebmail.database.User;
 import com.sigmobile.dawebmail.utils.Settings;
 
 import butterknife.Bind;
@@ -56,6 +56,8 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
         setupToolbar();
         setupEditTexts();
 
+        setupDatabase();
+
         if (currentUser == null) {
             // user not logged in
             loginButtonContainer.setOnClickListener(new View.OnClickListener() {
@@ -89,6 +91,12 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
             // user already logged in and has an account enteredUsername
             startActivity(new Intent(this, MainActivity.class));
             finish();
+        }
+    }
+
+    private void setupDatabase() {
+        if (!settings.getBoolean(Settings.KEY_DATABASE_CREATED)) {
+            startActivity(new Intent(LoginActivity.this, SplashActivity.class));
         }
     }
 

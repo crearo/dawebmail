@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.sigmobile.dawebmail">
+    package="com.sigmobile.dawebmail" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -17,7 +17,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:replace="android:icon, android:theme">
+        tools:replace="android:icon, android:theme" >
         <meta-data
             android:name="DATABASE"
             android:value="emailsdatabase_sugar_man.db" />
@@ -34,11 +34,10 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".ViewEmail" />
         <activity android:name=".ContributeActivity" />
-        <activity android:name=".ComposeActivity"></activity>
-        <activity android:name=".FeedbackActivity"></activity>
-        <activity android:name=".SettingsActivity"></activity>
-
-        <activity android:name=".LoginActivity">
+        <activity android:name=".ComposeActivity" />
+        <activity android:name=".FeedbackActivity" />
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".LoginActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -50,7 +49,7 @@
             android:name=".services.NetworkChangeBroadcastReceiver"
             android:enabled="true"
             android:exported="true"
-            android:label="NetworkChangeBroadcastReceiver">
+            android:label="NetworkChangeBroadcastReceiver" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
@@ -59,6 +58,9 @@
         <service
             android:name=".services.BackgroundService"
             android:enabled="true" />
+
+        <activity android:name=".SplashActivity" >
+        </activity>
     </application>
 
 </manifest>
