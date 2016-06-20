@@ -28,7 +28,7 @@ public class BasePath {
         ArrayList<String> attachments = new ArrayList<>();
         if (new File(getBasePath(context)).listFiles() != null)
             for (File file : new File(getBasePath(context)).listFiles()) {
-                if (file.getName().split("-")[0].toString().equals("" + contentID)) {
+                if (file.getName().split("-")[0].toString().equals(String.valueOf(contentID))) {
                     attachments.add(file.getAbsolutePath());
                 }
             }
