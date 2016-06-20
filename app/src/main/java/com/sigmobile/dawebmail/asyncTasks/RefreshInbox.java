@@ -60,7 +60,7 @@ public class RefreshInbox extends AsyncTask<Void, Void, Void> {
         super.onPostExecute(aVoid);
 
         if (result)
-            settings.save(Settings.KEY_LAST_REFRESHED, "" + System.currentTimeMillis());
+            settings.save(Settings.KEY_LAST_REFRESHED, String.valueOf(System.currentTimeMillis()));
 
         listener.onPostRefresh(result, refreshedEmails, user);
     }

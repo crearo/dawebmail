@@ -41,6 +41,6 @@ public class Login extends AsyncTask<Void, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         finalTime = System.currentTimeMillis();
-        loginListener.onPostLogin(loggedIn, "" + (finalTime - initTime), user);
+        loginListener.onPostLogin(loggedIn, String.valueOf(finalTime - initTime), user);
     }
 }

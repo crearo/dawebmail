@@ -178,7 +178,7 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
     }
 
     private void markWebmailAsRead() {
-        new MailAction(getApplicationContext(), currentUser, getString(R.string.msg_action_read), "" + currentEmail.getContentID(), new MailActionListener() {
+        new MailAction(getApplicationContext(), currentUser, getString(R.string.msg_action_read), String.valueOf(currentEmail.getContentID()), new MailActionListener() {
             @Override
             public void onPreMailAction() {
 

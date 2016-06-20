@@ -96,12 +96,12 @@ public class SmartBoxFragment extends Fragment {
                 senderCount.put(emails.get(i).getFromName(), 1);
         }
 
-        smart_total_emails.setText("" + emails.size());
+        smart_total_emails.setText(String.valueOf(emails.size()));
         double avgLength = Math.round((totalLength / (double) (emails.size())) * 100) / 100.0;
-        smart_total_avg_length.setText("" + avgLength + " words");
-        smart_total_longest_length.setText("" + longestLength + " words\n" + longestSubject);
-        smart_total_per_att.setText("" + (100 * emailsWithAttachment) / emails.size() + " %");
-        smart_total_no_of_opened.setText("" + ((100 * readEmails) / emails.size()) + " %");
+        smart_total_avg_length.setText(String.valueOf(avgLength) + " words");
+        smart_total_longest_length.setText(String.valueOf(longestLength) + " words\n" + longestSubject);
+        smart_total_per_att.setText(String.valueOf((100 * emailsWithAttachment) / emails.size()) + " %");
+        smart_total_no_of_opened.setText(String.valueOf((100 * readEmails) / emails.size()) + " %");
 
         String date = getDateFromMillis(settings.getString(Settings.KEY_LAST_REFRESHED));
         smart_total_last_refresh.setText("Last refreshed - " + date);
