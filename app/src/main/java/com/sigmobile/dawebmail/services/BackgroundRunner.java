@@ -13,9 +13,13 @@ import java.util.Calendar;
 /**
  * Created by rish on 6/10/15.
  */
-public class BackgroundRunner {
+public final class BackgroundRunner {
 
     private final static String TAG = "BackgroundRunner";
+
+    private BackgroundRunner() throws InstantiationException {
+        throw new InstantiationException("This class is not created for instantiation");
+    }
 
     public static void startService(Context context) {
         Intent intent = new Intent(context, BackgroundService.class);

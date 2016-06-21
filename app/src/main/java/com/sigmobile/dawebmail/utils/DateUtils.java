@@ -10,7 +10,12 @@ import java.util.Calendar;
 /**
  * Created by rish on 8/1/16.
  */
-public class DateUtils {
+public final class DateUtils {
+
+    private DateUtils() throws InstantiationException {
+        throw new InstantiationException("This utility class is not created for instantiation");
+    }
+
     public static String getDate(Context context, long milliSeconds) {
 
         int ONE_HOUR = 1000 * 60 * 60;

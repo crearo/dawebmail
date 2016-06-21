@@ -11,7 +11,11 @@ import java.util.ArrayList;
 /**
  * Created by rish on 8/1/16.
  */
-public class BasePath {
+public final class BasePath {
+
+    private BasePath() throws InstantiationException {
+        throw new InstantiationException("This utility class is not created for instantiation");
+    }
 
     public static String getBasePath(Context context) {
         File sdCard = Environment.getExternalStorageDirectory();

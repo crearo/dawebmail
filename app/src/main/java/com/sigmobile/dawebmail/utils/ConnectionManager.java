@@ -7,7 +7,11 @@ import android.telephony.TelephonyManager;
 /**
  * Created by rish on 16/7/15.
  */
-public class ConnectionManager {
+public final class ConnectionManager {
+
+    private ConnectionManager() throws InstantiationException {
+        throw new InstantiationException("This utility class is not created for instantiation");
+    }
 
     public static Boolean isConnectedByWifi(Context context) {
         try {

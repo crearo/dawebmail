@@ -3,7 +3,7 @@ package com.sigmobile.dawebmail.utils;
 /**
  * Created by rish on 6/10/15.
  */
-public class Constants {
+public final class Constants {
 
     public static String FOLDER = "FOLDER";
     public static String INBOX = "INBOX";
@@ -26,5 +26,9 @@ public class Constants {
 
     public static String REFRESH_TYPE_LOAD_MORE = "REFRESH_TYPE_LOAD_MORE";
     public static String REFRESH_TYPE_REFRESH = "REFRESH_TYPE_REFRESH";
+
+    private Constants() throws InstantiationException {
+        throw new InstantiationException("This utility class is not created for instantiation");
+    }
 
 }
