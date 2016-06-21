@@ -33,6 +33,7 @@ import com.sigmobile.dawebmail.database.CurrentUser;
 import com.sigmobile.dawebmail.fragments.FolderFragment;
 import com.sigmobile.dawebmail.fragments.InboxFragment;
 import com.sigmobile.dawebmail.fragments.SmartBoxFragment;
+import com.sigmobile.dawebmail.network.AnalyticsAPI;
 import com.sigmobile.dawebmail.services.NotificationMaker;
 import com.sigmobile.dawebmail.utils.Constants;
 import com.sigmobile.dawebmail.utils.Settings;
@@ -121,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
                             CurrentUser.setCurrentUser(null, getApplicationContext());
                             startActivity(new Intent(MainActivity.this, LoginActivity.class));
                             drawer.closeDrawer();
+                            AnalyticsAPI.sendAnalyticsAction(getApplication(), AnalyticsAPI.CATEGORY_ACTION, AnalyticsAPI.ACTION_NEW_ACCOUNT);
                             return true;
                         } else {
                             CurrentUser.setCurrentUser(User.getUserFromUserName(profile.getName().getText()), getApplicationContext());
@@ -284,6 +286,8 @@ public class MainActivity extends AppCompatActivity {
                     CurrentUser.setCurrentUser(User.getAllUsers().get(0), getApplicationContext());
                 else
                     CurrentUser.setCurrentUser(null, getApplicationContext());
+
+                AnalyticsAPI.sendAnalyticsAction(getApplication(), AnalyticsAPI.CATEGORY_ACTION, AnalyticsAPI.ACTION_LOGOUT);
 
                 new Handler().postDelayed(new Runnable() {
                     @Override

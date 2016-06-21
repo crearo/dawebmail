@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.sigmobile.dawebmail.network.AnalyticsAPI;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -28,6 +30,7 @@ public class ContributeActivity extends AppCompatActivity {
     public void githubClick() {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(github.getText().toString()));
         startActivity(browserIntent);
+        AnalyticsAPI.sendAnalyticsAction(getApplication(), AnalyticsAPI.CATEGORY_ACTION, AnalyticsAPI.ACTION_CONTRIBUTE);
     }
 
     @Override
@@ -38,6 +41,7 @@ public class ContributeActivity extends AppCompatActivity {
     }
 
     public void sendEmail() {
+        AnalyticsAPI.sendAnalyticsAction(getApplication(), AnalyticsAPI.CATEGORY_ACTION, AnalyticsAPI.ACTION_MAIL_TO_DEV);
         Intent sendIntent = new Intent(Intent.ACTION_VIEW);
         sendIntent.setType("plain/text");
         sendIntent.setData(Uri.parse(getString(R.string.developer_email)));

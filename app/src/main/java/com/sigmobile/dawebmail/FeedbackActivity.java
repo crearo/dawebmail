@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.sigmobile.dawebmail.network.AnalyticsAPI;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -93,6 +95,7 @@ public class FeedbackActivity extends AppCompatActivity {
     public void onGitHub() {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.github_repo)));
         startActivity(browserIntent);
+        AnalyticsAPI.sendAnalyticsAction(getApplication(), AnalyticsAPI.CATEGORY_ACTION, AnalyticsAPI.ACTION_CONTRIBUTE);
     }
 
     public void sendEmail() {
@@ -105,6 +108,7 @@ public class FeedbackActivity extends AppCompatActivity {
         sendIntent.putExtra(Intent.EXTRA_TEXT, "Suggestions/Complaints.\n" + textbox.getText().toString());
         startActivity(sendIntent);
         textbox.setText("");
+        AnalyticsAPI.sendAnalyticsAction(getApplication(), AnalyticsAPI.CATEGORY_ACTION, AnalyticsAPI.ACTION_MAIL_TO_DEV);
     }
 
     private void launchMarket() {
