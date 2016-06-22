@@ -1,31 +1,39 @@
 {
   "project_info": {
-    "project_number": "495084819243",
-    "project_id": "dawebmailconsole"
+    "project_number": "352973032579",
+    "firebase_url": "https://dawebmailv2.firebaseio.com",
+    "project_id": "dawebmailv2",
+    "storage_bucket": "dawebmailv2.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:495084819243:android:f8f38040a8345fd8",
+        "mobilesdk_app_id": "1:352973032579:android:f8f38040a8345fd8",
         "android_client_info": {
           "package_name": "com.sigmobile.dawebmail"
         }
       },
-      "oauth_client": [],
-      "api_key": [{ "current_key": "" }],
+      "oauth_client": [
+        {
+          "client_id": "352973032579-6q8nvgokesipmb2mq9033nl7iqh59hdb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWhVJJvlezPBtsppb9CBH-bAPIIPAt6tY"
+        }
+      ],
       "services": {
         "analytics_service": {
-          "status": 2,
-          "analytics_property": {
-            "tracking_id": "UA-72254967-1"
-          }
+          "status": 1
         },
         "appinvite_service": {
           "status": 1,
           "other_platform_oauth_client": []
         },
         "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }

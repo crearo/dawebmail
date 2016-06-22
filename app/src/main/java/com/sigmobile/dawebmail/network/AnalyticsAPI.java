@@ -2,8 +2,6 @@ package com.sigmobile.dawebmail.network;
 
 import android.app.Application;
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
 import com.sigmobile.dawebmail.DAWebmailApplication;
 
 /**
@@ -25,10 +23,6 @@ public class AnalyticsAPI {
 
     public static void sendAnalyticsAction(Application application, String eventCategory, String eventAction) {
         DAWebmailApplication mApplication = (DAWebmailApplication) application;
-        Tracker mTracker = mApplication.getDefaultTracker();
-        mTracker.send(new HitBuilders.EventBuilder()
-                .setCategory(eventCategory)
-                .setAction(eventAction)
-                .build());
+
     }
 }
