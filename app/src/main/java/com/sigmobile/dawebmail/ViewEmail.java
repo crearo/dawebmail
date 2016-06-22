@@ -20,6 +20,7 @@ import com.sigmobile.dawebmail.asyncTasks.ViewMailManager;
 import com.sigmobile.dawebmail.database.CurrentUser;
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
+import com.sigmobile.dawebmail.network.AnalyticsAPI;
 import com.sigmobile.dawebmail.utils.BasePath;
 import com.sigmobile.dawebmail.utils.Constants;
 import com.sigmobile.dawebmail.utils.DateUtils;
@@ -67,6 +68,8 @@ public class ViewEmail extends AppCompatActivity implements ViewMailListener {
         setupBundleReceivers();
         setupToolbar();
         showEmailContent();
+
+        AnalyticsAPI.sendMailViewedAction(currentEmail, getApplicationContext());
 
     }
 

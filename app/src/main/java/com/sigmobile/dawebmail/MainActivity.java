@@ -69,8 +69,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        AnalyticsAPI.setupAnalyticsAPI(getApplication());
-
         settings = new Settings(getApplicationContext());
 
         setupToolbar();

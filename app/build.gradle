@@ -14,12 +14,18 @@ android {
         targetSdkVersion 23
         versionCode 12
         versionName "5.0.0"
+        multiDexEnabled true
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE-FIREBASE.txt'
+        exclude 'META-INF/NOTICE'
     }
 }
 
@@ -30,6 +36,7 @@ dependencies {
     compile 'com.android.support:design:23.3.0'
     compile 'com.android.support:cardview-v7:23.3.0'
     compile 'com.google.firebase:firebase-core:9.0.2'
+    compile 'com.firebase:firebase-client-android:2.5.2'
     compile 'com.mcxiaoke.volley:library:1.0.19'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.github.satyan:sugar:1.3'
