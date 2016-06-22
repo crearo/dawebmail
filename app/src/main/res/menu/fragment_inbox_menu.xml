@@ -15,6 +15,6 @@
     <item
         android:id="@+id/action_loadmore"
         android:orderInCategory="10"
-        android:title="Load More"
+        android:title="Load Older"
         app:showAsAction="never" />
 </menu>

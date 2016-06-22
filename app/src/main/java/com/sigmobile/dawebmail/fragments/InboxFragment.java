@@ -126,6 +126,8 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
                 onPostRefresh(bundle.getInt(Constants.BUNDLE_ON_POST_REFRESH_EMAILS_SIZE));
             }
         }
+
+        refreshAdapter();
     }
 
     private void setupMailAdapter() {
