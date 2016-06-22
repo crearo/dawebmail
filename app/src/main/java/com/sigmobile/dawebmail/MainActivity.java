@@ -68,6 +68,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        AnalyticsAPI.setupAnalyticsAPI(getApplication());
+
         settings = new Settings(getApplicationContext());
 
         setupToolbar();
@@ -78,6 +81,8 @@ public class MainActivity extends AppCompatActivity {
 
         showUpdatesDialog();
         checkPermission();
+
+        AnalyticsAPI.sendValueLessAction(AnalyticsAPI.ACTION_APP_OPEN, getApplicationContext());
     }
 
     @Override
@@ -122,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
                             CurrentUser.setCurrentUser(null, getApplicationContext());
                             startActivity(new Intent(MainActivity.this, LoginActivity.class));
                             drawer.closeDrawer();
-                            AnalyticsAPI.sendAnalyticsAction(getApplication(), AnalyticsAPI.CATEGORY_ACTION, AnalyticsAPI.ACTION_NEW_ACCOUNT);
+                            AnalyticsAPI.sendValueLessAction(AnalyticsAPI.ACTION_NEW_ACCOUNT, getApplicationContext());
                             return true;
                         } else {
                             CurrentUser.setCurrentUser(User.getUserFromUserName(profile.getName().getText()), getApplicationContext());
@@ -287,7 +292,7 @@ public class MainActivity extends AppCompatActivity {
                 else
                     CurrentUser.setCurrentUser(null, getApplicationContext());
 
-                AnalyticsAPI.sendAnalyticsAction(getApplication(), AnalyticsAPI.CATEGORY_ACTION, AnalyticsAPI.ACTION_LOGOUT);
+                AnalyticsAPI.sendValueLessAction(AnalyticsAPI.ACTION_LOGOUT, getApplicationContext());
 
                 new Handler().postDelayed(new Runnable() {
                     @Override

@@ -445,27 +445,27 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
         Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_deleting), Snackbar.LENGTH_LONG).show();
         new MultiMailAction(currentUser, getActivity(), InboxFragment.this, emailsMarkedForAction, getString(R.string.msg_action_delete)).execute();
         setupDeleteAndComposeFABs(false);
-        AnalyticsAPI.sendAnalyticsAction(getActivity().getApplication(), AnalyticsAPI.CATEGORY_ACTION, AnalyticsAPI.ACTION_DELETE);
+        AnalyticsAPI.sendMailAction(AnalyticsAPI.ACTION_DELETE, emailsMarkedForAction, getContext());
     }
 
     private void performActionTrash(ArrayList<EmailMessage> emailsMarkedForAction) {
         Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_trashing), Snackbar.LENGTH_LONG).show();
         new MultiMailAction(currentUser, getActivity(), InboxFragment.this, emailsMarkedForAction, getString(R.string.msg_action_trash)).execute();
         setupDeleteAndComposeFABs(false);
-        AnalyticsAPI.sendAnalyticsAction(getActivity().getApplication(), AnalyticsAPI.CATEGORY_ACTION, AnalyticsAPI.ACTION_TRASH);
+        AnalyticsAPI.sendMailAction(AnalyticsAPI.ACTION_TRASH, emailsMarkedForAction, getContext());
     }
 
     private void performActionRead(ArrayList<EmailMessage> emailsMarkedForAction) {
         Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_marking_read), Snackbar.LENGTH_LONG).show();
         new MultiMailAction(currentUser, getActivity(), InboxFragment.this, emailsMarkedForAction, getString(R.string.msg_action_read)).execute();
         setupDeleteAndComposeFABs(false);
-        AnalyticsAPI.sendAnalyticsAction(getActivity().getApplication(), AnalyticsAPI.CATEGORY_ACTION, AnalyticsAPI.ACTION_MARK_READ);
+        AnalyticsAPI.sendMailAction(AnalyticsAPI.ACTION_MARK_READ, emailsMarkedForAction, getContext());
     }
 
     private void performActionUnread(ArrayList<EmailMessage> emailsMarkedForAction) {
         Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_marking_unread), Snackbar.LENGTH_LONG).show();
         new MultiMailAction(currentUser, getActivity(), InboxFragment.this, emailsMarkedForAction, getString(R.string.msg_action_unread)).execute();
         setupDeleteAndComposeFABs(false);
-        AnalyticsAPI.sendAnalyticsAction(getActivity().getApplication(), AnalyticsAPI.CATEGORY_ACTION, AnalyticsAPI.ACTION_MARK_UNREAD);
+        AnalyticsAPI.sendMailAction(AnalyticsAPI.ACTION_MARK_UNREAD, emailsMarkedForAction, getContext());
     }
 }

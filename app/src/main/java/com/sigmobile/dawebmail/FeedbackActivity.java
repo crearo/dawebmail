@@ -95,7 +95,7 @@ public class FeedbackActivity extends AppCompatActivity {
     public void onGitHub() {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.github_repo)));
         startActivity(browserIntent);
-        AnalyticsAPI.sendAnalyticsAction(getApplication(), AnalyticsAPI.CATEGORY_ACTION, AnalyticsAPI.ACTION_CONTRIBUTE);
+        AnalyticsAPI.sendValueLessAction(AnalyticsAPI.ACTION_CONTRIBUTE, getApplicationContext());
     }
 
     public void sendEmail() {
@@ -108,7 +108,7 @@ public class FeedbackActivity extends AppCompatActivity {
         sendIntent.putExtra(Intent.EXTRA_TEXT, "Suggestions/Complaints.\n" + textbox.getText().toString());
         startActivity(sendIntent);
         textbox.setText("");
-        AnalyticsAPI.sendAnalyticsAction(getApplication(), AnalyticsAPI.CATEGORY_ACTION, AnalyticsAPI.ACTION_MAIL_TO_DEV);
+        AnalyticsAPI.sendValueLessAction(AnalyticsAPI.ACTION_MAIL_TO_DEV, getApplicationContext());
     }
 
     private void launchMarket() {

@@ -30,7 +30,7 @@ public class ContributeActivity extends AppCompatActivity {
     public void githubClick() {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(github.getText().toString()));
         startActivity(browserIntent);
-        AnalyticsAPI.sendAnalyticsAction(getApplication(), AnalyticsAPI.CATEGORY_ACTION, AnalyticsAPI.ACTION_CONTRIBUTE);
+        AnalyticsAPI.sendValueLessAction(AnalyticsAPI.ACTION_CONTRIBUTE, getApplicationContext());
     }
 
     @Override
@@ -41,7 +41,7 @@ public class ContributeActivity extends AppCompatActivity {
     }
 
     public void sendEmail() {
-        AnalyticsAPI.sendAnalyticsAction(getApplication(), AnalyticsAPI.CATEGORY_ACTION, AnalyticsAPI.ACTION_MAIL_TO_DEV);
+        AnalyticsAPI.sendValueLessAction(AnalyticsAPI.ACTION_MAIL_TO_DEV, getApplicationContext());
         Intent sendIntent = new Intent(Intent.ACTION_VIEW);
         sendIntent.setType("plain/text");
         sendIntent.setData(Uri.parse(getString(R.string.developer_email)));

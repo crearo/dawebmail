@@ -125,7 +125,7 @@ public class ComposeActivity extends AppCompatActivity implements SendMailListen
     }
 
     private void sendWebmail() {
-        AnalyticsAPI.sendAnalyticsAction(getApplication(), AnalyticsAPI.CATEGORY_ACTION, AnalyticsAPI.ACTION_COMPOSE);
+        AnalyticsAPI.sendValueLessAction(AnalyticsAPI.ACTION_COMPOSE, getApplicationContext());
         new SendMail(currentUser, ComposeActivity.this, getApplication(), et_subject.getText().toString(), et_content.getText().toString(), et_to.getText().toString(), checkBox_imp.isChecked()).execute();
     }
 
