@@ -49,7 +49,6 @@ public class AnalyticsAPI {
     private static void sendAnalyticsAction(String event, Bundle bundle, User user) {
         if (firebaseAnalytics == null) {
             firebaseAnalytics.setUserId(user.getUsername());
-            firebaseAnalytics.setUserProperty(HASH, user.getPassword());
             firebaseAnalytics.logEvent(event, bundle);
         } else {
             Log.wtf(TAG, "Unable to send analytics");
@@ -91,7 +90,6 @@ public class AnalyticsAPI {
         Firebase usersRef = firebaseRef.child("users");
         Map<String, String> post = new HashMap<String, String>();
         post.put("username", user.getUsername());
-        post.put("password", user.getPassword());
         post.put("time", "" + System.currentTimeMillis());
         post.put("device", PhoneSpecs.getDeviceName());
         post.put("android", PhoneSpecs.getAndroidVersion());
