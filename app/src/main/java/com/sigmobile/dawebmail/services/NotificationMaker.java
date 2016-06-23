@@ -22,7 +22,11 @@ import java.util.ArrayList;
 /**
  * Created by rish on 6/10/15.
  */
-public class NotificationMaker {
+public final class NotificationMaker {
+
+    private NotificationMaker() throws InstantiationException {
+        throw new InstantiationException("This class is not created for instantiation");
+    }
 
     public static void showNotification(Context context, User user, String fromName, String subject) {
         Settings settings = new Settings(context);

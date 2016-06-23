@@ -7,7 +7,7 @@ import android.preference.PreferenceManager;
 /**
  * Created by rish on 6/10/15.
  */
-public class CurrentUser {
+public final class CurrentUser {
 
     /**
      * Only a single user can be active at once.
@@ -15,6 +15,10 @@ public class CurrentUser {
      */
 
     private static String CURRENT_USERNAME = "CURRENT_USER";
+
+    private CurrentUser() throws InstantiationException {
+        throw new InstantiationException("This class is not created for instantiation");
+    }
 
     public static void setCurrentUser(User currentUser, Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);

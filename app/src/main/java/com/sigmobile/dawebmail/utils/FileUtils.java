@@ -10,7 +10,11 @@ import java.io.File;
 /**
  * Created by rish on 11/1/16.
  */
-public class FileUtils {
+public final class FileUtils {
+
+    private FileUtils() throws InstantiationException {
+        throw new InstantiationException("This utility class is not created for instantiation");
+    }
 
     public static void openDoc(Context context, String filePath) {
         File file = new File(filePath);
