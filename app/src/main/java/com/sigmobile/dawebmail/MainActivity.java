@@ -285,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
                  * Delete the current User and set the next user in line as current user
                  */
                 User.deleteUser(currentUser);
-                if (User.getAllUsers().size() != 0)
+                if (!User.getAllUsers().isEmpty())
                     CurrentUser.setCurrentUser(User.getAllUsers().get(0), getApplicationContext());
                 else
                     CurrentUser.setCurrentUser(null, getApplicationContext());

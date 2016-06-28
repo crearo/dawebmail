@@ -59,7 +59,7 @@ public class BackgroundService extends Service implements RefreshInboxListener {
 
     @Override
     public void onPostRefresh(boolean success, ArrayList<EmailMessage> refreshedEmails, User user) {
-        if (refreshedEmails.size() == 0) {
+        if (refreshedEmails.isEmpty()) {
         } else if (refreshedEmails.size() == 1) {
             NotificationMaker.showNotification(this, user, refreshedEmails.get(0).getFromName(), refreshedEmails.get(0).getSubject());
             CurrentUser.setCurrentUser(user, getApplicationContext());

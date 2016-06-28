@@ -202,7 +202,7 @@ public class FolderFragment extends Fragment implements RefreshInboxListener, Mu
                     Snackbar.make(swipeRefreshLayout, refreshedEmailsSize + getString(R.string.snackbar_new_webmail_many), Snackbar.LENGTH_LONG).show();
                 progressDialog2.dismiss();
 
-                if (allEmails.size() != 0) {
+                if (!allEmails.isEmpty()) {
                     emptyLayout.setVisibility(View.GONE);
                     swipeRefreshLayout.setVisibility(View.VISIBLE);
                 } else {
@@ -258,7 +258,7 @@ public class FolderFragment extends Fragment implements RefreshInboxListener, Mu
             }
         });
 
-        if (emailsMarkedForAction.size() > 0) {
+        if (!emailsMarkedForAction.isEmpty()) {
             if (fabDelete.getVisibility() != View.VISIBLE) {
                 fabDelete.setVisibility(View.VISIBLE);
                 fabDelete.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.abc_slide_in_bottom));

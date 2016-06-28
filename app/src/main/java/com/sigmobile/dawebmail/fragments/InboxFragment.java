@@ -139,7 +139,7 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mailAdapter);
 
-        if (allEmails.size() == 0) {
+        if (allEmails.isEmpty()) {
             new RefreshInbox(currentUser, getActivity(), InboxFragment.this, Constants.INBOX, Constants.REFRESH_TYPE_LOAD_MORE).execute();
             allEmails = new ArrayList<>();
         }
@@ -383,7 +383,7 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
     @Override
     public void onItemClickedForDelete(final ArrayList<EmailMessage> emailsMarkedForAction) {
 
-        if (emailsMarkedForAction.size() == 0)
+        if (emailsMarkedForAction.isEmpty())
             setupDeleteAndComposeFABs(false);
         else
             setupDeleteAndComposeFABs(true);
