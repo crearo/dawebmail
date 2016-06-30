@@ -132,14 +132,14 @@ public class EmailMessage extends SugarRecord<EmailMessage> implements Serializa
 
     public static EmailMessage getLatestWebmailOfUser(User user) {
         List<EmailMessage> emailMessages = getAllMailsOfUser(user);
-        if (emailMessages.size() > 0)
+        if (!emailMessages.isEmpty())
             return emailMessages.get(emailMessages.size() - 1);
         return null;
     }
 
     public static EmailMessage getLastWebmailOfUser(User user) {
         List<EmailMessage> emailMessages = getAllMailsOfUser(user);
-        if (emailMessages.size() > 0)
+        if (!emailMessages.isEmpty())
             return emailMessages.get(0);
         return null;
     }

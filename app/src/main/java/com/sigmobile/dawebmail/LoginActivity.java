@@ -137,7 +137,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
     @Override
     public void onBackPressed() {
         if (CurrentUser.getCurrentUser(this) == null) {
-            if (User.getAllUsers().size() > 0)
+            if (!User.getAllUsers().isEmpty())
                 CurrentUser.setCurrentUser(User.getAllUsers().get(0), getApplicationContext());
         } else {
             finish();
