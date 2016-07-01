@@ -14,13 +14,14 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -243,13 +244,13 @@ public class RestAPI {
             conn.setRequestMethod("GET");
 
             String userPassword = user.getUsername() + ":" + user.getPassword();
-            String encoding = Base64.encodeToString(userPassword.getBytes(), Base64.DEFAULT);
+            String encoding = Base64.encodeToString(userPassword.getBytes(StandardCharsets.UTF_8), Base64.DEFAULT);
             conn.setRequestProperty("Authorization", "Basic " + encoding);
             conn.connect();
 
             if (conn.getResponseCode() == 200) {
                 InputStream in = new BufferedInputStream(conn.getInputStream());
-                BufferedReader r = new BufferedReader(new InputStreamReader(in));
+                BufferedReader r = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
                 StringBuilder total = new StringBuilder();
                 String line;
                 while ((line = r.readLine()) != null) {
@@ -277,7 +278,8 @@ public class RestAPI {
 
     public static void writeStringAsFile(Context context, final String fileContents) {
         try {
-            FileWriter out = new FileWriter(new File(BasePath.getBasePath(context), "email.txt"));
+            FileOutputStream fileOutputStream = new FileOutputStream(BasePath.getBasePath(context) + "/email.txt");
+            OutputStreamWriter out = new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8);
             out.write(fileContents);
             out.close();
         } catch (IOException e) {
