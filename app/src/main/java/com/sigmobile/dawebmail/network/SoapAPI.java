@@ -68,10 +68,7 @@ public class SoapAPI {
             if (msgActionResponse.getAction().getId().equals(contentID) && msgActionResponse.getAction().getOp().equals(mailAction))
                 return true;
             return false;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        } catch (XmlPullParserException e) {
+        } catch (IOException | XmlPullParserException e) {
             e.printStackTrace();
             return false;
         }
@@ -128,10 +125,7 @@ public class SoapAPI {
             if (sendMsgResponse.getM().getId() != null)
                 return true;
             return false;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        } catch (XmlPullParserException e) {
+        } catch (IOException | XmlPullParserException e) {
             e.printStackTrace();
             return false;
         }
@@ -191,10 +185,7 @@ public class SoapAPI {
                 Log.d(TAG, searchResponseChoice.getM().getS() + " " + searchResponseChoice.getM().getSu());
             }
             return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        } catch (XmlPullParserException e) {
+        } catch (IOException | XmlPullParserException e) {
             e.printStackTrace();
             return false;
         }
