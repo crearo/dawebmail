@@ -65,7 +65,7 @@ And that's it :) DAWebmail is ready to run in your university/organization. Plea
 ## Developed By
 **Rishabh Bhardwaj**
 - [bhardwaj.rish@gmail.com](bhardwaj.rish@gmail.com)
-- [website](rish.pythonanywhere.com) - [blog](bhardwajrish.blogspot.in)
+- [website](http://rish.pythonanywhere.com) - [blog](http://bhardwajrish.blogspot.in)
 
 ### Contributors
 
