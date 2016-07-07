@@ -99,10 +99,8 @@ public class FolderFragment extends Fragment implements RefreshInboxListener, Mu
          * This is done for maintaining the fragment lifecycle. Read onPostRefresh comment.
          **/
         Bundle bundle = getArguments();
-        if (bundle != null) {
-            if (bundle.getInt(Constants.BUNDLE_ON_POST_REFRESH_EMAILS_SIZE, -1) != -1) {
-                onPostRefresh(bundle.getInt(Constants.BUNDLE_ON_POST_REFRESH_EMAILS_SIZE));
-            }
+        if (bundle != null && bundle.getInt(Constants.BUNDLE_ON_POST_REFRESH_EMAILS_SIZE, -1) != -1) {
+            onPostRefresh(bundle.getInt(Constants.BUNDLE_ON_POST_REFRESH_EMAILS_SIZE));
         }
     }
 

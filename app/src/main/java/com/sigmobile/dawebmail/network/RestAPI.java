@@ -127,12 +127,10 @@ public class RestAPI {
              * lengthToLoad emails below lastEmail are ones to be saved in loadmore
              */
             for (int i = 0; i < fetchedEmails.size(); i++) {
-                if (lastWebmail != null)
-                    if (fetchedEmails.get(i).getContentID() == lastWebmail.getContentID())
-                        indexOfLastEmailInFetchedList = i;
-                if (latestWebmail != null)
-                    if (fetchedEmails.get(i).getContentID() == latestWebmail.getContentID())
-                        indexOfLatestEmailInFetchedList = i;
+                if (lastWebmail != null && fetchedEmails.get(i).getContentID() == lastWebmail.getContentID())
+                    indexOfLastEmailInFetchedList = i;
+                if (latestWebmail != null && fetchedEmails.get(i).getContentID() == latestWebmail.getContentID())
+                    indexOfLatestEmailInFetchedList = i;
             }
 
             /**
