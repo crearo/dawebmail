@@ -7,6 +7,7 @@ import com.sigmobile.dawebmail.utils.BasePath;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 import javax.mail.Multipart;
@@ -32,7 +33,7 @@ public class MailParser {
     public void newMailParser(Context context, int contentID, String emailContentBytes) {
         try {
             Session s = Session.getDefaultInstance(new Properties());
-            InputStream is = new ByteArrayInputStream(emailContentBytes.getBytes());
+            InputStream is = new ByteArrayInputStream(emailContentBytes.getBytes(StandardCharsets.UTF_8));
             MimeMessage message = new MimeMessage(s, is);
 
 //            javax.mail.Address[] fromAddress = message.getFrom();
