@@ -93,11 +93,7 @@ public class AutoCompleteRequest extends AsyncTask<Void, Void, Void> {
                 addresses[i] = autoCompleteMatch[i].getEmail();
             }
             result = true;
-        } catch (IOException e) {
-            addresses = null;
-            e.printStackTrace();
-            result = false;
-        } catch (XmlPullParserException e) {
+        } catch (IOException | XmlPullParserException e) {
             addresses = null;
             e.printStackTrace();
             result = false;
