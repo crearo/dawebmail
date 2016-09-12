@@ -27,13 +27,12 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
+import com.sigmobile.dawebmail.database.CurrentUser;
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
-import com.sigmobile.dawebmail.database.CurrentUser;
 import com.sigmobile.dawebmail.fragments.FolderFragment;
 import com.sigmobile.dawebmail.fragments.InboxFragment;
 import com.sigmobile.dawebmail.fragments.SmartBoxFragment;
-import com.sigmobile.dawebmail.network.AnalyticsAPI;
 import com.sigmobile.dawebmail.services.NotificationMaker;
 import com.sigmobile.dawebmail.utils.Constants;
 import com.sigmobile.dawebmail.utils.Settings;
@@ -60,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private SecondaryDrawerItem sSettings, sFeedback, sContribute;
     private ArrayList<IProfile> allAccountHeaders;
     private IDrawerItem selectedDrawerItem;
+    private String currentDrawerItem;
     private Settings settings;
     private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 108;
 
@@ -74,13 +74,32 @@ public class MainActivity extends AppCompatActivity {
         setupToolbar();
         setupDrawer();
 
-        selectedDrawerItem = pInbox;
+        if(savedInstanceState != null){
+            currentDrawerItem = savedInstanceState.getString("currentDrawerItem", "inbox");
+        }
+        else {
+            currentDrawerItem = "inbox";
+        }
+
+        switch(currentDrawerItem){
+            case "inbox": selectedDrawerItem = pInbox; break;
+            case "smartbox": selectedDrawerItem = pSmartBox; break;
+            case "sentbox": selectedDrawerItem = pSentBox; break;
+            case "trashbox": selectedDrawerItem = pTrashBox; break;
+            default: selectedDrawerItem = pInbox;
+                currentDrawerItem = "inbox";
+        }
+
         setSelectedAccountHeader(true);
 
         showUpdatesDialog();
         checkPermission();
+    }
 
-        AnalyticsAPI.sendValueLessAction(AnalyticsAPI.ACTION_APP_OPEN, getApplicationContext());
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("currentDrawerItem", currentDrawerItem);
     }
 
     @Override
@@ -125,15 +144,18 @@ public class MainActivity extends AppCompatActivity {
                             CurrentUser.setCurrentUser(null, getApplicationContext());
                             startActivity(new Intent(MainActivity.this, LoginActivity.class));
                             drawer.closeDrawer();
-                            AnalyticsAPI.sendValueLessAction(AnalyticsAPI.ACTION_NEW_ACCOUNT, getApplicationContext());
                             return true;
                         } else {
                             CurrentUser.setCurrentUser(User.getUserFromUserName(profile.getName().getText()), getApplicationContext());
                             drawer.closeDrawer();
-                            if (selectedDrawerItem == null)
+                            if (selectedDrawerItem == null) {
                                 selectedDrawerItem = pInbox;
-                            else if (!selectedDrawerItem.isSelectable())
+                                currentDrawerItem = "inbox";
+                            }
+                            else if (!selectedDrawerItem.isSelectable()) {
                                 selectedDrawerItem = pInbox;
+                                currentDrawerItem = "inbox";
+                            }
                             setDrawerSelection(selectedDrawerItem);
                             setToolbarTitle(selectedDrawerItem);
                             return true;
@@ -172,29 +194,55 @@ public class MainActivity extends AppCompatActivity {
                         setToolbarTitle(drawerItem);
                         if (drawerItem.equals(pInbox)) {
                             selectedDrawerItem = (PrimaryDrawerItem) drawerItem;
-                            fragment = new InboxFragment();
+                            currentDrawerItem = "inbox";
+
+                            if(getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_TAG_INBOX)!=null) {
+                                fragment = getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_TAG_INBOX);
+                            }
+                            else {
+                                fragment = new InboxFragment();
+                            }
+
                             Snackbar.make(frameLayout, getString(R.string.drawer_inbox), Snackbar.LENGTH_SHORT).show();
                             fragmentTag = Constants.FRAGMENT_TAG_INBOX;
                         } else if (drawerItem.equals(pSmartBox)) {
                             selectedDrawerItem = (PrimaryDrawerItem) drawerItem;
+                            currentDrawerItem = "smartbox";
                             fragment = new SmartBoxFragment();
                             Snackbar.make(frameLayout, getString(R.string.drawer_smartbox), Snackbar.LENGTH_SHORT).show();
                             fragmentTag = Constants.FRAGMENT_TAG_SMARTBOX;
                         } else if (drawerItem.equals(pSentBox)) {
                             selectedDrawerItem = (PrimaryDrawerItem) drawerItem;
-                            fragment = new FolderFragment();
-                            bundle = new Bundle();
-                            bundle.putString(Constants.FOLDER, Constants.SENT);
-                            fragment.setArguments(bundle);
-                            fragmentTag = Constants.FRAGMENT_TAG_FOLDER;
+                            currentDrawerItem = "sentbox";
+
+                            if(getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_TAG_FOLDER + Constants.SENT)!=null){
+                                fragment = getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_TAG_FOLDER + Constants.SENT);
+                            }
+                            else{
+                                fragment = new FolderFragment();
+                                bundle = new Bundle();
+                                bundle.putString(Constants.FOLDER, Constants.SENT);
+                                fragment.setArguments(bundle);
+                            }
+
+
+                            fragmentTag = Constants.FRAGMENT_TAG_FOLDER + Constants.SENT;
                             Snackbar.make(frameLayout, getString(R.string.drawer_sent), Snackbar.LENGTH_SHORT).show();
                         } else if (drawerItem.equals(pTrashBox)) {
                             selectedDrawerItem = (PrimaryDrawerItem) drawerItem;
-                            fragment = new FolderFragment();
-                            bundle = new Bundle();
-                            bundle.putString(Constants.FOLDER, Constants.TRASH);
-                            fragment.setArguments(bundle);
-                            fragmentTag = Constants.FRAGMENT_TAG_FOLDER;
+                            currentDrawerItem = "trashbox";
+
+                            if(getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_TAG_FOLDER + Constants.TRASH)!=null){
+                                fragment = getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_TAG_FOLDER + Constants.TRASH);
+                            }
+                            else{
+                                fragment = new FolderFragment();
+                                bundle = new Bundle();
+                                bundle.putString(Constants.FOLDER, Constants.TRASH);
+                                fragment.setArguments(bundle);
+                            }
+
+                            fragmentTag = Constants.FRAGMENT_TAG_FOLDER + Constants.TRASH;
                             Snackbar.make(frameLayout, getString(R.string.drawer_trash), Snackbar.LENGTH_SHORT).show();
                         } else if (drawerItem.equals(sSettings)) {
                             Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
@@ -290,7 +338,6 @@ public class MainActivity extends AppCompatActivity {
                 else
                     CurrentUser.setCurrentUser(null, getApplicationContext());
 
-                AnalyticsAPI.sendValueLessAction(AnalyticsAPI.ACTION_LOGOUT, getApplicationContext());
 
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -415,4 +462,6 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "Already Granted");
         }
     }
+
+
 }
