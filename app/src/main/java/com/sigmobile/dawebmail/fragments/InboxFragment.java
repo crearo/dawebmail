@@ -37,10 +37,10 @@ import com.sigmobile.dawebmail.asyncTasks.RefreshInboxListener;
 import com.sigmobile.dawebmail.database.CurrentUser;
 import com.sigmobile.dawebmail.database.EmailMessage;
 import com.sigmobile.dawebmail.database.User;
-import com.sigmobile.dawebmail.network.AnalyticsAPI;
 import com.sigmobile.dawebmail.utils.Constants;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import butterknife.Bind;
@@ -80,6 +80,8 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
     private ProgressDialog progressDialog, progressDialog2;
     private ArrayList<EmailMessage> allEmails;
     private User currentUser;
+    private boolean markedMails[];
+    private MenuItem selectAll;
 
     public InboxFragment() {
     }
@@ -106,17 +108,43 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
         setupMailAdapter();
         setupSwipeRefreshLayout();
         setupSearchBar();
-        setupDeleteAndComposeFABs(false);
+
+        if(markedMails == null)
+            setupDeleteAndComposeFABs(false);
+        else
+            setupDeleteAndComposeFABs(true);
 
         emptyLayout.setVisibility(View.GONE);
-
         return rootView;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if(savedInstanceState != null)
+            markedMails = savedInstanceState.getBooleanArray("markedEmails");
+        else
+            markedMails = null;
+
+
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBooleanArray("markedEmails", mailAdapter.getMarkedMails());
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        setupDeleteAndComposeFABs(false);
+
+        if(markedMails == null)
+            setupDeleteAndComposeFABs(false);
+        else
+            setupDeleteAndComposeFABs(true);
         /**
          * This is done for maintaining the fragment lifecycle. Read onPostRefresh comment.
          **/
@@ -132,6 +160,7 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
         allEmails = (ArrayList<EmailMessage>) EmailMessage.getAllMailsOfUser(currentUser);
         Collections.reverse(allEmails);
         mailAdapter = new MailAdapter(allEmails, getActivity(), this, Constants.INBOX);
+
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -165,6 +194,7 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
     }
 
     private void setupDeleteAndComposeFABs(boolean isDeleteVisible) {
+        setupSelectAll(isDeleteVisible);
         if (!isDeleteVisible) {
             final Animation animation = AnimationUtils.loadAnimation(getActivity(), android.support.design.R.anim.abc_slide_out_bottom);
             animation.setAnimationListener(new Animation.AnimationListener() {
@@ -238,19 +268,20 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.fragment_inbox_menu, menu);
+        selectAll = menu.getItem(0);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+
         if (id == R.id.action_search) {
             Snackbar.make(recyclerView, getString(R.string.snackbar_search_pressed), Snackbar.LENGTH_LONG).show();
             return true;
@@ -258,6 +289,18 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
             logout();
         } else if (id == R.id.action_loadmore) {
             new RefreshInbox(currentUser, getActivity(), InboxFragment.this, Constants.INBOX, Constants.REFRESH_TYPE_LOAD_MORE).execute();
+        } else if(id == R.id.action_selectall){
+            if(item.isChecked()){
+                item.setChecked(false);
+                item.setIcon(R.drawable.ic_action_selectall_unchecked);
+                selectAllMails(false);
+                setupDeleteAndComposeFABs(false);
+            }
+            else{
+                item.setChecked(true);
+                item.setIcon(R.drawable.ic_action_selectall_checked);
+                selectAllMails(true);
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -371,6 +414,7 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
         allEmails = (ArrayList<EmailMessage>) EmailMessage.getAllMailsOfUser(currentUser);
         Collections.reverse(allEmails);
         mailAdapter.setEmails(allEmails);
+        restoreMarkedMails();
         mailAdapter.notifyDataSetChanged();
     }
 
@@ -380,11 +424,13 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
 
     @Override
     public void onItemClickedForDelete(final ArrayList<EmailMessage> emailsMarkedForAction) {
-
-        if (emailsMarkedForAction.isEmpty())
+        if (emailsMarkedForAction.isEmpty()) {
             setupDeleteAndComposeFABs(false);
-        else
+        }
+        else {
             setupDeleteAndComposeFABs(true);
+        }
+
         fabMenu.setEnabled(true);
 
         fabDelete.setOnClickListener(new View.OnClickListener() {
@@ -445,27 +491,54 @@ public class InboxFragment extends Fragment implements RefreshInboxListener, Mul
         Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_deleting), Snackbar.LENGTH_LONG).show();
         new MultiMailAction(currentUser, getActivity(), InboxFragment.this, emailsMarkedForAction, getString(R.string.msg_action_delete)).execute();
         setupDeleteAndComposeFABs(false);
-        AnalyticsAPI.sendMultipleMailAction(AnalyticsAPI.ACTION_DELETE, emailsMarkedForAction, getContext());
     }
 
     private void performActionTrash(ArrayList<EmailMessage> emailsMarkedForAction) {
         Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_trashing), Snackbar.LENGTH_LONG).show();
         new MultiMailAction(currentUser, getActivity(), InboxFragment.this, emailsMarkedForAction, getString(R.string.msg_action_trash)).execute();
         setupDeleteAndComposeFABs(false);
-        AnalyticsAPI.sendMultipleMailAction(AnalyticsAPI.ACTION_TRASH, emailsMarkedForAction, getContext());
     }
 
     private void performActionRead(ArrayList<EmailMessage> emailsMarkedForAction) {
         Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_marking_read), Snackbar.LENGTH_LONG).show();
         new MultiMailAction(currentUser, getActivity(), InboxFragment.this, emailsMarkedForAction, getString(R.string.msg_action_read)).execute();
         setupDeleteAndComposeFABs(false);
-        AnalyticsAPI.sendMultipleMailAction(AnalyticsAPI.ACTION_MARK_READ, emailsMarkedForAction, getContext());
     }
 
     private void performActionUnread(ArrayList<EmailMessage> emailsMarkedForAction) {
         Snackbar.make(swipeRefreshLayout, getString(R.string.snackbar_marking_unread), Snackbar.LENGTH_LONG).show();
         new MultiMailAction(currentUser, getActivity(), InboxFragment.this, emailsMarkedForAction, getString(R.string.msg_action_unread)).execute();
         setupDeleteAndComposeFABs(false);
-        AnalyticsAPI.sendMultipleMailAction(AnalyticsAPI.ACTION_MARK_UNREAD, emailsMarkedForAction, getContext());
+    }
+
+    private void setupSelectAll(boolean set){
+        if(selectAll != null){
+            if(set){
+                selectAll.setVisible(true);
+                selectAll.setEnabled(true);
+            }
+            else{
+                selectAll.setVisible(false);
+                selectAll.setEnabled(false);
+            }
+        }
+    }
+
+    private void selectAllMails(boolean select){
+        markedMails = new boolean[ allEmails.size() ];
+        if(select){
+            Arrays.fill(markedMails, true);
+        }
+        else{
+            Arrays.fill(markedMails, false);
+        }
+        refreshAdapter();
+    }
+
+    private void restoreMarkedMails(){
+        if(markedMails != null) {
+            mailAdapter.restoreMarkedMails(markedMails);
+            markedMails = null;
+        }
     }
 }

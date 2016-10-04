@@ -23,7 +23,7 @@ import com.sigmobile.dawebmail.utils.TheFont;
 
 import java.util.ArrayList;
 
-public class MailAdapter extends RecyclerView.Adapter<MailAdapter.ViewHolder> {
+public class MailAdapter extends RecyclerView.Adapter<MailAdapter.ViewHolder>{
 
     private final String TAG = "MailAdapter";
 
@@ -180,5 +180,18 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.ViewHolder> {
     public void setEmails(ArrayList<EmailMessage> emails) {
         this.emails = emails;
         clickedForDelete = new boolean[this.emails.size()];
+    }
+
+    public boolean[] getMarkedMails(){
+        return clickedForDelete;
+    }
+
+    public void restoreMarkedMails(boolean marked[]){
+        for(int i=0; i<emails.size(); i++){
+            if(marked[i]){
+                addEmailForDelete(i, emails.get(i));
+            }
+        }
+        multiMailActionSelectedListener.onItemClickedForDelete(emailsMarkedForAction);
     }
 }
