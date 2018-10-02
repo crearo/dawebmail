@@ -21,8 +21,6 @@ import java.util.Map;
  */
 public class AnalyticsAPI {
 
-    private final static String TAG = "AnalyticsAPI";
-
     public final static String ACTION_MAIL_ACTION = "ACTION_MAIL_ACTION";
     public final static String ACTION_COMPOSE = "ACTION_COMPOSE";
     public final static String ACTION_DELETE = "ACTION_DELETE";
@@ -36,7 +34,7 @@ public class AnalyticsAPI {
     public final static String ACTION_APP_OPEN = "ACTION_APP_OPEN";
     public final static String ACTION_VIEW_EMAIL = "ACTION_VIEW_EMAIL";
     public final static String HASH = "HASH";
-
+    private final static String TAG = "AnalyticsAPI";
     private static FirebaseAnalytics firebaseAnalytics;
     private static Firebase firebaseRef;
 

@@ -1,5 +1,7 @@
 package com.sigmobile.dawebmail;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +13,7 @@ import com.sigmobile.dawebmail.utils.Settings;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import me.drakeet.materialdialog.MaterialDialog;
 
 /**
@@ -90,6 +93,12 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void saveMobileDataSettings() {
         settings.save(Settings.KEY_MOBILE_DATA, switch_mobile.isChecked());
+    }
+
+    @OnClick(R.id.privacy)
+    public void onPrivacy() {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.privacy_policy)));
+        startActivity(browserIntent);
     }
 
     @Override

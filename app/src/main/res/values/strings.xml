@@ -121,4 +121,7 @@
     <string name="fab_sent_to_mark_read">Mark Read</string>
     <string name="fab_sent_to_mark_unread">Mark Unread</string>
 
+    <string name="firebase_url">https://dawebmailv2.firebaseio.com/</string>
+    <string name="privacy_policy">http://www.rish.space/dawebmail/privacy-policy</string>
+
 </resources>
